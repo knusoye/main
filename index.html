@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서예연수회 — 국립공주대학교</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f4f6fb;
+      --bg-subtle: #eef1f9;
+      --ink: #1a1a1a;
+      --ink-soft: #444444;
+      --ink-faint: #888888;
+      --border: #e0e4ef;
+      --knu: #324eb3;
+      --knu-bright: #2a42a0;
+      --knu-dim: rgba(50, 78, 179, 0.07);
+      --knu-dim2: rgba(50, 78, 179, 0.12);
+      --gold: #8a6e2a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Noto Serif KR', 'Noto Serif SC', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      text-decoration: none;
+      font-family: 'Noto Serif SC', serif;
+    }
+    .nav-logo span { color: var(--knu); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--ink-faint);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--knu); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 8rem 2rem 5rem;
+      text-align: center;
+      background: var(--bg);
+    }
+    .hero-bg-circle { position: absolute; border-radius: 50%; pointer-events: none; }
+    .hero-bg-circle:nth-child(1) {
+      width: 700px; height: 700px; top: -15%; left: -10%;
+      background: radial-gradient(circle, rgba(50,78,179,0.07) 0%, transparent 70%);
+    }
+    .hero-bg-circle:nth-child(2) {
+      width: 500px; height: 500px; bottom: -10%; right: -5%;
+      background: radial-gradient(circle, rgba(50,78,179,0.04) 0%, transparent 70%);
+    }
+    .hero-eyebrow {
+      font-size: 0.78rem; letter-spacing: 0.35em; color: var(--knu);
+      margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-hanja {
+      font-family: 'Noto Serif SC', 'Noto Serif KR', serif;
+      font-size: clamp(5rem, 14vw, 11rem);
+      font-weight: 300; line-height: 1; letter-spacing: -0.02em;
+      color: var(--ink); opacity: 0; animation: fadeUp 1s 0.4s forwards; position: relative;
+    }
+    .hero-hanja::after {
+      content: ''; position: absolute;
+      bottom: -0.15em; left: 50%; transform: translateX(-50%);
+      width: 2.5em; height: 2px; background: var(--knu);
+    }
+    .hero-name {
+      margin-top: 1.8rem;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-weight: 400;
+      letter-spacing: 0.5em; color: var(--ink-soft);
+      opacity: 0; animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .hero-sub {
+      margin-top: 0.6rem; font-size: 0.85rem; letter-spacing: 0.25em; color: var(--ink-faint);
+      opacity: 0; animation: fadeUp 0.8s 0.9s forwards;
+    }
+    .hero-founded {
+      margin-top: 3rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+      opacity: 0; animation: fadeUp 0.8s 1.1s forwards;
+    }
+    .hero-founded::before, .hero-founded::after { content: ''; width: 60px; height: 1px; background: var(--border); }
+    .hero-founded span { font-size: 0.78rem; letter-spacing: 0.3em; color: var(--ink-faint); }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeIn 1s 1.6s forwards;
+    }
+    .hero-scroll span { font-size: 0.65rem; letter-spacing: 0.3em; color: var(--ink-faint); }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--ink-faint), transparent);
+      animation: scrollPulse 2s 2s infinite;
+    }
+
+    /* SECTIONS */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .section-label { font-size: 0.72rem; letter-spacing: 0.4em; color: var(--knu); text-transform: uppercase; margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 400; line-height: 1.3; letter-spacing: 0.05em; color: var(--ink); margin-bottom: 2rem; }
+    .divider { width: 40px; height: 2px; background: var(--knu); margin-bottom: 3rem; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .about-text p { font-size: 1rem; line-height: 2; color: var(--ink-soft); margin-bottom: 1.2rem; }
+    .about-location { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .about-location span:first-child { font-size: 0.78rem; letter-spacing: 0.15em; color: var(--ink-faint); flex-shrink: 0; }
+    .about-location span:last-child { color: var(--gold); font-size: 0.95rem; letter-spacing: 0.08em; }
+
+    .seal-box {
+      width: 80px; height: 80px; border: 2px solid var(--knu);
+      display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0;
+    }
+    .seal-box::before { content: ''; position: absolute; inset: 4px; border: 1px solid rgba(50,78,179,0.25); }
+    .seal-box-text { font-family: 'Noto Serif SC', serif; font-size: 1.8rem; font-weight: 700; color: var(--knu); }
+    .about-styles { display: flex; flex-direction: column; }
+    .style-item { display: flex; align-items: baseline; gap: 1.2rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+    .style-item:first-child { border-top: 1px solid var(--border); }
+    .style-num { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--knu); font-weight: 400; flex-shrink: 0; min-width: 2em; }
+    .style-name { font-size: 0.95rem; letter-spacing: 0.1em; color: var(--ink-soft); }
+
+    /* MAP */
+    .map-wrapper { margin-top: 2rem; border: 1px solid var(--border); overflow: hidden; }
+    .map-wrapper iframe { display: block; width: 100%; height: 260px; border: 0; }
+    .map-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem; background: var(--knu-dim);
+      border-top: 1px solid var(--border); text-decoration: none; transition: background 0.2s;
+    }
+    .map-link:hover { background: var(--knu-dim2); }
+    .map-link span { font-size: 0.8rem; letter-spacing: 0.1em; color: var(--ink-soft); }
+    .map-link-arrow { font-size: 0.75rem; color: var(--knu); }
+
+    /* 소모임 */
+    .somojim-section { background: var(--bg-alt); }
+    .somojim-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .somojim-card {
+      background: var(--bg); padding: 2.5rem;
+      position: relative; overflow: hidden; transition: background 0.3s;
+    }
+    .somojim-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 0; background: var(--knu); transition: height 0.4s ease;
+    }
+    .somojim-card:hover { background: var(--bg-subtle); }
+    .somojim-card:hover::before { height: 100%; }
+    .somojim-hanja {
+      font-family: 'Noto Serif SC', 'Noto Serif KR', serif; font-size: 2.8rem; font-weight: 300;
+      color: rgba(50,78,179,0.08); position: absolute; top: 1.5rem; right: 2rem;
+      line-height: 1; transition: color 0.3s;
+    }
+    .somojim-card:hover .somojim-hanja { color: rgba(50,78,179,0.14); }
+    .somojim-tag {
+      display: inline-block; font-size: 0.65rem; letter-spacing: 0.3em; color: var(--knu);
+      border: 1px solid rgba(50,78,179,0.3); padding: 0.2em 0.7em; margin-bottom: 1rem;
+    }
+    .somojim-card h3 { font-size: 1.5rem; font-weight: 400; letter-spacing: 0.15em; color: var(--ink); margin-bottom: 0.5rem; }
+    .somojim-time { font-size: 0.78rem; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 1rem; }
+    .somojim-card p { font-size: 0.9rem; line-height: 1.85; color: var(--ink-faint); }
+
+    /* 입회 */
+    .membership-body {
+      margin-bottom: 3rem;
+    }
+    .membership-body p {
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--ink-soft);
+      max-width: 640px;
+    }
+    .membership-body p + p { margin-top: 0.8rem; }
+
+    .fee-table-wrap { max-width: 520px; }
+    .mem-col-title {
+      font-size: 0.72rem; letter-spacing: 0.3em; color: var(--knu);
+      text-transform: uppercase; margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(50,78,179,0.25);
+    }
+    .fee-list { list-style: none; }
+    .fee-item { display: flex; justify-content: space-between; align-items: baseline; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .fee-item:first-child { border-top: 1px solid var(--border); }
+    .fee-label { font-size: 0.9rem; color: var(--ink-soft); letter-spacing: 0.05em; }
+    .fee-amount { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+
+    /* 연락처 */
+    .contact-section { background: var(--bg-alt); }
+    .contact-inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2rem; }
+    .contact-inner > p { font-size: 1rem; color: var(--ink-faint); max-width: 480px; line-height: 1.9; }
+    .instagram-btn {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 0.9rem 2.2rem; border: 1px solid var(--border);
+      color: var(--ink); text-decoration: none; font-size: 0.9rem;
+      letter-spacing: 0.2em; transition: border-color 0.25s, background 0.25s;
+    }
+    .instagram-btn:hover { background: var(--knu-dim); border-color: rgba(50,78,179,0.35); color: var(--knu); }
+    .instagram-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+    /* FOOTER */
+    footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; background: var(--bg); }
+    .footer-logo { font-family: 'Noto Serif SC', serif; font-size: 1.5rem; font-weight: 300; letter-spacing: 0.3em; color: var(--ink-faint); margin-bottom: 1rem; }
+    footer p { font-size: 0.78rem; color: var(--ink-faint); letter-spacing: 0.1em; line-height: 2; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes scrollPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .somojim-grid { grid-template-columns: 1fr; }
+      section { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">書藝<span>硏修會</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">소개</a></li>
+    <li><a href="#somojim">소모임</a></li>
+    <li><a href="#membership">입회</a></li>
+    <li><a href="#contact">연락처</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+  <div>
+    <p class="hero-eyebrow">국립공주대학교 신관캠퍼스</p>
+    <h1 class="hero-hanja">書藝硏修會</h1>
+    <p class="hero-name">서&nbsp;&nbsp;예&nbsp;&nbsp;연&nbsp;&nbsp;수&nbsp;&nbsp;회</p>
+    <p class="hero-sub">한자 · 한글 서예 · 캘리그라피</p>
+    <div class="hero-founded">
+      <span>창립 1979년 3월 19일</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-text reveal">
+        <p class="section-label">동아리 소개</p>
+        <h2 class="section-title">붓 끝에서<br/>마음을 가다듬다</h2>
+        <div class="divider"></div>
+        <p>서예연수회는 1979년 창립된 국립공주대학교 신관캠퍼스의 서예 동아리입니다. 한자와 한글 서예, 캘리그라피를 함께 배우고 익히는 공간입니다.</p>
+        <p>안진경체, 구양순체, 예서, 전서 등 다양한 한자 서체와 한글 판본체, 각종 궁서를 연습할 수 있습니다. 정기모임은 매주 월요일 오후 7시에 열립니다.</p>
+        <div class="about-location">
+          <span>동아리방</span>
+          <span>학생복지관 (구학생회관) 301호</span>
+        </div>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=국립공주대학교+신관캠퍼스+학생복지관&output=embed&hl=ko&zoom=17"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="서예연수회 동아리방 위치">
+          </iframe>
+          <a href="https://maps.app.goo.gl/mj1Zxiahf3X8x2s2A" target="_blank" rel="noopener" class="map-link">
+            <span>학생복지관 (구학생회관) 301호</span>
+            <span class="map-link-arrow">Google Maps에서 보기 →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2" style="display:flex; flex-direction:column; gap:2.5rem;">
+        <div style="display:flex; gap:1rem; align-items:center;">
+          <div class="seal-box"><span class="seal-box-text">書</span></div>
+          <div style="font-size:0.8rem; line-height:2; color:var(--ink-faint); letter-spacing:0.1em;">연습 가능한<br/>서체 목록</div>
+        </div>
+        <div class="about-styles">
+          <div class="style-item"><span class="style-num">01</span><span class="style-name">안진경체 (顔眞卿體)</span></div>
+          <div class="style-item"><span class="style-num">02</span><span class="style-name">구양순체 (歐陽詢體)</span></div>
+          <div class="style-item"><span class="style-num">03</span><span class="style-name">예서 (隸書)</span></div>
+          <div class="style-item"><span class="style-num">04</span><span class="style-name">전서 (篆書)</span></div>
+          <div class="style-item"><span class="style-num">05</span><span class="style-name">한글 판본체</span></div>
+          <div class="style-item"><span class="style-num">06</span><span class="style-name">각종 궁서 (宮書)</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 소모임 -->
+<section id="somojim" class="somojim-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">소모임</p>
+      <h2 class="section-title">함께 나누는<br/>또 다른 공간</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="somojim-grid">
+      <div class="somojim-card reveal">
+        <span class="somojim-hanja">弓</span>
+        <span class="somojim-tag">활빈당</span>
+        <h3>活貧黨</h3>
+        <p class="somojim-time">일요일 오전 10시 · 공주시 관풍정</p>
+        <p>함께 활을 쏘며 마음을 가다듬고 친목을 나누는 소모임입니다. 매주 일요일 아침, 관풍정에서 마음과 자세를 바로잡습니다.</p>
+      </div>
+      <div class="somojim-card reveal reveal-delay-1">
+        <span class="somojim-hanja">文</span>
+        <span class="somojim-tag">서론당</span>
+        <h3>書論黨</h3>
+        <p class="somojim-time">월요일 오후 6시</p>
+        <p>고전 문학을 감상하고 주마다 돌아가며 좋아하는 문학을 공유하는 소모임입니다. 언어와 형식에 구애받지 않고 서로의 의견을 나눕니다.</p>
+      </div>
+      <div class="somojim-card reveal reveal-delay-2">
+        <span class="somojim-hanja">字</span>
+        <span class="somojim-tag">습자당</span>
+        <h3>習字黨</h3>
+        <p class="somojim-time">금요일 오후 7시</p>
+        <p>한자 자격증 취득을 목표로 함께 공부하는 스터디 소모임입니다. 자격증 준비와 함께 한자 실력을 체계적으로 다집니다.</p>
+      </div>
+      <div class="somojim-card reveal reveal-delay-3">
+        <span class="somojim-hanja">硏</span>
+        <span class="somojim-tag">연서당</span>
+        <h3>硏書堂</h3>
+        <p class="somojim-time">별도 일정</p>
+        <p>서예연수회 6기이자 서예가이신 벽초 한만평 선생님을 초빙해 진행하는 정식 서예 수업입니다. 전문적인 지도 아래 실력을 쌓을 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 입회 -->
+<section id="membership">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">입회 안내</p>
+      <h2 class="section-title">서예연수회와<br/>함께하세요</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="membership-body reveal">
+      <p>서예연수회는 별도의 모집 기간이 없습니다. 학번과 관계없이 원하는 시기에 언제든 입회할 수 있습니다.</p>
+      <p>정규학기 종강 30일 이전부터 첫 입회 시, 납부한 회비는 다음 학기까지 적용됩니다.</p>
+    </div>
+
+    <div class="fee-table-wrap reveal reveal-delay-1">
+      <p class="mem-col-title">회비</p>
+      <ul class="fee-list">
+        <li class="fee-item">
+          <span class="fee-label">첫 입회</span>
+          <span class="fee-amount">35,000원</span>
+        </li>
+        <li class="fee-item">
+          <span class="fee-label">동반 입회</span>
+          <span class="fee-amount">25,000원</span>
+        </li>
+        <li class="fee-item">
+          <span class="fee-label">기존 회원 갱신</span>
+          <span class="fee-amount">25,000원</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- 연락처 -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="reveal">
+        <p class="section-label" style="text-align:center;">연락처</p>
+        <h2 class="section-title" style="text-align:center;">문의 및<br/>SNS</h2>
+        <div class="divider" style="margin-left:auto; margin-right:auto;"></div>
+      </div>
+      <p class="reveal">인스타그램을 통해 활동 소식과 작품을 확인하고, 입회 관련 문의를 남겨주세요.</p>
+      <a href="https://instagram.com/knu_soye" target="_blank" rel="noopener" class="instagram-btn reveal">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        @knu_soye
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-logo">書藝硏修會</p>
+  <p>국립공주대학교 신관캠퍼스 서예동아리<br/>
+  학생복지관 (구학생회관) 301호 · Instagram @knu_soye<br/>
+  <span style="color:var(--border);">Created with care · 2025</span></p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
