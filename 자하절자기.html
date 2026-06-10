@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자하절자기 (慈河截字機)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0e0e0e; --surface:#181818; --surface2:#222;
+  --border:#333; --border2:#444;
+  --text:#e8e4dc; --text2:#888; --text3:#555;
+  --accent:#c8b89a; --accent2:#8b6f47; --highlight:#d4a853;
+  --danger:#c0392b; --success:#27ae60;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Serif SC',Georgia,serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#topbar{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;flex-wrap:wrap}
+#topbar h1{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:400;text-transform:uppercase;white-space:nowrap}
+.sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+#page-info{font-size:11px;color:var(--text2);font-family:monospace}
+.btn{font-size:11px;padding:4px 12px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;border-radius:3px;font-family:inherit;letter-spacing:.05em;transition:background .15s,border-color .15s;white-space:nowrap}
+.btn:hover{background:var(--surface2);border-color:var(--accent2)}
+.btn.primary{border-color:var(--accent);color:var(--accent)}
+.btn.primary:hover{background:rgba(200,184,154,.1)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+#autosave-indicator{font-size:11px;color:var(--text3);margin-left:auto;font-family:monospace}
+#autosave-indicator.saved{color:var(--success)}
+#main{display:flex;flex:1;overflow:hidden}
+#canvas-panel{flex:1;position:relative;overflow:hidden;background:#080808;cursor:crosshair}
+#canvas-panel canvas{display:block}
+#sidebar{width:240px;flex-shrink:0;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden}
+.ss{padding:12px 14px;border-bottom:1px solid var(--border)}
+.ss h3{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--text3);margin-bottom:10px;font-weight:400}
+#cell-char{font-size:48px;text-align:center;color:var(--accent);line-height:1;margin-bottom:6px;min-height:54px}
+#cell-coord{font-size:11px;text-align:center;color:var(--text2);font-family:monospace;margin-bottom:8px}
+/* Mode buttons */
+#mode-btns{display:flex;gap:4px;margin-bottom:10px}
+.mode-btn{flex:1;padding:4px 0;font-size:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;border-radius:3px;text-align:center;transition:all .15s}
+.mode-btn:hover{border-color:var(--accent2);color:var(--text)}
+.mode-btn.active-mode{border-color:var(--highlight);color:var(--highlight);background:rgba(212,168,83,.1)}
+.mode-btn.mode-save.active-mode{border-color:#5b9bd5;color:#5b9bd5;background:rgba(91,155,213,.1)}
+.mode-btn.mode-real.active-mode{border-color:var(--success);color:var(--success);background:rgba(39,174,96,.1)}
+.mode-hint{font-size:9px;color:var(--text3);text-align:center;margin-bottom:8px}
+/* Nudge */
+.nudge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-bottom:6px}
+.nudge-btn{padding:5px 0;font-size:13px;text-align:center;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;border-radius:3px;user-select:none}
+.nudge-btn:hover{border-color:var(--accent2);background:#2a2a2a}
+.nudge-btn:active{background:#333}
+.nudge-hint{font-size:9px;color:var(--text3);text-align:center;margin-top:3px}
+.nudge-amount-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.nudge-amount-row label{font-size:10px;color:var(--text2)}
+.nudge-amount-row input[type=range]{flex:1}
+.nudge-amount-row span{font-size:10px;color:var(--text);min-width:26px;font-family:monospace}
+/* Cell list */
+#cells-scroll{flex:1;overflow-y:auto;padding:6px}
+#cells-scroll::-webkit-scrollbar{width:4px}
+#cells-scroll::-webkit-scrollbar-track{background:transparent}
+#cells-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.cell-item{display:flex;align-items:center;gap:6px;padding:4px 7px;border-radius:3px;cursor:pointer;font-size:11px;transition:background .1s;border:1px solid transparent}
+.cell-item:hover{background:var(--surface2)}
+.cell-item.active{background:rgba(200,184,154,.12);border-color:var(--accent2)}
+.cell-coord-label{font-family:monospace;color:var(--text2);font-size:10px;min-width:36px}
+.cell-char-label{font-size:15px;color:var(--text)}
+.cell-status{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.cell-item.visited .cell-status{background:var(--success)}
+.cell-item.active .cell-status{background:var(--highlight)}
+#statusbar{padding:5px 16px;border-top:1px solid var(--border);background:var(--surface);font-size:10px;color:var(--text3);font-family:monospace;flex-shrink:0;display:flex;gap:20px}
+#statusbar span b{color:var(--text2)}
+#stage-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none}
+#stage-message{font-size:12px;color:var(--text2);letter-spacing:.08em;text-align:center;pointer-events:none}
+#dropzone{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--border2);margin:40px;border-radius:8px;cursor:pointer;transition:border-color .2s,background .2s}
+#dropzone:hover,#dropzone.drag-over{border-color:var(--accent2);background:rgba(200,184,154,.04)}
+#dropzone p{font-size:12px;color:var(--text2);letter-spacing:.06em}
+#dropzone small{font-size:10px;color:var(--text3)}
+#dropzone input{display:none}
+#dropzone .drop-icon{font-size:36px;color:var(--text3)}
+#progress-bar-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:1000}
+#progress-bar-wrap.show{display:flex}
+#progress-box{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:24px 32px;min-width:300px;text-align:center}
+#progress-box h3{font-size:12px;margin-bottom:14px;color:var(--accent);font-weight:400;letter-spacing:.1em}
+#progress-track{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:8px}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+#progress-label{font-size:10px;color:var(--text2);font-family:monospace}
+kbd{display:inline-block;font-size:9px;padding:1px 5px;border:1px solid var(--border2);border-radius:3px;font-family:monospace;color:var(--text2);background:var(--surface2)}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <h1>자하절자기</h1>
+  <div class="sep"></div>
+  <span id="page-info">페이지 미선택</span>
+  <div class="sep"></div>
+  <button class="btn" id="btn-load-page">페이지 불러오기</button>
+  <button class="btn" id="btn-reset-crop" disabled>작업 영역 재설정</button>
+  <button class="btn primary" id="btn-export" disabled>내보내기</button>
+  <span id="autosave-indicator">●  대기 중</span>
+</div>
+<div id="main">
+  <div id="canvas-panel">
+    <div id="dropzone">
+      <div class="drop-icon">⊕</div>
+      <p>이미지를 드래그하거나 클릭하여 불러오기</p>
+      <small>data.json과 같은 폴더에 두면 자동 로드됩니다</small>
+      <input type="file" id="file-input" accept="image/*">
+    </div>
+    <canvas id="main-canvas" style="display:none;"></canvas>
+    <div id="stage-overlay" style="display:none;"><div id="stage-message"></div></div>
+  </div>
+  <div id="sidebar">
+    <div class="ss">
+      <h3>현재 글자</h3>
+      <div id="cell-char">—</div>
+      <div id="cell-coord">—</div>
+    </div>
+    <div class="ss">
+      <h3>편집 모드 <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></h3>
+      <div id="mode-btns">
+        <button class="mode-btn active-mode" data-mode="1">1 전체</button>
+        <button class="mode-btn mode-save" data-mode="2">2 저장</button>
+        <button class="mode-btn mode-real" data-mode="3">3 실제</button>
+      </div>
+      <div class="mode-hint" id="mode-hint">이동·확대 모두 적용</div>
+      <div class="nudge-grid">
+        <div></div>
+        <div class="nudge-btn" data-dir="up">↑</div>
+        <div></div>
+        <div class="nudge-btn" data-dir="left">←</div>
+        <div></div>
+        <div class="nudge-btn" data-dir="right">→</div>
+        <div></div>
+        <div class="nudge-btn" data-dir="down">↓</div>
+        <div></div>
+      </div>
+      <div class="nudge-hint"><kbd>Enter</kbd> 다음 &nbsp;<kbd>Shift+Enter</kbd> 이전 &nbsp;<kbd>Shift+↑↓</kbd> 확대/축소 &nbsp;<kbd>Shift+X</kbd> 초기화 &nbsp;<kbd>Alt+방향키</kbd> 화면 이동 &nbsp;<kbd>Shift+Alt+↑↓</kbd> 화면 줌</div>
+      <div class="nudge-amount-row">
+        <label>이동량</label>
+        <input type="range" id="nudge-amount" min="1" max="20" value="3" step="1">
+        <span id="nudge-amount-val">3px</span>
+      </div>
+    </div>
+    <div class="ss" style="flex:1;display:flex;flex-direction:column;overflow:hidden;border-bottom:none;">
+      <h3>글자 목록</h3>
+      <div id="cells-scroll"></div>
+    </div>
+  </div>
+</div>
+<div id="statusbar">
+  <span><b>단계:</b> <span id="st-stage">—</span></span>
+  <span><b>모드:</b> <span id="st-mode">—</span></span>
+  <span><b>진행:</b> <span id="st-progress">0/0</span></span>
+  <span><b>마우스:</b> <span id="st-mouse">—</span></span>
+  <span><b>줌:</b> <span id="st-zoom">100%</span></span>
+</div>
+<div id="progress-bar-wrap">
+  <div id="progress-box">
+    <h3>내보내는 중…</h3>
+    <div id="progress-track"><div id="progress-fill"></div></div>
+    <div id="progress-label">준비 중</div>
+  </div>
+</div>
+<script>
+const COLS=5,ROWS=8;
+// Default crop points from provided data
+const DEFAULT_CROP=[
+  [312.38,151.35],
+  [2177.04,141.93],
+  [2181.74,3362.70],
+  [312.38,3372.12]
+];
+
+// State
+let state={
+  stage:'idle',
+  pageKey:null,pageData:null,image:null,imageFile:null,
+  offsetX:0,offsetY:0,scale:1,
+  cropPoints:null,draggingPoint:-1,
+  // cellData[key] = { save:{dx,dy,dw,dh}, real:{dx,dy,dw,dh}, visited:bool }
+  cellData:{},
+  currentIdx:0,cellOrder:[],
+  editMode:1, // 1=both, 2=save only, 3=real only
+  visitedCells:new Set(),
+  isPanning:false,panStart:null,panOrigin:null,
+};
+let allData=null;
+let warpedCanvas=null;
+
+const canvas=document.getElementById('main-canvas');
+const ctx=canvas.getContext('2d');
+const dropzone=document.getElementById('dropzone');
+const fileInput=document.getElementById('file-input');
+
+// ── Utilities ──────────────────────────────────────────────────────
+function setStage(s){
+  state.stage=s;
+  document.getElementById('st-stage').textContent={idle:'대기',crop:'영역 설정',edit:'글자 편집'}[s]??s;
+}
+function setMode(m){
+  state.editMode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    b.classList.toggle('active-mode',parseInt(b.dataset.mode)===m);
+  });
+  const hints={1:'이동·확대 모두 적용',2:'저장 영역만 조정 (크롭 범위)',3:'실제 영역만 조정 (여백 처리)'};
+  document.getElementById('mode-hint').textContent=hints[m];
+  document.getElementById('st-mode').textContent={1:'전체',2:'저장',3:'실제'}[m];
+}
+function buildCellOrder(pageData){
+  const o=[];
+  for(let col=1;col<=COLS;col++)
+    for(let row=1;row<=ROWS;row++){
+      const k=`${col},${row}`;
+      if(pageData.cells[k]!==undefined)o.push(k);
+    }
+  return o;
+}
+function currentCellKey(){return state.cellOrder[state.currentIdx];}
+function getCellData(key){
+  if(!state.cellData[key])state.cellData[key]={
+    save:{dx:0,dy:0,dw:0,dh:0},
+    real:{dx:0,dy:0,dw:0,dh:0},
+    visited:false
+  };
+  return state.cellData[key];
+}
+function dist(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1]);}
+
+// ── Canvas ─────────────────────────────────────────────────────────
+function resizeCanvas(){
+  const p=document.getElementById('canvas-panel');
+  canvas.width=p.clientWidth;canvas.height=p.clientHeight;
+  render();
+}
+window.addEventListener('resize',resizeCanvas);
+
+// ── Homography ─────────────────────────────────────────────────────
+function solveHomography(corr){
+  const A=[],b=[];
+  for(const c of corr){
+    A.push([c.sx,c.sy,1,0,0,0,-c.dx*c.sx,-c.dx*c.sy]);b.push(c.dx);
+    A.push([0,0,0,c.sx,c.sy,1,-c.dy*c.sx,-c.dy*c.sy]);b.push(c.dy);
+  }
+  const n=8;
+  const M=A.map((row,i)=>[...row,b[i]]);
+  for(let col=0;col<n;col++){
+    let mx=col;
+    for(let r=col+1;r<n;r++)if(Math.abs(M[r][col])>Math.abs(M[mx][col]))mx=r;
+    [M[col],M[mx]]=[M[mx],M[col]];
+    const piv=M[col][col];
+    if(Math.abs(piv)<1e-12)continue;
+    for(let r=0;r<n;r++){
+      if(r===col)continue;
+      const f=M[r][col]/piv;
+      for(let cc=col;cc<=n;cc++)M[r][cc]-=f*M[col][cc];
+    }
+    for(let cc=col;cc<=n;cc++)M[col][cc]/=piv;
+  }
+  const h=M.map(r=>r[n]);
+  return[h[0],h[1],h[2],h[3],h[4],h[5],h[6],h[7],1];
+}
+function applyH(H,x,y){
+  const w=H[6]*x+H[7]*y+H[8];
+  return[(H[0]*x+H[1]*y+H[2])/w,(H[3]*x+H[4]*y+H[5])/w];
+}
+function warpImage(srcPts){
+  const[tl,tr,br,bl]=srcPts;
+  const w=Math.round((dist(tl,tr)+dist(bl,br))/2);
+  const h=Math.round((dist(tl,bl)+dist(tr,br))/2);
+  const off=document.createElement('canvas');
+  off.width=w;off.height=h;
+  const oc=off.getContext('2d');
+  const H=solveHomography([
+    {sx:0,sy:0,dx:tl[0],dy:tl[1]},
+    {sx:w,sy:0,dx:tr[0],dy:tr[1]},
+    {sx:w,sy:h,dx:br[0],dy:br[1]},
+    {sx:0,sy:h,dx:bl[0],dy:bl[1]},
+  ]);
+  const srcW=state.image.width,srcH=state.image.height;
+  const srcOff=document.createElement('canvas');
+  srcOff.width=srcW;srcOff.height=srcH;
+  srcOff.getContext('2d').drawImage(state.image,0,0);
+  const srcData=srcOff.getContext('2d').getImageData(0,0,srcW,srcH).data;
+  const imgData=oc.createImageData(w,h);
+  const dstData=imgData.data;
+  for(let dy=0;dy<h;dy++){
+    for(let dx=0;dx<w;dx++){
+      const[sx,sy]=applyH(H,dx,dy);
+      const ix=Math.round(sx),iy=Math.round(sy);
+      if(ix<0||ix>=srcW||iy<0||iy>=srcH)continue;
+      const si=(iy*srcW+ix)*4,di=(dy*w+dx)*4;
+      dstData[di]=srcData[si];dstData[di+1]=srcData[si+1];
+      dstData[di+2]=srcData[si+2];dstData[di+3]=srcData[si+3];
+    }
+  }
+  oc.putImageData(imgData,0,0);
+  return off;
+}
+
+// ── Cell rect calculation ──────────────────────────────────────────
+// Returns save rect and real rect for a cell key (in warped canvas coords)
+function getCellRects(key){
+  if(!warpedCanvas)return null;
+  const w=warpedCanvas.width,h=warpedCanvas.height;
+  const cw=w/COLS,ch=h/ROWS;
+  const[col,row]=key.split(',').map(Number);
+  // col 1 = visually rightmost (탁본 right-to-left)
+  const baseX=(COLS-col)*cw;
+  const baseY=(row-1)*ch;
+  const cd=getCellData(key);
+  const sv=cd.save,rl=cd.real;
+  const saveRect={
+    x:baseX+sv.dx, y:baseY+sv.dy,
+    w:cw+sv.dw,    h:ch+sv.dh
+  };
+  const realRect={
+    x:baseX+rl.dx, y:baseY+rl.dy,
+    w:cw+rl.dw,    h:ch+rl.dh
+  };
+  return{saveRect,realRect,baseX,baseY,cw,ch};
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function render(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(state.stage==='idle')return;
+  ctx.save();
+  ctx.translate(state.offsetX,state.offsetY);
+  ctx.scale(state.scale,state.scale);
+  if(state.stage==='crop'){
+    ctx.drawImage(state.image,0,0);
+    drawCropUI();
+  } else if(state.stage==='edit'&&warpedCanvas){
+    ctx.drawImage(warpedCanvas,0,0);
+    drawGrid();
+  }
+  ctx.restore();
+}
+
+function drawCropUI(){
+  if(!state.cropPoints)return;
+  const pts=state.cropPoints;
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<4;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.closePath();
+  ctx.fillStyle='rgba(200,184,154,.07)';ctx.fill();
+  ctx.strokeStyle='rgba(200,184,154,.65)';ctx.lineWidth=1.5/state.scale;ctx.stroke();
+  const r=8/state.scale;
+  pts.forEach((p,i)=>{
+    ctx.beginPath();ctx.arc(p[0],p[1],r,0,Math.PI*2);
+    ctx.fillStyle=i===state.draggingPoint?'#d4a853':'#c8b89a';ctx.fill();
+    ctx.strokeStyle='#0e0e0e';ctx.lineWidth=1.5/state.scale;ctx.stroke();
+  });
+  const labels=['TL','TR','BR','BL'];
+  ctx.font=`${10/state.scale}px monospace`;
+  ctx.fillStyle='rgba(200,184,154,.7)';
+  pts.forEach((p,i)=>{
+    const ox=i===1||i===2?10/state.scale:-28/state.scale;
+    const oy=i<2?-10/state.scale:18/state.scale;
+    ctx.fillText(labels[i],p[0]+ox,p[1]+oy);
+  });
+}
+
+function drawGrid(){
+  if(!warpedCanvas)return;
+  const w=warpedCanvas.width,h=warpedCanvas.height;
+  const cw=w/COLS,ch=h/ROWS;
+  const activeKey=currentCellKey();
+
+  // Base grid lines
+  ctx.strokeStyle='rgba(200,184,154,.2)';ctx.lineWidth=1/state.scale;
+  for(let c=0;c<=COLS;c++){ctx.beginPath();ctx.moveTo(c*cw,0);ctx.lineTo(c*cw,h);ctx.stroke();}
+  for(let r=0;r<=ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*ch);ctx.lineTo(w,r*ch);ctx.stroke();}
+
+  state.cellOrder.forEach((key)=>{
+    const cd=getCellData(key);
+    const isActive=key===activeKey;
+    const rects=getCellRects(key);
+    if(!rects)return;
+    const{saveRect,realRect}=rects;
+
+    if(isActive){
+      // Save rect (blue)
+      ctx.fillStyle='rgba(91,155,213,.15)';
+      ctx.fillRect(saveRect.x,saveRect.y,saveRect.w,saveRect.h);
+      ctx.strokeStyle='rgba(91,155,213,.8)';
+      ctx.lineWidth=1.5/state.scale;
+      ctx.setLineDash([]);
+      ctx.strokeRect(saveRect.x,saveRect.y,saveRect.w,saveRect.h);
+
+      // Real rect (green dashed)
+      ctx.strokeStyle='rgba(39,174,96,.9)';
+      ctx.lineWidth=1/state.scale;
+      ctx.setLineDash([4/state.scale,3/state.scale]);
+      ctx.strokeRect(realRect.x,realRect.y,realRect.w,realRect.h);
+      ctx.setLineDash([]);
+    } else if(cd.visited){
+      ctx.fillStyle='rgba(39,174,96,.1)';
+      ctx.fillRect(saveRect.x,saveRect.y,saveRect.w,saveRect.h);
+      ctx.strokeStyle='rgba(39,174,96,.3)';
+      ctx.lineWidth=.5/state.scale;
+      ctx.strokeRect(saveRect.x,saveRect.y,saveRect.w,saveRect.h);
+    }
+  });
+}
+
+// ── Page loading ───────────────────────────────────────────────────
+document.getElementById('btn-load-page').addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',e=>{
+  const f=e.target.files[0];if(f)loadImageFile(f);fileInput.value='';
+});
+dropzone.addEventListener('click',()=>fileInput.click());
+dropzone.addEventListener('dragover',e=>{e.preventDefault();dropzone.classList.add('drag-over');});
+dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop',e=>{
+  e.preventDefault();dropzone.classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/'))loadImageFile(f);
+});
+
+function loadImageFile(file){
+  const match=file.name.match(/(\d+)/);
+  const pageKey=match?match[1]:null;
+  if(!allData){promptLoadData(file,pageKey);return;}
+  startPage(file,pageKey);
+}
+function promptLoadData(imgFile,pageKey){
+  const input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const f=e.target.files[0];
+    const r=new FileReader();
+    r.onload=ev=>{try{allData=JSON.parse(ev.target.result);startPage(imgFile,pageKey);}catch{alert('JSON 파싱 오류');}};
+    r.readAsText(f);
+  };
+  const ok=confirm('data.json을 불러오겠습니까?\n확인: JSON 선택  /  취소: 없이 진행');
+  if(ok)input.click();else startPage(imgFile,pageKey);
+}
+function buildEmptyCells(){
+  const c={};
+  for(let col=1;col<=COLS;col++)for(let row=1;row<=ROWS;row++)c[`${col},${row}`]='/0';
+  return c;
+}
+function startPage(file,pageKey){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      state.image=img;state.imageFile=file;state.pageKey=pageKey;
+      state.pageData=(allData&&pageKey&&allData.pages&&allData.pages[pageKey])
+        ?allData.pages[pageKey]:{cells:buildEmptyCells(),imagePath:file.name};
+      state.cellOrder=buildCellOrder(state.pageData);
+      state.currentIdx=0;state.cellData={};state.visitedCells=new Set();
+
+      loadSavedState(pageKey,()=>{
+        fitImage();
+        // Default crop points — scale to actual image if needed
+        const scaleX=img.width/2490,scaleY=img.height/3514;
+        state.cropPoints=DEFAULT_CROP.map(([x,y])=>[x*scaleX,y*scaleY]);
+
+        dropzone.style.display='none';
+        canvas.style.display='block';
+        setStage('crop');setMode(1);
+        document.getElementById('stage-overlay').style.display='flex';
+        document.getElementById('stage-message').innerHTML=
+          '네 꼭짓점을 드래그하여 작업 영역을 지정하세요<br><small style="color:var(--text3)">확정: <kbd>Enter</kbd> 또는 더블클릭</small>';
+        document.getElementById('btn-reset-crop').disabled=false;
+        document.getElementById('page-info').textContent=`페이지 ${pageKey||'?'} — ${file.name}`;
+        buildCellList();render();updateSidebarCell();
+      });
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function fitImage(){
+  const cw=canvas.width,ch=canvas.height;
+  const s=Math.min((cw-40)/state.image.width,(ch-40)/state.image.height);
+  state.scale=s;
+  state.offsetX=(cw-state.image.width*s)/2;
+  state.offsetY=(ch-state.image.height*s)/2;
+}
+
+// ── Crop confirm ───────────────────────────────────────────────────
+function confirmCrop(){
+  if(!state.cropPoints)return;
+  warpedCanvas=warpImage(state.cropPoints);
+  setStage('edit');
+  document.getElementById('stage-overlay').style.display='none';
+  const cw=canvas.width,ch=canvas.height;
+  state.scale=Math.min((cw-40)/warpedCanvas.width,(ch-40)/warpedCanvas.height);
+  state.offsetX=(cw-warpedCanvas.width*state.scale)/2;
+  state.offsetY=(ch-warpedCanvas.height*state.scale)/2;
+  document.getElementById('btn-export').disabled=false;
+  buildCellList();updateSidebarCell();render();
+}
+document.getElementById('btn-reset-crop').addEventListener('click',()=>{
+  if(state.stage==='edit'){
+    if(!confirm('작업 영역 재설정 시 보정값이 초기화됩니다. 계속할까요?'))return;
+    state.cellData={};state.visitedCells=new Set();
+  }
+  setStage('crop');warpedCanvas=null;
+  document.getElementById('stage-overlay').style.display='flex';
+  document.getElementById('stage-message').innerHTML=
+    '네 꼭짓점을 드래그하여 작업 영역을 지정하세요<br><small style="color:var(--text3)">확정: <kbd>Enter</kbd></small>';
+  fitImage();render();
+});
+
+// ── Mouse ──────────────────────────────────────────────────────────
+function canvasToImg(cx,cy){
+  return[(cx-state.offsetX)/state.scale,(cy-state.offsetY)/state.scale];
+}
+canvas.addEventListener('mousedown',e=>{
+  const r=canvas.getBoundingClientRect();
+  const[ix,iy]=canvasToImg(e.clientX-r.left,e.clientY-r.top);
+  if(state.stage==='crop'){
+    const hitR=14/state.scale;
+    const hit=state.cropPoints.findIndex(p=>dist(p,[ix,iy])<hitR);
+    if(hit>=0){state.draggingPoint=hit;return;}
+  }
+  state.isPanning=true;
+  state.panStart={x:e.clientX,y:e.clientY};
+  state.panOrigin={x:state.offsetX,y:state.offsetY};
+});
+canvas.addEventListener('mousemove',e=>{
+  const r=canvas.getBoundingClientRect();
+  const cx=e.clientX-r.left,cy=e.clientY-r.top;
+  const[ix,iy]=canvasToImg(cx,cy);
+  document.getElementById('st-mouse').textContent=`${Math.round(ix)},${Math.round(iy)}`;
+  if(state.draggingPoint>=0&&state.stage==='crop'){
+    state.cropPoints[state.draggingPoint]=[ix,iy];render();
+  } else if(state.isPanning){
+    state.offsetX=state.panOrigin.x+(e.clientX-state.panStart.x);
+    state.offsetY=state.panOrigin.y+(e.clientY-state.panStart.y);
+    render();
+  }
+});
+canvas.addEventListener('mouseup',()=>{
+  state.draggingPoint=-1;state.isPanning=false;
+});
+canvas.addEventListener('dblclick',()=>{
+  if(state.stage==='crop')confirmCrop();
+});
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  const cx=e.clientX-r.left,cy=e.clientY-r.top;
+  const f=e.deltaY<0?1.1:.91;
+  state.scale*=f;
+  state.offsetX=cx-(cx-state.offsetX)*f;
+  state.offsetY=cy-(cy-state.offsetY)*f;
+  document.getElementById('st-zoom').textContent=Math.round(state.scale*100)+'%';
+  render();
+},{passive:false});
+
+// ── Keyboard ───────────────────────────────────────────────────────
+const nudgeInput=document.getElementById('nudge-amount');
+const nudgeValDisplay=document.getElementById('nudge-amount-val');
+nudgeInput.addEventListener('input',()=>nudgeValDisplay.textContent=nudgeInput.value+'px');
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(state.stage==='crop'){
+    if(e.key==='Enter'){e.preventDefault();confirmCrop();}
+    return;
+  }
+  if(state.stage!=='edit')return;
+
+  // Mode switch
+  if(e.key==='1'){setMode(1);return;}
+  if(e.key==='2'){setMode(2);return;}
+  if(e.key==='3'){setMode(3);return;}
+
+  // Alt+Arrow = pan the page view (반전: 화면 기준 이동)
+  if(e.altKey&&!e.shiftKey&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){
+    e.preventDefault();
+    const panAmt=40;
+    if(e.key==='ArrowLeft') state.offsetX+=panAmt;
+    if(e.key==='ArrowRight')state.offsetX-=panAmt;
+    if(e.key==='ArrowUp')   state.offsetY+=panAmt;
+    if(e.key==='ArrowDown') state.offsetY-=panAmt;
+    render();return;
+  }
+
+  // Shift+Alt+Up/Down = zoom in/out (캔버스 중앙 기준)
+  if(e.shiftKey&&e.altKey&&(e.key==='ArrowUp'||e.key==='ArrowDown')){
+    e.preventDefault();
+    const f=e.key==='ArrowUp'?1.1:0.91;
+    const cx=canvas.width/2,cy=canvas.height/2;
+    state.scale*=f;
+    state.offsetX=cx-(cx-state.offsetX)*f;
+    state.offsetY=cy-(cy-state.offsetY)*f;
+    document.getElementById('st-zoom').textContent=Math.round(state.scale*100)+'%';
+    render();return;
+  }
+
+  const amt=parseInt(nudgeInput.value);
+  const key=currentCellKey();
+
+  if(e.key==='Enter'){
+    e.preventDefault();
+    if(e.shiftKey)prevCell();else nextCell();
+    return;
+  }
+
+  // Shift+X = reset current cell's active mode region
+  if(e.key==='X'||e.key==='x'){
+    if(e.shiftKey){
+      e.preventDefault();
+      resetCellRegion(key);
+      return;
+    }
+  }
+
+  // Shift+Up/Down = scale
+  if(e.shiftKey&&(e.key==='ArrowUp'||e.key==='ArrowDown')){
+    e.preventDefault();
+    const grow=e.key==='ArrowUp';
+    scaleCell(key,grow,amt);
+    return;
+  }
+
+  switch(e.key){
+    case 'ArrowLeft':  e.preventDefault();nudgeCell(key,-amt,0);break;
+    case 'ArrowRight': e.preventDefault();nudgeCell(key, amt,0);break;
+    case 'ArrowUp':    e.preventDefault();nudgeCell(key,0,-amt);break;
+    case 'ArrowDown':  e.preventDefault();nudgeCell(key,0, amt);break;
+  }
+});
+
+function applyToTargets(fn){
+  // Apply fn to save, real, or both based on editMode
+  const m=state.editMode;
+  return{
+    applyToSave:m===1||m===2,
+    applyToReal:m===1||m===3,
+  };
+}
+
+function nudgeCell(key,dx,dy){
+  if(!key)return;
+  const cd=getCellData(key);
+  const{applyToSave,applyToReal}=applyToTargets();
+  if(applyToSave){cd.save.dx+=dx;cd.save.dy+=dy;}
+  if(applyToReal){cd.real.dx+=dx;cd.real.dy+=dy;}
+  render();autoSave();
+}
+
+function scaleCell(key,grow,amt){
+  if(!key)return;
+  const cd=getCellData(key);
+  const delta=grow?amt:-amt;
+  const{applyToSave,applyToReal}=applyToTargets();
+  // Expand/shrink centered: shift origin by -delta/2, size by +delta
+  if(applyToSave){
+    cd.save.dx-=delta/2;cd.save.dy-=delta/2;
+    cd.save.dw+=delta;cd.save.dh+=delta;
+  }
+  if(applyToReal){
+    cd.real.dx-=delta/2;cd.real.dy-=delta/2;
+    cd.real.dw+=delta;cd.real.dh+=delta;
+  }
+  render();autoSave();
+}
+
+function resetCellRegion(key){
+  if(!key)return;
+  const cd=getCellData(key);
+  const m=state.editMode;
+  const zero={dx:0,dy:0,dw:0,dh:0};
+  if(m===1||m===2)cd.save={...zero};
+  if(m===1||m===3)cd.real={...zero};
+  render();autoSave();
+}
+
+// Nudge buttons
+document.querySelectorAll('.nudge-btn[data-dir]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const amt=parseInt(nudgeInput.value);
+    const key=currentCellKey();
+    const map={left:[-amt,0],right:[amt,0],up:[0,-amt],down:[0,amt]};
+    nudgeCell(key,...map[btn.dataset.dir]);
+  });
+});
+
+// Mode buttons
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>setMode(parseInt(btn.dataset.mode)));
+});
+
+function markVisited(key){
+  if(!key)return;
+  getCellData(key).visited=true;
+}
+function nextCell(){
+  markVisited(currentCellKey());
+  if(state.currentIdx<state.cellOrder.length-1){
+    state.currentIdx++;
+    setMode(1);
+    updateSidebarCell();render();autoSave();
+  }
+}
+function prevCell(){
+  markVisited(currentCellKey());
+  if(state.currentIdx>0){
+    state.currentIdx--;
+    setMode(1);
+    updateSidebarCell();render();
+  }
+}
+
+// ── Cell list ──────────────────────────────────────────────────────
+function buildCellList(){
+  const scroll=document.getElementById('cells-scroll');
+  scroll.innerHTML='';
+  state.cellOrder.forEach((key,idx)=>{
+    const char=state.pageData.cells[key];
+    const item=document.createElement('div');
+    item.className='cell-item';
+    item.dataset.idx=idx;
+    const dc=char==='/0'?'□':(char||'?');
+    item.innerHTML=`<span class="cell-coord-label">${key}</span><span class="cell-char-label">${dc}</span><span class="cell-status"></span>`;
+    item.addEventListener('click',()=>{
+      markVisited(currentCellKey());
+      state.currentIdx=idx;setMode(1);
+      updateSidebarCell();render();
+    });
+    scroll.appendChild(item);
+  });
+}
+function updateSidebarCell(){
+  const key=currentCellKey();
+  const char=key?state.pageData.cells[key]:null;
+  document.getElementById('cell-char').textContent=char==='/0'?'□':(char||'—');
+  document.getElementById('cell-coord').textContent=key?`열 ${key.split(',')[0]}, 행 ${key.split(',')[1]}`:'—';
+  document.getElementById('st-progress').textContent=`${state.currentIdx+1}/${state.cellOrder.length}`;
+  document.querySelectorAll('.cell-item').forEach(el=>{
+    const i=parseInt(el.dataset.idx);
+    const k=state.cellOrder[i];
+    const cd=k?getCellData(k):null;
+    el.classList.toggle('active',i===state.currentIdx);
+    el.classList.toggle('visited',!!(cd&&cd.visited));
+  });
+  const ae=document.querySelector('.cell-item.active');
+  if(ae)ae.scrollIntoView({block:'nearest'});
+}
+
+// ── IndexedDB ──────────────────────────────────────────────────────
+let dbP=null;
+function getDB(){
+  if(dbP)return dbP;
+  dbP=new Promise((res,rej)=>{
+    const req=indexedDB.open('rubbing-editor',2);
+    req.onupgradeneeded=e=>e.target.result.createObjectStore('pages',{keyPath:'pageKey'});
+    req.onsuccess=e=>res(e.target.result);
+    req.onerror=()=>rej(req.error);
+  });
+  return dbP;
+}
+let saveTO=null;
+function autoSave(){
+  clearTimeout(saveTO);
+  saveTO=setTimeout(async()=>{
+    try{
+      const db=await getDB();
+      const tx=db.transaction('pages','readwrite');
+      tx.objectStore('pages').put({
+        pageKey:state.pageKey,
+        cellData:state.cellData,
+        cropPoints:state.cropPoints,
+        currentIdx:state.currentIdx,
+        savedAt:Date.now()
+      });
+      const ind=document.getElementById('autosave-indicator');
+      ind.textContent='●  저장됨';ind.className='saved';
+      setTimeout(()=>{ind.textContent='●  대기 중';ind.className='';},2000);
+    }catch(err){console.warn('AutoSave error',err);}
+  },800);
+}
+function loadSavedState(pageKey,cb){
+  getDB().then(db=>{
+    const req=db.transaction('pages','readonly').objectStore('pages').get(pageKey);
+    req.onsuccess=()=>{
+      const s=req.result;
+      if(s){
+        state.cellData=s.cellData||{};
+        if(s.cropPoints)state.cropPoints=s.cropPoints;
+        state.currentIdx=s.currentIdx||0;
+      }
+      cb();
+    };
+    req.onerror=cb;
+  }).catch(cb);
+}
+
+// ── Export ─────────────────────────────────────────────────────────
+document.getElementById('btn-export').addEventListener('click',exportPage);
+async function exportPage(){
+  if(!warpedCanvas)return;
+  const wrap=document.getElementById('progress-bar-wrap');
+  const fill=document.getElementById('progress-fill');
+  const label=document.getElementById('progress-label');
+  wrap.classList.add('show');
+  
+  const zip=new JSZip();
+  // 1. 기존의 folder 생성 코드를 제거하고, zip 객체 자체를 사용합니다.
+  // const folder=zip.folder(`page-${state.pageKey}`); (삭제)
+  
+  const total=state.cellOrder.length;
+  const coordData={};
+
+  for(let i=0;i<total;i++){
+    const key=state.cellOrder[i];
+    const rects=getCellRects(key);
+    if(!rects)continue;
+    const{saveRect,realRect}=rects;
+    const char=state.pageData.cells[key];
+    const[col,row]=key.split(',');
+    const filename=`${state.pageKey}-${col}-${row}.png`;
+
+    const baseCW=Math.round(warpedCanvas.width/COLS);
+    const baseCH=Math.round(warpedCanvas.height/ROWS);
+    const out=document.createElement('canvas');
+    out.width=baseCW;out.height=baseCH;
+    const oc=out.getContext('2d');
+    oc.fillStyle='#ffffff';oc.fillRect(0,0,baseCW,baseCH);
+    
+    const scaleX=baseCW/saveRect.w, scaleY=baseCH/saveRect.h;
+    const rx=Math.round(realRect.x),ry=Math.round(realRect.y);
+    const rw=Math.max(1,Math.round(realRect.w));
+    const rh=Math.max(1,Math.round(realRect.h));
+    const destX=Math.round((realRect.x-saveRect.x)*scaleX);
+    const destY=Math.round((realRect.y-saveRect.y)*scaleY);
+    const destW=Math.max(1,Math.round(rw*scaleX));
+    const destH=Math.max(1,Math.round(rh*scaleY));
+    oc.drawImage(warpedCanvas,rx,ry,rw,rh,destX,destY,destW,destH);
+
+    // 2. folder.file 대신 zip.file로 직접 저장하여 압축을 풀면 바로 파일이 나오도록 합니다.
+    zip.file(filename,out.toDataURL('image/png').split(',')[1],{base64:true});
+    
+    coordData[key]={
+      char:char==='/0'?null:char,file:filename,
+      saveRect:{x:Math.round(saveRect.x),y:Math.round(saveRect.y),w:baseCW,h:baseCH},
+      realRect:{x:Math.round(realRect.x),y:Math.round(realRect.y),w:rw,h:rh},
+      offsets:state.cellData[key]||null
+    };
+    fill.style.width=((i+1)/total*100)+'%';
+    label.textContent=`${filename} (${i+1}/${total})`;
+    await new Promise(r=>setTimeout(r,0));
+  }
+  
+  // 3. JSON 파일 역시 zip.file로 루트에 생성합니다.
+  zip.file(`page-${state.pageKey}.json`,JSON.stringify({
+    pageKey:state.pageKey,exportedAt:new Date().toISOString(),
+    imageSource:state.imageFile?.name,cropPoints:state.cropPoints,
+    grid:{cols:COLS,rows:ROWS},cells:coordData
+  },null,2));
+  
+  label.textContent='ZIP 생성 중…';
+  const blob=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  
+  // 4. 다운로드되는 파일명을 rubbing- 제거 후 page-${state.pageKey}.zip 으로 변경합니다.
+  a.download=`page-${state.pageKey}.zip`;
+  
+  a.click();
+  URL.revokeObjectURL(url);
+  wrap.classList.remove('show');fill.style.width='0%';
+}
+
+// ── Init ───────────────────────────────────────────────────────────
+resizeCanvas();
+setMode(1);
+fetch('./data.json').then(r=>r.json()).then(d=>{allData=d;console.log('data.json 자동 로드');}).catch(()=>{});
+</script>
+</body>
+</html>

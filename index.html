@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>서예연수회 — 국립공주대학교</title>
+  <title>국립공주대학교 서예연수회</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -67,6 +67,15 @@
       transition: color 0.25s;
     }
     .nav-links a:hover { color: var(--knu); }
+
+    .mobile-menu-btn {
+      display: none;
+      border: none;
+      background: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--ink);
+    }
 
     /* HERO */
     .hero {
@@ -253,10 +262,43 @@
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
+      .hero-hanja {
+        font-size: min(22vw, 5.5rem);
+        letter-spacing: -0.05em;
+      }
+
+      nav {
+        padding: 1rem 1.5rem;
+        position: relative;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: white;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li a {
+        display: block;
+        padding: 1rem 1.5rem;
+      }
+
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .somojim-grid { grid-template-columns: 1fr; }
+      .somojim-grid { grid-template-columns: repeat(2, 1fr); }
       section { padding: 4rem 1.5rem; }
     }
   </style>
@@ -266,11 +308,13 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">書藝<span>硏修會</span></a>
+  <button class="mobile-menu-btn" aria-label="메뉴">☰</button>
   <ul class="nav-links">
     <li><a href="#about">소개</a></li>
     <li><a href="#somojim">소모임</a></li>
     <li><a href="#membership">입회</a></li>
     <li><a href="#contact">연락처</a></li>
+    <li><a href="index2.html">자하자전</a></li>
   </ul>
 </nav>
 
@@ -284,7 +328,7 @@
     <p class="hero-name">서&nbsp;&nbsp;예&nbsp;&nbsp;연&nbsp;&nbsp;수&nbsp;&nbsp;회</p>
     <p class="hero-sub">한자 · 한글 서예 · 캘리그라피</p>
     <div class="hero-founded">
-      <span>창립 1979년 3월 19일</span>
+      <span>since 1979</span>
     </div>
   </div>
   <div class="hero-scroll">
@@ -326,16 +370,21 @@
       <div class="reveal reveal-delay-2" style="display:flex; flex-direction:column; gap:2.5rem;">
         <div style="display:flex; gap:1rem; align-items:center;">
           <div class="seal-box"><span class="seal-box-text">書</span></div>
-          <div style="font-size:0.8rem; line-height:2; color:var(--ink-faint); letter-spacing:0.1em;">연습 가능한<br/>서체 목록</div>
+          <div style="font-size:0.8rem; line-height:2; color:var(--ink-faint); letter-spacing:0.1em;">이런 분들을<br/>환영합니다!</div>
         </div>
-        <div class="about-styles">
-          <div class="style-item"><span class="style-num">01</span><span class="style-name">안진경체 (顔眞卿體)</span></div>
-          <div class="style-item"><span class="style-num">02</span><span class="style-name">구양순체 (歐陽詢體)</span></div>
-          <div class="style-item"><span class="style-num">03</span><span class="style-name">예서 (隸書)</span></div>
-          <div class="style-item"><span class="style-num">04</span><span class="style-name">전서 (篆書)</span></div>
-          <div class="style-item"><span class="style-num">05</span><span class="style-name">한글 판본체</span></div>
-          <div class="style-item"><span class="style-num">06</span><span class="style-name">각종 궁서 (宮書)</span></div>
-        </div>
+        
+<div class="about-styles">
+  <div class="style-item"><span class="style-num">01</span><span class="style-name">전서, 예서, 해서 등 한문 서체에 관심이 있는 사람</span></div>
+  <div class="style-item"><span class="style-num">02</span><span class="style-name">훈민정음의 형태가 매력적이라고 느껴지는 사람</span></div>
+  <div class="style-item"><span class="style-num">03</span><span class="style-name">판본체, 궁서체 등 한글 서체에 관심이 있는 사람</span></div>
+  <div class="style-item"><span class="style-num">04</span><span class="style-name">글씨를 교정하고 싶은 사람</span></div>
+  <div class="style-item"><span class="style-num">05</span><span class="style-name">캘리그라피에 관심이 있는 사람</span></div>
+  <div class="style-item"><span class="style-num">06</span><span class="style-name">영문 필기체를 좋아하는 사람</span></div>
+  <div class="style-item"><span class="style-num">07</span><span class="style-name">전통 국궁을 체험해보고 싶은 사람</span></div>
+  <div class="style-item"><span class="style-num">08</span><span class="style-name">이 사이트를 보고 있는 당신</span></div>
+  <div class="style-item"><span class="style-num">09</span><span class="style-name">등등등...</span></div>
+</div>
+      </div>
       </div>
 
     </div>
@@ -395,6 +444,7 @@
     <div class="membership-body reveal">
       <p>서예연수회는 별도의 모집 기간이 없습니다. 학번과 관계없이 원하는 시기에 언제든 입회할 수 있습니다.</p>
       <p>정규학기 종강 30일 이전부터 첫 입회 시, 납부한 회비는 다음 학기까지 적용됩니다.</p>
+      <p>아마 지금 입부하는 게 가장 싸다!</p>
     </div>
 
     <div class="fee-table-wrap reveal reveal-delay-1">
@@ -424,10 +474,10 @@
     <div class="contact-inner">
       <div class="reveal">
         <p class="section-label" style="text-align:center;">연락처</p>
-        <h2 class="section-title" style="text-align:center;">문의 및<br/>SNS</h2>
+        <h2 class="section-title" style="text-align:center;">문의 및<br>SNS</h2>
         <div class="divider" style="margin-left:auto; margin-right:auto;"></div>
       </div>
-      <p class="reveal">인스타그램을 통해 활동 소식과 작품을 확인하고, 입회 관련 문의를 남겨주세요.</p>
+      <p class="reveal">인스타그램을 통해 활동 소식과 작품을 확인하고,<br>입회 관련 문의를 남겨주세요.</p>
       <a href="https://instagram.com/knu_soye" target="_blank" rel="noopener" class="instagram-btn reveal">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -445,7 +495,7 @@
   <p class="footer-logo">書藝硏修會</p>
   <p>국립공주대학교 신관캠퍼스 서예동아리<br/>
   학생복지관 (구학생회관) 301호 · Instagram @knu_soye<br/>
-  <span style="color:var(--border);">Created with care · 2025</span></p>
+  <span style="color:var(--border);">Created with care by 자하(@Syrup4105_) in 2026</span></p>
 </footer>
 
 <script>
@@ -456,6 +506,14 @@
     });
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
+  const menuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (menuBtn && navLinks) {
+    menuBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+  }
 </script>
 </body>
 </html>

@@ -1,0 +1,4604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>慈河字典</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Serif+KR:wght@300;400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+  --bg0: #0d0d0f;
+  --bg1: #141416;
+  --bg2: #1a1a1e;
+  --bg3: #1f1f24;
+  --bg4: #26262c;
+  --bg5: #2e2e36;
+  --border: #2e2e3a;
+  --border2: #8a7a5a;
+  --fg0: #e8e0d0;
+  --fg1: #c8bfa8;
+  --fg2: #a89f88;
+  --fg3: #6a6358;
+  --fg4: #4a4440;
+  --gold: #c8a84a;
+  --gold2: #a88a38;
+  --gold3: #8a6e2a;
+  --match-hl: rgba(200, 168, 74, 0.12);
+  --img-box-bg: #1a1a1e;
+  --shadow: 0 2px 16px rgba(0,0,0,0.4);
+  --shadow2: 0 8px 40px rgba(0,0,0,0.6);
+  --radius: 4px;
+  --transition: 0.18s ease;
+}
+body.light-theme {
+  color-scheme: light;
+  --bg0: #f4f6fb;
+  --bg1: #ffffff;
+  --bg2: #eef1f9;
+  --bg3: #f4f6fb;
+  --bg4: #eef1f9;
+  --bg5: #ffffff;
+  --border: #e0e4ef;
+  --border2: #324eb3;
+  --fg0: #1a1a1a;
+  --fg1: #444444;
+  --fg2: #1a1a1a;
+  --fg3: #888888;
+  --fg4: #888888;
+  --gold: #8a6e2a;
+  --gold2: #324eb3;
+  --gold3: #2a42a0;
+  --match-hl: rgba(50, 78, 179, 0.15);
+  --img-box-bg: #eef1f9;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow2: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* ── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+@media (min-width: 769px) { html, body { overflow: hidden; } }
+body {
+  font-family: 'Noto Serif KR', 'Noto Serif SC', 'Noto Serif', serif;
+  background: var(--bg0);
+  color: var(--fg0);
+  transition: background var(--transition), color var(--transition);
+  cursor: default;
+}
+
+/* ── Layout ────────────────────────────────────────────────── */
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Header ────────────────────────────────────────────────── */
+#header {
+  flex-shrink: 0;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+  position: relative;
+  z-index: 100;
+}
+#logo {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  margin-right: 28px;
+  flex-shrink: 0;
+}
+#logo span { font-size: 11px; color: var(--fg3); margin-left: 8px; letter-spacing: 0.12em; font-weight: 300; vertical-align: middle; }
+
+/* ── Section tabs ───────────────────────────────────────────── */
+#section-tabs {
+  display: flex;
+  gap: 0;
+  height: 100%;
+  flex-shrink: 0;
+}
+.section-tab {
+  height: 100%;
+  padding: 0 18px;
+  font-size: 12px;
+  color: var(--fg3);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition), border-color var(--transition);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-tab:hover { color: var(--fg1); }
+.section-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.section-tab .tab-sub { font-size: 10px; color: var(--fg4); }
+
+/* ── Search bar ─────────────────────────────────────────────── */
+#search-wrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+#search-input {
+  width: 240px;
+  height: 32px;
+  padding: 0 36px 0 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--fg0);
+  font-family: 'Noto Serif SC', 'Noto Serif KR', serif;
+  font-size: 16px;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  letter-spacing: 0.05em;
+}
+#search-input:focus {
+  border-color: var(--border2);
+  box-shadow: 0 0 0 2px var(--match-hl);
+}
+#search-input::placeholder { color: var(--fg3); font-size: 12px; letter-spacing: 0.08em; }
+#search-clear {
+  position: absolute;
+  right: 8px;
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg3);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+#search-clear.visible { opacity: 1; }
+#search-clear:hover { color: var(--fg1); }
+
+#btn-theme {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  border-radius: var(--radius);
+  color: var(--fg2);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+#btn-theme:hover { background: var(--bg3); border-color: var(--border2); }
+
+#btn-help {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  border-radius: var(--radius);
+  color: var(--fg3);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+  font-family: 'Noto Serif', serif;
+  flex-shrink: 0;
+}
+#btn-help:hover { background: var(--bg3); color: var(--fg1); }
+
+/* ── Main content ───────────────────────────────────────────── */
+#content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Left: results panel ────────────────────────────────────── */
+#results-panel {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--bg1);
+  overflow: hidden;
+}
+#results-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#results-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fg3);
+  font-weight: 400;
+}
+#results-count {
+  font-size: 10px;
+  color: var(--fg4);
+  margin-top: 2px;
+  font-family: monospace;
+}
+#results-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+#results-scroll::-webkit-scrollbar { width: 4px; }
+#results-scroll::-webkit-scrollbar-track { background: transparent; }
+#results-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Empty / loading states ─────────────────────────────────── */
+.state-msg {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--fg3);
+  font-size: 12px;
+  line-height: 2;
+  letter-spacing: 0.06em;
+}
+.state-msg .big {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px;
+  color: var(--fg4);
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* ── Result card ────────────────────────────────────────────── */
+.result-group { margin-bottom: 16px; }
+.result-group-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--fg3);
+  text-transform: uppercase;
+  padding: 0 6px 6px;
+}
+.result-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background var(--transition), border-color var(--transition);
+  position: relative;
+}
+.result-card:hover { background: var(--bg2); }
+.result-card.active {
+  background: var(--match-hl);
+  border-color: var(--border2);
+}
+.result-card.active .card-char { color: var(--gold); }
+.card-img-wrap {
+  width: 56px; height: 56px;
+  background: var(--img-box-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
+}
+.card-img-placeholder {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  color: var(--fg3);
+}
+.card-info { flex: 1; min-width: 0; }
+.card-char {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  color: var(--fg0);
+  line-height: 1.2;
+}
+.card-reading {
+  font-size: 11px;
+  color: var(--fg2);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-pos {
+  font-size: 10px;
+  color: var(--fg3);
+  font-family: monospace;
+  margin-top: 3px;
+}
+.card-variant-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  color: var(--gold2);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+/* ── Right: detail panel ────────────────────────────────────── */
+#detail-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg0);
+}
+#detail-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+}
+#detail-scroll::-webkit-scrollbar { width: 4px; }
+#detail-scroll::-webkit-scrollbar-track { background: transparent; }
+#detail-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Detail content ─────────────────────────────────────────── */
+#detail-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--fg4);
+}
+#detail-empty .hint-char {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 64px;
+  color: var(--fg4);
+  opacity: 0.3;
+}
+#detail-empty p { font-size: 12px; letter-spacing: 0.1em; }
+
+#detail-content { display: none; }
+#detail-content.visible { display: block; }
+
+/* Detail header */
+.detail-header {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-img-large {
+  width: 160px; height: 160px;
+  background: var(--img-box-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.detail-img-large img { width: 100%; height: 100%; object-fit: contain; }
+.detail-img-large .placeholder-char {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 64px;
+  color: var(--fg3);
+}
+.detail-title-block { flex: 1; }
+.detail-char-display {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--fg0);
+  line-height: 1;
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+.detail-reading {
+  font-size: 14px;
+  color: var(--fg1);
+  margin-bottom: 6px;
+  line-height: 1.8;
+}
+.detail-pos-info {
+  font-size: 11px;
+  color: var(--fg3);
+  font-family: monospace;
+}
+
+/* Detail 2-column layout */
+.detail-two-col {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+.detail-left-col {
+  flex-shrink: 0;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.detail-right-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Detail sections */
+.detail-section { margin-bottom: 24px; }
+.detail-section-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--fg3);
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+.detail-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row-key {
+  min-width: 64px;
+  color: var(--fg3);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.detail-row-val { color: var(--fg0); flex: 1; line-height: 1.6; }
+
+/* Variant chips */
+.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.variant-chip {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  padding: 4px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--fg1);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.variant-chip:hover {
+  background: var(--match-hl);
+  border-color: var(--border2);
+  color: var(--gold);
+}
+
+/* Component chips */
+.component-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.component-chip {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  padding: 3px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg2);
+  font-size: 13px;
+}
+
+/* Memo */
+.detail-memo {
+  font-size: 13px;
+  color: var(--fg1);
+  line-height: 1.9;
+  padding: 14px 16px;
+  background: var(--bg2);
+  border-left: 2px solid var(--border2);
+  border-radius: 0 3px 3px 0;
+}
+
+/* All instances */
+.instances-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+.instance-thumb {
+  aspect-ratio: 1;
+  background: var(--img-box-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--transition);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.instance-thumb:hover { border-color: var(--border2); }
+.instance-thumb.selected { border-color: var(--gold); }
+.instance-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.instance-thumb .inst-pos {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  font-size: 8px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  text-align: center;
+  padding: 1px 0;
+  font-family: monospace;
+}
+body.light-theme .instance-thumb .inst-pos { background: rgba(0,0,0,0.35); }
+
+/* ── 集字 panel ─────────────────────────────────────────────── */
+#jiza-panel {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  background: var(--bg1);
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+#jiza-panel.open {
+  max-height: 220px;
+  opacity: 1;
+}
+#jiza-inner { padding: 14px 20px; }
+#jiza-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#jiza-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fg3);
+}
+#jiza-close {
+  margin-left: auto;
+  cursor: pointer;
+  color: var(--fg3);
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: color var(--transition);
+}
+#jiza-close:hover { color: var(--fg1); }
+#jiza-chars {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  min-height: 90px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+#jiza-chars::-webkit-scrollbar { height: 3px; }
+#jiza-chars::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.jiza-char-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.jiza-img-box {
+  width: 80px; height: 80px;
+  background: var(--img-box-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.jiza-img-box img { width: 100%; height: 100%; object-fit: contain; }
+.jiza-img-box .missing {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px;
+  color: var(--fg4);
+}
+.jiza-nav {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.jiza-nav-btn {
+  width: 20px; height: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--fg2);
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+}
+.jiza-nav-btn:hover { background: var(--bg3); }
+.jiza-nav-idx {
+  font-size: 9px;
+  color: var(--fg3);
+  font-family: monospace;
+  min-width: 24px;
+  text-align: center;
+}
+.jiza-char-label {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 11px;
+  color: var(--fg3);
+}
+#jiza-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.jiza-btn {
+  font-size: 11px;
+  padding: 4px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--fg1);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  transition: background var(--transition), border-color var(--transition);
+}
+.jiza-btn:hover { background: var(--bg3); border-color: var(--border2); }
+.jiza-btn.primary { border-color: var(--gold2); color: var(--gold); }
+.jiza-btn.primary:hover { background: var(--match-hl); }
+
+
+/* ── 集字 Editor Modal ───────────────────────────────────────── */
+#editor-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+#editor-overlay.open { display: flex; }
+#editor-modal {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow2);
+  width: min(1100px, 96vw);
+  height: min(820px, 94vh);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#editor-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+#editor-topbar-title {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.editor-sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+.editor-label { font-size: 10px; color: var(--fg3); white-space: nowrap; }
+.editor-input {
+  width: 68px;
+  height: 26px;
+  padding: 0 6px;
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg0);
+  font-family: monospace;
+  font-size: 12px;
+  outline: none;
+}
+.editor-input:focus { border-color: var(--border2); }
+.editor-select {
+  height: 26px;
+  padding: 0 6px;
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg0);
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+.editor-select:focus { border-color: var(--border2); }
+.editor-btn {
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--fg1);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: background var(--transition), border-color var(--transition);
+  white-space: nowrap;
+}
+.editor-btn:hover { background: var(--bg4); border-color: var(--border2); }
+.editor-btn.primary { border-color: var(--gold2); color: var(--gold); }
+.editor-btn.primary:hover { background: var(--match-hl); }
+.editor-btn.danger { border-color: #c0392b; color: #e74c3c; }
+#editor-orient-btns { display: flex; gap: 3px; }
+.orient-btn {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--fg3);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all var(--transition);
+}
+.orient-btn.active { border-color: var(--border2); color: var(--gold2); background: var(--match-hl); }
+#editor-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+/* Left: canvas area */
+#editor-canvas-area {
+  flex: 1;
+  overflow: auto;
+  background: var(--bg0);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 24px;
+  position: relative;
+}
+#editor-canvas-area::-webkit-scrollbar { width: 6px; height: 6px; }
+#editor-canvas-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+#editor-canvas-wrap {
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+#editor-canvas {
+  display: block;
+  cursor: default;
+  background: #fff;
+}
+/* Right: slots panel */
+#editor-slots-panel {
+  width: 160px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--bg1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#editor-slots-header {
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--fg3);
+  flex-shrink: 0;
+}
+#editor-slots-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+#editor-slots-scroll::-webkit-scrollbar { width: 3px; }
+#editor-slots-scroll::-webkit-scrollbar-thumb { background: var(--border); }
+.editor-slot-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background var(--transition);
+  margin-bottom: 4px;
+}
+.editor-slot-item:hover { background: var(--bg2); }
+.editor-slot-item.selected { background: var(--match-hl); border-color: var(--border2); }
+.editor-slot-thumb {
+  width: 36px; height: 36px;
+  background: var(--img-box-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.editor-slot-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.editor-slot-info { flex: 1; min-width: 0; }
+.editor-slot-char {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  color: var(--fg0);
+}
+.editor-slot-size {
+  font-size: 9px;
+  color: var(--fg3);
+  font-family: monospace;
+}
+/* Size input row below slots */
+#editor-size-row {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#editor-size-row label { font-size: 10px; color: var(--fg3); display: block; margin-bottom: 6px; }
+.size-inputs { display: flex; gap: 4px; align-items: center; }
+.size-inputs .editor-input { width: 52px; }
+.size-inputs span { font-size: 10px; color: var(--fg3); }
+
+
+/* ── Crop Editor Modal ──────────────────────────────────────── */
+#crop-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.78); z-index: 3000;
+  align-items: center; justify-content: center;
+}
+#crop-overlay.open { display: flex; }
+#crop-modal {
+  background: var(--bg1); border: 1px solid var(--border);
+  border-radius: 6px; box-shadow: var(--shadow2);
+  width: min(860px, 94vw); height: min(680px, 92vh);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+#crop-topbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; border-bottom: 1px solid var(--border);
+  background: var(--bg2); flex-shrink: 0; flex-wrap: wrap;
+}
+#crop-topbar-title { font-size: 11px; letter-spacing: .14em; color: var(--gold); text-transform: uppercase; }
+#crop-body { display: flex; flex: 1; overflow: hidden; }
+#crop-canvas-area {
+  flex: 1; overflow: auto; background: #1a1a1e;
+  display: flex; align-items: center; justify-content: center; padding: 20px; position: relative;
+}
+#crop-canvas { display: block; cursor: crosshair; }
+#crop-side {
+  width: 200px; flex-shrink: 0; border-left: 1px solid var(--border);
+  background: var(--bg1); display: flex; flex-direction: column; overflow: hidden; padding: 14px;
+  gap: 12px;
+}
+#crop-preview-box {
+  width: 100%; aspect-ratio: 1;
+  background: var(--img-box-bg); border: 1px solid var(--border); border-radius: 3px;
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+#crop-preview { width: 100%; height: 100%; object-fit: contain; display: none; }
+.crop-info-label { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--fg3); }
+.crop-info-val { font-size: 11px; color: var(--fg1); font-family: monospace; margin-top: 2px; }
+
+/* ── Char Search ────────────────────────────────────────────── */
+#char-search-wrap {
+  display: flex; align-items: center; gap: 6px; margin-right: 8px;
+}
+#char-search-box { position: relative; display: flex; align-items: center; }
+#char-search-input {
+  width: 180px; height: 32px; padding: 0 30px 0 10px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius) 0 0 var(--radius);
+  color: var(--fg0); font-family: inherit; font-size: 12px;
+  outline: none; transition: border-color var(--transition);
+  letter-spacing: .04em;
+}
+#char-search-input:focus { border-color: var(--border2); }
+#char-search-input::placeholder { color: var(--fg3); font-size: 11px; }
+#btn-char-search-filter {
+  height: 32px; width: 28px; border: 1px solid var(--border); border-left: none;
+  background: var(--bg2); color: var(--fg3); cursor: pointer;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 10px; display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition); flex-shrink: 0;
+}
+#btn-char-search-filter:hover { background: var(--bg3); color: var(--fg1); }
+#char-search-filter-pop {
+  display: none; position: absolute; top: 36px; left: 0; z-index: 500;
+  background: var(--bg1); border: 1px solid var(--border); border-radius: 5px;
+  padding: 12px 14px; min-width: 200px; box-shadow: var(--shadow2);
+}
+#char-search-filter-pop.open { display: block; }
+.filter-title { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--fg3); margin-bottom: 8px; }
+.filter-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 3px 0; font-size: 12px; color: var(--fg1);
+}
+.filter-row input[type=checkbox] { accent-color: var(--gold2); }
+/* Char search results panel */
+#char-search-results {
+  position: absolute; top: 100%; left: 0;
+  width: 100%; /* 검색창 너비와 동일 */
+  z-index: 400;
+  background: var(--bg1); border: 1px solid var(--border);
+  border-top: none; border-radius: 0 0 5px 5px;
+  max-height: 320px; overflow-y: auto;
+  box-shadow: var(--shadow2);
+  display: none;
+}
+#char-search-results.open { display: block; }
+.csr-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border-left: none; border-right: none; border-top: none;
+  font-family: inherit; color: inherit;
+}
+.csr-item:last-child { border-bottom: none; }
+.csr-item:hover { background: var(--bg2); }
+.csr-char { font-family: 'Noto Serif SC',serif; font-size: 22px; color: var(--fg0); min-width: 28px; }
+.csr-meta { flex: 1; }
+.csr-reading { font-size: 11px; color: var(--fg2); }
+.csr-detail { font-size: 10px; color: var(--fg3); margin-top: 1px; }
+.csr-hl { color: var(--gold); font-weight: 500; }
+.csr-empty { padding: 20px; text-align: center; font-size: 12px; color: var(--fg3); }
+
+
+/* ── Page Browser Panel ─────────────────────────────────────── */
+#page-panel {
+  width: 0;
+  flex-shrink: 0;
+  border-left: 1px solid transparent;
+  background: var(--bg1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.25s ease, border-color 0.25s ease;
+}
+#page-panel.open {
+  width: 300px;
+  border-left-color: var(--border);
+}
+#page-panel-inner {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+#page-panel-topbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#page-panel-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--fg3);
+  margin-right: auto;
+}
+.page-nav-btn {
+  width: 26px; height: 26px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--fg2);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+.page-nav-btn:hover { background: var(--bg3); border-color: var(--border2); }
+.page-nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+#page-num-input {
+  width: 44px; height: 26px;
+  padding: 0 4px;
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg0);
+  font-family: monospace;
+  font-size: 12px;
+  text-align: center;
+  outline: none;
+}
+#page-num-input:focus { border-color: var(--border2); }
+#page-total-label {
+  font-size: 11px;
+  color: var(--fg3);
+  font-family: monospace;
+  white-space: nowrap;
+}
+#page-grid-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--bg0);
+}
+#page-grid-wrap {
+  display: inline-block;
+  width: 100%;
+  background: #ffffff;
+  padding: 15px;
+}
+#page-grid-scroll::-webkit-scrollbar { width: 4px; }
+#page-grid-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#page-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  gap: 0;
+  direction: rtl;
+}
+.pg-cell {
+  aspect-ratio: 372 / 402;
+  background: #ffffff;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-cell:hover { outline: 1px solid var(--border2); outline-offset: -1px; }
+.pg-cell.active { outline: 2px solid var(--gold); outline-offset: -2px; }
+.pg-cell.empty { cursor: default; }
+.pg-cell img { width: 100%; height: 100%; object-fit: contain; }
+.pg-cell .pg-cell-char { font-family: 'Noto Serif SC',serif; font-size: 18px; color: var(--fg3); }
+.pg-cell .pg-cell-empty { font-size: 14px; color: var(--fg4); }
+.pg-cell .pg-cell-pos {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  font-size: 8px; background: rgba(0,0,0,0.45); color: #fff;
+  text-align: center; padding: 1px 0; font-family: monospace;
+  opacity: 0; transition: opacity .15s;
+}
+body.light-theme .pg-cell .pg-cell-pos { background: rgba(0,0,0,0.28); }
+.pg-cell:hover .pg-cell-pos { opacity: 1; }
+#btn-page-panel-toggle {
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 52px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg3); font-size: 11px;
+  z-index: 10;
+  transition: background var(--transition), color var(--transition);
+}
+#btn-page-panel-toggle:hover { background: var(--bg3); color: var(--fg1); }
+#detail-panel { position: relative; }
+
+/* ── Help modal ─────────────────────────────────────────────── */
+#help-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#help-overlay.open { display: flex; }
+#help-box {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 28px 32px;
+  min-width: 360px;
+  max-width: 480px;
+  box-shadow: var(--shadow2);
+}
+#help-box h2 {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+.help-group { margin-bottom: 16px; }
+.help-group-title {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--fg3);
+  margin-bottom: 8px;
+}
+.help-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--fg1);
+  border-bottom: 1px solid var(--border);
+}
+.help-row:last-child { border-bottom: none; }
+.help-row .desc { color: var(--fg2); }
+kbd {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 6px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  font-family: monospace;
+  color: var(--gold2);
+  background: var(--bg2);
+  margin-left: 4px;
+}
+#help-close {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 11px;
+  color: var(--fg3);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+}
+#help-close:hover { color: var(--fg1); }
+
+/* ── Loading bar ─────────────────────────────────────────────── */
+#loading-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE LAYOUT  (≤768px)
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* 데스크탑 요소 숨김 */
+  #header { display: none !important; flex: none !important; }
+  #content { display: none !important; flex: none !important; }
+  #jiza-panel { display: none !important; flex: none !important; }
+  #page-panel { display: none !important; flex: none !important; }
+  #btn-page-panel-toggle { display: none !important; }
+
+  /* 앱 전체 */
+  html, body { overflow: hidden; height: 100dvh; }
+  #app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    /* 노치/홈바 대응 */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ── 모바일 헤더 ── */
+  #m-header {
+    display: flex !important;
+    flex-direction: column;
+    background: var(--bg1);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 200;
+    width: 100%;
+    /* 헤더가 화면 절반 이상 차지하지 않도록 */
+    max-height: 50dvh;
+    overflow: hidden;
+  }
+  #m-header-top {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+    height: 48px;
+  }
+  #m-logo {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    color: var(--gold);
+    letter-spacing: .08em;
+    margin-right: auto;
+  }
+  .m-icon-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    border-radius: 6px;
+    color: var(--fg2);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--transition);
+  }
+  .m-icon-btn:hover, .m-icon-btn:active { background: var(--bg3); }
+
+  /* ── 검색바 ── */
+  #m-search-bar {
+    padding: 0 14px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  #m-search-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: visible;
+    position: relative;
+  }
+  #m-search-input {
+    flex: 1;
+    height: 38px;
+    padding: 0 10px;
+    background: transparent;
+    border: none;
+    color: var(--fg0);
+    font-family: 'Noto Serif SC','Noto Serif KR',serif;
+    font-size: 18px;
+    outline: none;
+    letter-spacing: .05em;
+  }
+  #m-search-input::placeholder { font-size: 13px; color: var(--fg3); }
+  #m-btn-search {
+    width: 38px; height: 38px;
+    border: none;
+    background: transparent;
+    color: var(--gold);
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #m-btn-char-search-toggle {
+    width: 28px; height: 38px;
+    border: none; border-left: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg3);
+    font-size: 11px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── 글자 검색 슬라이드다운 ── */
+  #m-char-search-panel {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease;
+    border-top: 0px solid var(--border);
+  }
+  #m-char-search-panel.open {
+    max-height: 200px;
+    border-top-width: 1px;
+  }
+  #m-char-search-inner {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #m-char-search-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  #m-char-search-field {
+    flex: 1;
+    height: 36px;
+    padding: 0 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--fg0);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+  }
+  #m-char-search-field:focus { border-color: var(--border2); }
+  #m-btn-char-filter {
+    height: 36px; padding: 0 10px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--fg2);
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  /* 필터 체크박스 */
+  #m-char-filter-pop {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 0 2px;
+  }
+  #m-char-filter-pop.open { display: flex; }
+  .m-filter-chip {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--fg2);
+    cursor: pointer;
+    background: var(--bg2);
+    transition: all var(--transition);
+    user-select: none;
+  }
+  .m-filter-chip.active {
+    border-color: var(--border2);
+    color: var(--gold2);
+    background: var(--match-hl);
+  }
+  /* 글자검색 결과 */
+  #m-char-search-results {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+    border-top: 0 solid var(--border);
+  }
+  #m-char-search-results.open {
+    max-height: 240px;
+    overflow-y: auto;
+    border-top-width: 1px;
+  }
+  .m-csr-btn {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 8px 14px;
+    border: none; border-bottom: 1px solid var(--border);
+    background: transparent; color: var(--fg0);
+    font-family: inherit; text-align: left; cursor: pointer;
+    transition: background var(--transition);
+  }
+  .m-csr-btn:active { background: var(--bg2); }
+  .m-csr-char { font-family: 'Noto Serif SC',serif; font-size: 22px; min-width: 28px; }
+  .m-csr-meta { flex: 1; }
+  .m-csr-reading { font-size: 12px; color: var(--fg2); }
+  .m-csr-detail { font-size: 11px; color: var(--fg3); margin-top: 1px; }
+
+  /* ── 메인 탭 영역 ── */
+  #m-main {
+    flex: 1 1 0;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+    display: block;
+    width: 100%;
+  }
+  /* 숨겨진 데스크탑 요소가 flex 공간 차지 못하게 */
+  #header { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
+  #content { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
+  #jiza-panel { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
+  #page-panel { display: none !important; }
+  .m-tab-pane {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    display: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .m-tab-pane.active { display: block; }
+
+  /* ── 검색결과 탭 ── */
+  #m-results-scroll { padding: 8px; }
+  .m-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    background: var(--bg1);
+    cursor: pointer;
+    transition: background var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-card:active { background: var(--bg2); }
+  .m-card.active { border-color: var(--border2); background: var(--match-hl); }
+  .m-card-img {
+    width: 52px; height: 52px;
+    background: var(--img-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .m-card-img img { width: 100%; height: 100%; object-fit: contain; }
+  .m-card-char { font-family: 'Noto Serif SC',serif; font-size: 22px; color: var(--fg0); }
+  .m-card-reading { font-size: 12px; color: var(--fg2); margin-top: 2px; }
+  .m-card-pos { font-size: 10px; color: var(--fg3); font-family: monospace; margin-top: 2px; }
+
+  /* ── 하단 탭바 ── */
+  #m-tabbar {
+    display: flex !important;
+    border-top: 1px solid var(--border);
+    background: var(--bg1);
+    flex-shrink: 0;
+    height: 52px;
+    width: 100%;
+    z-index: 100;
+    /* 홈바 있는 기기 대응 */
+    padding-bottom: 0;
+  }
+  .m-tab-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: none;
+    background: transparent;
+    color: var(--fg3);
+    font-family: inherit;
+    cursor: pointer;
+    transition: color var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-tab-btn.active { color: var(--gold); }
+  .m-tab-btn .tab-icon { font-size: 16px; font-family: 'Noto Serif SC',serif; }
+  .m-tab-btn .tab-label { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+
+  /* ── 페이지 탭 ── */
+  #m-page-tab { background: var(--bg0); }
+  #m-page-nav {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px;
+    background: var(--bg1);
+    border-bottom: 1px solid var(--border);
+  }
+  #m-page-nav-label { font-size: 10px; color: var(--fg3); letter-spacing: .12em; margin-right: auto; }
+  .m-page-nav-btn {
+    width: 30px; height: 30px;
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--fg2); border-radius: 5px; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .m-page-nav-btn:disabled { opacity: .3; }
+  #m-page-num-input {
+    width: 44px; height: 30px; padding: 0 4px;
+    background: var(--bg0); border: 1px solid var(--border);
+    border-radius: 5px; color: var(--fg0);
+    font-family: monospace; font-size: 13px; text-align: center; outline: none;
+  }
+  #m-page-total { font-size: 12px; color: var(--fg3); font-family: monospace; }
+  #m-page-grid-wrap {
+    padding: 10px;
+  }
+  #m-page-grid {
+    background: #fff;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    direction: rtl;
+    margin: 0 auto;
+  }
+  .m-pg-cell {
+    aspect-ratio: 372 / 402;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .m-pg-cell img { width: 100%; height: 100%; object-fit: contain; }
+  .m-pg-cell.active { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+  /* ── 슬라이드업 시트 공통 ── */
+  .m-sheet-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9000;
+    align-items: flex-end;
+  }
+  .m-sheet-overlay.open { display: flex; }
+  .m-sheet {
+    width: 100%;
+    background: var(--bg1);
+    border-radius: 16px 16px 0 0;
+    max-height: 80dvh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  .m-sheet-handle {
+    width: 36px; height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+  }
+  .m-sheet-header {
+    display: flex; align-items: center;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .m-sheet-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--fg0); letter-spacing: .06em;
+  }
+  .m-sheet-close {
+    margin-left: auto; width: 28px; height: 28px;
+    border: none; background: var(--bg2);
+    border-radius: 50%; color: var(--fg2);
+    font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .m-sheet-body {
+    flex: 1; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
+
+  /* ── 집자 시트 ── */
+  #m-jiza-slots {
+    display: flex; gap: 10px;
+    overflow-x: auto; padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  #m-jiza-slots::-webkit-scrollbar { display: none; }
+  .m-jiza-slot {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-jiza-img {
+    width: 72px; height: 78px;
+    background: var(--img-box-bg);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color var(--transition);
+  }
+  .m-jiza-img.selected { border-color: var(--gold); }
+  .m-jiza-img img { width: 100%; height: 100%; object-fit: contain; }
+  .m-jiza-char { font-family: 'Noto Serif SC',serif; font-size: 13px; color: var(--fg2); }
+  .m-jiza-nav { display: flex; gap: 2px; align-items: center; }
+  .m-jiza-nav-btn {
+    width: 22px; height: 22px;
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--fg2); border-radius: 3px; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .m-jiza-nav-idx { font-size: 9px; color: var(--fg3); font-family: monospace; min-width: 20px; text-align: center; }
+  #m-jiza-actions {
+    display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .m-action-btn {
+    flex: 1; min-width: 120px;
+    height: 40px; border: 1px solid var(--border);
+    background: var(--bg2); color: var(--fg1);
+    border-radius: 8px; font-family: inherit; font-size: 13px;
+    cursor: pointer; transition: background var(--transition);
+  }
+  .m-action-btn.primary { border-color: var(--gold2); color: var(--gold); }
+  .m-action-btn:active { background: var(--bg3); }
+
+  /* ── 글자 상세 시트 ── */
+  #m-detail-sheet .m-sheet-body { padding: 0; }
+  .m-detail-img-wrap {
+    width: 100%; background: var(--img-box-bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; border-bottom: 1px solid var(--border);
+  }
+  .m-detail-img-wrap img { max-width: 160px; max-height: 160px; object-fit: contain; }
+  .m-detail-body { padding: 16px; }
+  .m-detail-char { font-family: 'Noto Serif SC',serif; font-size: 48px; color: var(--fg0); line-height: 1; }
+  .m-detail-reading { font-size: 14px; color: var(--fg1); margin-top: 4px; }
+  .m-detail-pos { font-size: 11px; color: var(--fg3); font-family: monospace; margin-top: 4px; margin-bottom: 16px; }
+  .m-detail-section { margin-bottom: 16px; }
+  .m-detail-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--fg3); margin-bottom: 8px; }
+  .m-detail-row { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .m-detail-key { min-width: 60px; color: var(--fg3); font-size: 11px; }
+  .m-detail-val { color: var(--fg0); flex: 1; }
+  .m-variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .m-variant-chip {
+    font-family: 'Noto Serif SC',serif; font-size: 20px;
+    padding: 4px 12px; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 4px;
+    cursor: pointer; color: var(--fg1);
+  }
+  .m-variant-chip:active { background: var(--match-hl); border-color: var(--border2); }
+  .m-instances-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(60px,1fr)); gap: 6px;
+  }
+  .m-instance-thumb {
+    aspect-ratio: 1; background: var(--img-box-bg);
+    border: 1px solid var(--border); border-radius: 3px;
+    overflow: hidden; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .m-instance-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .m-instance-thumb.selected { border-color: var(--gold); }
+  .m-inst-pos {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    font-size: 8px; background: rgba(0,0,0,.5); color: #fff;
+    text-align: center; font-family: monospace; padding: 1px;
+  }
+  /* 집자에서 인스턴스 선택 시 강조 */
+  .m-instance-thumb.pick-mode { border-color: var(--border2); }
+  .m-instance-thumb.pick-mode:active { border-color: var(--gold); background: var(--match-hl); }
+
+  /* ── 설정 시트 ── */
+  .m-settings-group { margin-bottom: 20px; }
+  .m-settings-group-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--fg3); margin-bottom: 10px; }
+  .m-settings-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .m-settings-row:last-child { border-bottom: none; }
+  .m-settings-label { flex: 1; font-size: 13px; color: var(--fg1); }
+  .m-settings-val { font-size: 13px; color: var(--fg0); }
+  .m-preset-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .m-preset-chip {
+    padding: 5px 12px; border: 1px solid var(--border);
+    border-radius: 20px; font-size: 12px; color: var(--fg2);
+    background: var(--bg2); cursor: pointer;
+  }
+  .m-preset-chip.active { border-color: var(--border2); color: var(--gold2); background: var(--match-hl); }
+  .m-orient-btns { display: flex; gap: 6px; }
+  .m-orient-btn {
+    flex: 1; height: 34px; border: 1px solid var(--border);
+    background: var(--bg2); color: var(--fg2);
+    border-radius: 6px; font-family: inherit; font-size: 12px; cursor: pointer;
+  }
+  .m-orient-btn.active { border-color: var(--border2); color: var(--gold2); background: var(--match-hl); }
+  .m-size-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .m-size-input {
+    flex: 1; height: 36px; padding: 0 8px;
+    background: var(--bg0); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--fg0); font-family: monospace; font-size: 14px;
+    outline: none; text-align: center;
+  }
+  .m-size-input:focus { border-color: var(--border2); }
+
+  /* 모바일에서 편집기 모달 풀화면 */
+  #editor-overlay.open { align-items: stretch; }
+  #editor-modal {
+    width: 100% !important; height: 100% !important;
+    border-radius: 0; max-width: none; max-height: none;
+  }
+  /* 모바일 topbar: 단순 1줄 바 */
+  #editor-topbar {
+    flex-wrap: nowrap;
+    overflow: visible;
+    padding: 0 10px;
+    height: 48px;
+    gap: 8px;
+  }
+  #editor-topbar-title {
+    font-size: 12px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+  /* 데스크탑 전용 항목 숨김 */
+  .ed-desktop-only { display: none !important; }
+  /* 모바일 전용 항목 표시 */
+  .ed-mobile-only { display: flex !important; }
+  #btn-editor-export, #btn-editor-close {
+    height: 32px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  #btn-editor-close { margin-left: auto !important; }
+  #editor-canvas-area { padding: 8px; }
+
+} /* end @media mobile */
+
+/* 데스크탑에서 모바일 요소 숨김 */
+@media (min-width: 769px) {
+  #m-header { display: none; }
+  #m-main { display: none; }
+  #m-tabbar { display: none; }
+  .ed-mobile-only { display: none !important; }
+  #m-editor-settings-sheet { display: none !important; }
+  #m-jiza-sheet { display: none; }
+  #m-detail-sheet { display: none; }
+  #m-settings-sheet { display: none; }
+  #m-page-detail-sheet { display: none; }
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.result-card { animation: fadeIn 0.15s ease both; }
+</style>
+</head>
+<body>
+<div id="loading-bar"></div>
+
+<div id="app">
+  <!-- Header -->
+  <div id="header">
+    <div id="logo">慈河字典 <span>JAHA JAJEON</span></div>
+    <div id="section-tabs"></div>
+    <div id="search-wrap">
+      <!-- 한자 검색 -->
+      <div id="char-search-wrap" style="position:relative;">
+        <div id="char-search-box">
+          <input type="text" id="char-search-input" placeholder="훈독·부수·구성요소 검색" autocomplete="off" spellcheck="false">
+          <button id="btn-char-search-filter" title="검색 범위 설정">▾</button>
+          <div id="char-search-results"></div>
+        </div>
+        <div id="char-search-filter-pop">
+          <div class="filter-title">검색 범위</div>
+          <label class="filter-row"><input type="checkbox" class="csr-filter" data-field="korean" checked> 훈독</label>
+          <label class="filter-row"><input type="checkbox" class="csr-filter" data-field="radical" checked> 부수</label>
+          <label class="filter-row"><input type="checkbox" class="csr-filter" data-field="components" checked> 구성 요소</label>
+          <label class="filter-row"><input type="checkbox" class="csr-filter" data-field="variants" checked> 이체자</label>
+          <label class="filter-row"><input type="checkbox" class="csr-filter" data-field="memo" checked> 메모</label>
+        </div>
+      </div>
+      <!-- 집자 검색 -->
+      <div id="search-box">
+        <input type="text" id="search-input" placeholder="한자 입력  /  集字" autocomplete="off" spellcheck="false">
+        <div id="search-clear">✕</div>
+      </div>
+      <button class="editor-btn" id="btn-load-db" style="font-size:11px;height:32px;padding:0 12px;border:1px solid var(--border);background:var(--bg2);color:var(--fg2);border-radius:var(--radius);cursor:pointer;font-family:inherit;transition:background var(--transition);" title="DB.json 불러오기">DB 불러오기</button>
+      <input type="file" id="db-file-input" accept=".json" style="display:none">
+      <button id="btn-theme" title="테마 전환 (Shift+T)">◐</button>
+      <button id="btn-help" title="단축키 도움말 (/)">?</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div id="content">
+    <!-- Left: results -->
+    <div id="results-panel">
+      <div id="results-header">
+        <div id="results-title">검색 결과</div>
+        <div id="results-count">—</div>
+      </div>
+      <div id="results-scroll">
+        <div class="state-msg" id="msg-initial">
+          <span class="big">字</span>
+          검색창에 한자를 입력하세요<br>
+          여러 글자 입력 시 集字 모드
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: detail -->
+    <div id="detail-panel">
+      <button id="btn-page-panel-toggle" title="페이지 보기 (Alt+P)">頁</button>
+      <div id="detail-scroll">
+        <div id="detail-empty">
+          <div class="hint-char">典</div>
+          <p>글자를 선택하면 상세 정보가 표시됩니다</p>
+        </div>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+    <!-- Page browser panel -->
+    <div id="page-panel">
+      <div id="page-panel-inner">
+        <div id="page-panel-topbar">
+          <span id="page-panel-title">페이지 보기</span>
+          <button class="page-nav-btn" id="btn-page-first" title="첫 페이지">«</button>
+          <button class="page-nav-btn" id="btn-page-prev" title="이전">‹</button>
+          <input type="number" id="page-num-input" value="1" min="1">
+          <span id="page-total-label">/ —</span>
+          <button class="page-nav-btn" id="btn-page-next" title="다음">›</button>
+          <button class="page-nav-btn" id="btn-page-last" title="마지막 페이지">»</button>
+        </div>
+        <div id="page-grid-scroll">
+          <div id="page-grid-wrap"><div id="page-grid"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 集字 panel -->
+  <div id="jiza-panel">
+    <div id="jiza-inner">
+      <div id="jiza-header">
+        <span id="jiza-title">集字</span>
+        <div id="jiza-actions">
+          <button class="jiza-btn" id="btn-jiza-edit">✎ 편집기 열기 (Alt+E)</button>
+          <button class="jiza-btn primary" id="btn-jiza-download">↓ 빠른 저장 (Alt+S)</button>
+        </div>
+        <div id="jiza-close">✕</div>
+      </div>
+      <div id="jiza-chars"></div>
+    </div>
+  </div>
+
+<!-- 集字 Editor Modal -->
+<div id="editor-overlay">
+  <div id="editor-modal">
+    <!-- Topbar -->
+    <div id="editor-topbar">
+      <span id="editor-topbar-title">集字 편집기</span>
+      <!-- 데스크탑 전용 설정 항목 -->
+      <div class="editor-sep ed-desktop-only"></div>
+      <span class="editor-label ed-desktop-only">프리셋</span>
+      <select class="editor-select ed-desktop-only" id="editor-preset">
+        <option value="">직접 입력</option>
+        <option value="350,690">사절지 (350×690)</option>
+        <option value="350,1380">반절지 (350×1380)</option>
+        <option value="700,1380">전지 (700×1380)</option>
+        <option value="210,297">A4 (210×297)</option>
+        <option value="297,420">A3 (297×420)</option>
+      </select>
+      <div id="editor-orient-btns" class="ed-desktop-only">
+        <button class="orient-btn active" data-orient="portrait">세로</button>
+        <button class="orient-btn" data-orient="landscape">가로</button>
+      </div>
+      <div class="editor-sep ed-desktop-only"></div>
+      <span class="editor-label ed-desktop-only">너비</span>
+      <input type="number" class="editor-input ed-desktop-only" id="editor-w" value="350" min="10" max="2000">
+      <span class="editor-label ed-desktop-only">mm</span>
+      <span class="editor-label ed-desktop-only" style="margin-left:4px">높이</span>
+      <input type="number" class="editor-input ed-desktop-only" id="editor-h" value="690" min="10" max="3000">
+      <span class="editor-label ed-desktop-only">mm</span>
+      <div class="editor-sep ed-desktop-only"></div>
+      <div class="editor-sep ed-desktop-only"></div>
+      <button class="editor-btn ed-desktop-only" id="btn-grid-toggle" title="그리드 표시/숨기기">⊞ 그리드</button>
+      <button class="editor-btn ed-desktop-only" id="btn-grid-settings" title="그리드 설정">⚙</button>
+      <!-- 모바일 전용 설정 버튼 -->
+      <button class="editor-btn ed-mobile-only" id="btn-editor-settings-mobile" title="설정">⚙ 설정</button>
+      <button class="editor-btn primary" id="btn-editor-export">↓ PNG 저장</button>
+      <button class="editor-btn" id="btn-editor-close" style="margin-left:auto">✕ 닫기</button>
+    </div>
+
+    <!-- Grid settings popover -->
+    <div id="grid-popover" style="display:none;position:absolute;top:46px;right:200px;z-index:100;
+         background:var(--bg1);border:1px solid var(--border);border-radius:5px;
+         padding:16px;min-width:240px;box-shadow:var(--shadow2);">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--fg3);margin-bottom:12px;">그리드 설정</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label style="font-size:11px;color:var(--fg2);min-width:72px;">셀 크기 (mm)</label>
+          <input type="number" class="editor-input" id="grid-size" value="10" min="1" max="200" style="width:60px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label style="font-size:11px;color:var(--fg2);min-width:72px;">오프셋 X (mm)</label>
+          <input type="number" class="editor-input" id="grid-offset-x" value="0" min="0" max="200" style="width:60px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label style="font-size:11px;color:var(--fg2);min-width:72px;">오프셋 Y (mm)</label>
+          <input type="number" class="editor-input" id="grid-offset-y" value="0" min="0" max="200" style="width:60px">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label style="font-size:11px;color:var(--fg2);min-width:72px;">그리드 색상</label>
+          <input type="color" id="grid-color" value="#b4d2ff" style="width:40px;height:26px;border:1px solid var(--border);border-radius:3px;background:var(--bg2);cursor:pointer;">
+          <input type="range" id="grid-opacity" min="5" max="100" value="45" style="flex:1;">
+          <span id="grid-opacity-val" style="font-size:10px;color:var(--fg3);min-width:28px;font-family:monospace;">45%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid var(--border);">
+          <input type="checkbox" id="grid-snap" style="accent-color:var(--gold2);">
+          <label for="grid-snap" style="font-size:11px;color:var(--fg1);cursor:pointer;">Alt 스냅 시 그리드에 붙이기</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div id="editor-body">
+      <!-- Canvas -->
+      <div id="editor-canvas-area">
+        <div id="editor-canvas-wrap">
+          <canvas id="editor-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Slots panel -->
+      <div id="editor-slots-panel">
+        <div id="editor-slots-header">글자 목록</div>
+        <div id="editor-slots-scroll" id="editor-slots-list"></div>
+        <div id="editor-size-row">
+          <label>선택 글자 크기 (px)</label>
+          <div class="size-inputs">
+            <input type="number" class="editor-input" id="editor-char-w" value="100" min="10" max="2000">
+            <span>×</span>
+            <input type="number" class="editor-input" id="editor-char-h" value="100" min="10" max="2000">
+          </div>
+          <button class="editor-btn" id="btn-open-crop" style="width:100%;margin-top:8px;justify-content:center;">✂ 글자 자르기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 모바일 편집기 설정 시트 -->
+<div class="m-sheet-overlay" id="m-editor-settings-sheet">
+  <div class="m-sheet">
+    <div class="m-sheet-handle"></div>
+    <div class="m-sheet-header">
+      <span class="m-sheet-title">편집기 설정</span>
+      <button class="m-sheet-close" id="m-editor-settings-close">✕</button>
+    </div>
+    <div class="m-sheet-body">
+      <!-- 용지 프리셋 -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">용지 프리셋</div>
+        <div class="m-preset-chips" id="m-ed-preset-chips">
+          <span class="m-preset-chip active" data-w="350" data-h="690">사절지</span>
+          <span class="m-preset-chip" data-w="350" data-h="1380">반절지</span>
+          <span class="m-preset-chip" data-w="700" data-h="1380">전지</span>
+          <span class="m-preset-chip" data-w="210" data-h="297">A4</span>
+          <span class="m-preset-chip" data-w="297" data-h="420">A3</span>
+        </div>
+      </div>
+      <!-- 방향 -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">방향</div>
+        <div class="m-orient-btns">
+          <button class="m-orient-btn active" data-orient="portrait">세로</button>
+          <button class="m-orient-btn" data-orient="landscape">가로</button>
+        </div>
+      </div>
+      <!-- 용지 크기 직접 입력 -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">용지 크기 (mm)</div>
+        <div class="m-size-row">
+          <span style="font-size:11px;color:var(--fg3);">너비</span>
+          <input type="number" class="m-size-input" id="m-paper-w" value="350" min="10" max="2000">
+          <span style="font-size:11px;color:var(--fg3);">높이</span>
+          <input type="number" class="m-size-input" id="m-paper-h" value="690" min="10" max="3000">
+        </div>
+      </div>
+      <!-- 그리드 -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">그리드</div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">그리드 표시</span>
+          <button class="editor-btn" id="m-btn-grid-toggle" style="font-size:12px;height:30px;">⊞ 그리드</button>
+        </div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">셀 크기 (mm)</span>
+          <input type="number" class="m-size-input" id="m-grid-size" value="10" min="1" max="200" style="width:70px;flex:none;">
+        </div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">오프셋 X</span>
+          <input type="number" class="m-size-input" id="m-grid-offset-x" value="0" min="0" max="200" style="width:70px;flex:none;">
+        </div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">오프셋 Y</span>
+          <input type="number" class="m-size-input" id="m-grid-offset-y" value="0" min="0" max="200" style="width:70px;flex:none;">
+        </div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">색상 / 불투명도</span>
+          <input type="color" id="m-grid-color" value="#b4d2ff" style="width:34px;height:30px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);cursor:pointer;flex-shrink:0;">
+          <input type="range" id="m-grid-opacity" min="5" max="100" value="45" style="flex:1;margin:0 6px;">
+          <span id="m-grid-opacity-val" style="font-size:11px;color:var(--fg3);min-width:30px;font-family:monospace;">45%</span>
+        </div>
+        <div class="m-settings-row" style="border-bottom:none;">
+          <label for="m-grid-snap" class="m-settings-label" style="cursor:pointer;">Alt 스냅 시 그리드에 붙이기</label>
+          <input type="checkbox" id="m-grid-snap" style="accent-color:var(--gold2);width:18px;height:18px;">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="crop-overlay">
+  <div id="crop-modal">
+    <div id="crop-topbar">
+      <span id="crop-topbar-title">글자 자르기</span>
+      <div class="editor-sep"></div>
+      <span class="editor-label">드래그로 자를 영역을 선택하세요</span>
+      <div class="editor-sep"></div>
+      <button class="editor-btn" id="btn-crop-reset">초기화</button>
+      <button class="editor-btn primary" id="btn-crop-confirm">✂ 잘라서 집자에 추가</button>
+      <button class="editor-btn" id="btn-crop-close" style="margin-left:auto">✕ 닫기</button>
+    </div>
+    <div id="crop-body">
+      <div id="crop-canvas-area">
+        <canvas id="crop-canvas"></canvas>
+      </div>
+      <div id="crop-side">
+        <div>
+          <div class="crop-info-label">미리보기</div>
+          <div id="crop-preview-box" style="margin-top:6px">
+            <img id="crop-preview" alt="미리보기">
+          </div>
+        </div>
+        <div>
+          <div class="crop-info-label">선택 영역</div>
+          <div class="crop-info-val" id="crop-coords">—</div>
+        </div>
+        <div>
+          <div class="crop-info-label">원본 글자</div>
+          <div class="crop-info-val" id="crop-src-char" style="font-family:'Noto Serif SC',serif;font-size:24px;color:var(--fg0)">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ══ MOBILE UI ══════════════════════════════════════════════ -->
+
+<!-- 모바일 헤더 -->
+<div id="m-header">
+  <div id="m-header-top">
+    <div id="m-logo">慈河字典</div>
+    <button class="m-icon-btn" id="m-btn-load-db" title="DB 불러오기">📂</button>
+    <button class="m-icon-btn" id="m-btn-settings" title="설정">⚙</button>
+    <button class="m-icon-btn" id="m-btn-theme" title="테마">◐</button>
+  </div>
+  <div id="m-search-bar">
+    <div id="m-search-input-wrap">
+      <input type="text" id="m-search-input" placeholder="한자 입력" autocomplete="off" spellcheck="false" inputmode="text">
+      <button id="m-btn-search">🔎</button>
+      <button id="m-btn-char-search-toggle" title="글자 검색">▾</button>
+    </div>
+  </div>
+  <!-- 글자 검색 슬라이드다운 -->
+  <div id="m-char-search-panel">
+    <div id="m-char-search-inner">
+      <div id="m-char-search-row">
+        <input type="text" id="m-char-search-field" placeholder="훈독·부수·구성요소…" autocomplete="off">
+        <button id="m-btn-char-filter">필터 ▾</button>
+      </div>
+      <div id="m-char-filter-pop">
+        <span class="m-filter-chip active" data-field="korean">훈독</span>
+        <span class="m-filter-chip active" data-field="radical">부수</span>
+        <span class="m-filter-chip active" data-field="components">구성요소</span>
+        <span class="m-filter-chip active" data-field="variants">이체자</span>
+        <span class="m-filter-chip active" data-field="memo">메모</span>
+      </div>
+      <div id="m-char-search-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 모바일 메인 -->
+<div id="m-main">
+  <!-- 검색결과 탭 -->
+  <div class="m-tab-pane active" id="m-tab-search">
+    <div id="m-results-scroll">
+      <div class="state-msg"><span class="big">字</span>한자를 입력하세요</div>
+    </div>
+  </div>
+  <!-- 페이지 탭 -->
+  <div class="m-tab-pane" id="m-tab-page">
+    <div id="m-page-nav">
+      <button class="m-page-nav-btn" id="m-btn-page-first">«</button>
+      <button class="m-page-nav-btn" id="m-btn-page-prev">‹</button>
+      <input type="number" id="m-page-num-input" value="1" min="1">
+      <span id="m-page-total">/ —</span>
+      <button class="m-page-nav-btn" id="m-btn-page-next">›</button>
+      <button class="m-page-nav-btn" id="m-btn-page-last">»</button>
+      <span id="m-page-nav-label" style="margin-left:auto;font-size:10px;color:var(--fg3);letter-spacing:.1em;">페이지</span>
+    </div>
+    <div id="m-page-grid-wrap">
+      <div id="m-page-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 하단 탭바 -->
+<div id="m-tabbar">
+  <button class="m-tab-btn active" data-tab="m-tab-search">
+    <span class="tab-icon">字</span>
+    <span class="tab-label">검색</span>
+  </button>
+  <button class="m-tab-btn" data-tab="m-tab-page">
+    <span class="tab-icon">頁</span>
+    <span class="tab-label">페이지</span>
+  </button>
+</div>
+
+<!-- 집자 시트 -->
+<div class="m-sheet-overlay" id="m-jiza-sheet">
+  <div class="m-sheet">
+    <div class="m-sheet-handle"></div>
+    <div class="m-sheet-header">
+      <span class="m-sheet-title">集字</span>
+      <button class="m-sheet-close" id="m-jiza-close">✕</button>
+    </div>
+    <div class="m-sheet-body">
+      <div id="m-jiza-slots"></div>
+      <div id="m-jiza-actions">
+        <button class="m-action-btn" id="m-btn-jiza-editor">✎ 편집기</button>
+        <button class="m-action-btn primary" id="m-btn-jiza-save">↓ 저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 글자 상세 시트 -->
+<div class="m-sheet-overlay" id="m-detail-sheet">
+  <div class="m-sheet">
+    <div class="m-sheet-handle"></div>
+    <div class="m-sheet-header">
+      <span class="m-sheet-title" id="m-detail-title">—</span>
+      <button class="m-sheet-close" id="m-detail-close">✕</button>
+    </div>
+    <div class="m-sheet-body" id="m-detail-body"></div>
+  </div>
+</div>
+
+<!-- 페이지 글자 상세 시트 (페이지탭에서 글자 클릭 시) -->
+<div class="m-sheet-overlay" id="m-page-detail-sheet">
+  <div class="m-sheet">
+    <div class="m-sheet-handle"></div>
+    <div class="m-sheet-header">
+      <span class="m-sheet-title" id="m-page-detail-title">—</span>
+      <button class="m-sheet-close" id="m-page-detail-close">✕</button>
+    </div>
+    <div class="m-sheet-body" id="m-page-detail-body"></div>
+  </div>
+</div>
+
+<!-- 설정 시트 -->
+<div class="m-sheet-overlay" id="m-settings-sheet">
+  <div class="m-sheet">
+    <div class="m-sheet-handle"></div>
+    <div class="m-sheet-header">
+      <span class="m-sheet-title">설정</span>
+      <button class="m-sheet-close" id="m-settings-close">✕</button>
+    </div>
+    <div class="m-sheet-body">
+      <!-- 테마 -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">테마</div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">라이트 / 다크</span>
+          <button class="m-action-btn" id="m-btn-theme-toggle" style="flex:0;min-width:80px;height:32px;font-size:12px;">전환</button>
+        </div>
+      </div>
+      <!-- DB -->
+      <div class="m-settings-group">
+        <div class="m-settings-group-label">데이터</div>
+        <div class="m-settings-row">
+          <span class="m-settings-label">DB.json 불러오기</span>
+          <button class="m-action-btn" id="m-btn-load-db2" style="flex:0;min-width:80px;height:32px;font-size:12px;">열기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ END MOBILE UI ══════════════════════════════════════════ -->
+
+</div>
+
+<!-- Help modal -->
+<div id="help-overlay">
+  <div id="help-box">
+    <h2>단축키 도움말</h2>
+    <div class="help-group">
+      <div class="help-group-title">검색</div>
+      <div class="help-row"><span class="desc">검색창 포커스</span><span><kbd>/</kbd></span></div>
+      <div class="help-row"><span class="desc">검색 초기화</span><span><kbd>Escape</kbd></span></div>
+    </div>
+    <div class="help-group">
+      <div class="help-group-title">카드 탐색</div>
+      <div class="help-row"><span class="desc">이전 / 다음 카드</span><span><kbd>Alt+←</kbd><kbd>Alt+→</kbd></span></div>
+      <div class="help-group-title" style="margin-top:10px">集字</div>
+      <div class="help-row"><span class="desc">集字 패널 열기/닫기</span><span><kbd>Alt+J</kbd></span></div>
+      <div class="help-row"><span class="desc">선택 글자 인스턴스 전환</span><span><kbd>[</kbd><kbd>]</kbd></span></div>
+      <div class="help-row"><span class="desc">集字 이미지 저장</span><span><kbd>Alt+S</kbd></span></div>
+      <div class="help-row"><span class="desc">集字 편집기 열기/닫기</span><span><kbd>Alt+E</kbd></span></div>
+    </div>
+    <div class="help-group">
+      <div class="help-group-title">페이지 보기</div>
+      <div class="help-row"><span class="desc">패널 열기/닫기</span><span><kbd>Alt+P</kbd></span></div>
+      <div class="help-row"><span class="desc">이전 / 다음 페이지</span><span><kbd>Alt+,</kbd> <kbd>Alt+.</kbd></span></div>
+    </div>
+    <div class="help-group">
+      <div class="help-group-title">기타</div>
+      <div class="help-row"><span class="desc">테마 전환</span><span><kbd>Shift+T</kbd></span></div>
+      <div class="help-row"><span class="desc">도움말</span><span><kbd>/</kbd> (검색창 외)</span></div>
+    </div>
+    <div id="help-close">닫기 (Escape)</div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const S = {
+  sections: [],
+  currentSection: null,
+  data: null,           // loaded data.json
+  query: '',
+  selectedCard: null,   // { char, page, col, row, variant, idx }
+  activeCardIdx: -1,    // index in current result cards
+  resultCards: [],      // flat list of rendered card elements
+  jizaOpen: false,
+  jizaSlots: [],        // [{ char, instances:[], currentIdx:0 }]
+  theme: localStorage.getItem('jaha-theme') || 'dark',
+};
+
+// ── DOM ────────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const searchInput = $('search-input');
+const searchClear = $('search-clear');
+const resultsScroll = $('results-scroll');
+const resultsCount = $('results-count');
+const detailContent = $('detail-content');
+const detailEmpty = $('detail-empty');
+const jizaPanel = $('jiza-panel');
+const jizaChars = $('jiza-chars');
+const sectionTabs = $('section-tabs');
+const loadingBar = $('loading-bar');
+
+
+// ── DB File Load ───────────────────────────────────────────────────────────
+document.getElementById('btn-load-db').addEventListener('click', () => {
+  document.getElementById('db-file-input').click();
+});
+
+document.getElementById('db-file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      // 현재 섹터에 데이터 주입
+      S.data = data;
+      S.query = '';
+      searchInput.value = '';
+      searchClear.classList.remove('visible');
+      clearResults();
+      clearDetail();
+      closeJiza();
+      showMsg(`"${data.metadata?.title || file.name}" 로드 완료`);
+      pbUpdateNavBtns();
+      if (PB.open) pbRender();
+      mOnDataLoad();
+      // 탭 제목도 업데이트
+      const activeTab = document.querySelector('.section-tab.active');
+      if (activeTab && data.metadata?.title) {
+        activeTab.childNodes[0].textContent = data.metadata.title;
+      }
+    } catch(err) {
+      showMsg('JSON 파싱 오류: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = ''; // 같은 파일 재선택 가능하게
+});
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+function applyTheme(t) {
+  S.theme = t;
+  document.body.classList.toggle('light-theme', t === 'light');
+  $('btn-theme').textContent = t === 'light' ? '◑' : '◐';
+  localStorage.setItem('jaha-theme', t);
+}
+applyTheme(S.theme);
+
+// ── Loading bar ────────────────────────────────────────────────────────────
+function setLoading(v) {
+  loadingBar.style.transform = v ? 'scaleX(0.7)' : 'scaleX(1)';
+  if (!v) setTimeout(() => { loadingBar.style.transform = 'scaleX(0)'; }, 300);
+}
+
+// ── Config & data loading ──────────────────────────────────────────────────
+async function init() {
+  setLoading(true);
+  try {
+    // Hardcoded section registry — add new sections here
+    const config = {
+      sections: [
+        {
+          id: 'doin',
+          title: '道因法師碑',
+          subtitle: '구양통 해서 · 당',
+          dataPath: './도인법사비/DB.json',
+          imageBase: './도인법사비/'
+        }
+      ]
+    };
+    S.sections = config.sections || [];
+    buildTabs();
+    if (S.sections.length > 0) await loadSection(S.sections[0]);
+  } catch(e) {
+    console.error(e);
+    showMsg('데이터를 불러올 수 없습니다');
+  }
+  setLoading(false);
+}
+
+function buildTabs() {
+  sectionTabs.innerHTML = '';
+  S.sections.forEach((sec, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'section-tab' + (i === 0 ? ' active' : '');
+    tab.innerHTML = `${sec.title}<span class="tab-sub">${sec.subtitle || ''}</span>`;
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      loadSection(sec);
+    });
+    sectionTabs.appendChild(tab);
+  });
+}
+
+async function loadSection(sec) {
+  S.currentSection = sec;
+  S.data = null;
+  S.query = '';
+  searchInput.value = '';
+  searchClear.classList.remove('visible');
+  clearResults();
+  clearDetail();
+  closeJiza();
+
+  setLoading(true);
+  try {
+    let data;
+    try {
+      const r = await fetch(sec.dataPath);
+      data = await r.json();
+    } catch {
+      showMsg('DB.json을 찾을 수 없습니다<br><small style="color:var(--fg4)">상단 "DB 불러오기" 버튼으로 파일을 선택하세요</small>');
+      setLoading(false);
+      return;
+    }
+    S.data = data;
+    showMsg('검색창에 한자를 입력하세요');
+  } catch(e) {
+    showMsg('데이터 로드 실패');
+  }
+  setLoading(false);
+}
+
+// ── Image path ─────────────────────────────────────────────────────────────
+function imgPath(page, col, row) {
+  if (!S.currentSection) return null;
+  return `${S.currentSection.imageBase}page-${page}/${page}-${col}-${row}.png`;
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim();
+  searchClear.classList.toggle('visible', q.length > 0);
+  S.query = q;
+  if (!q) { clearResults(); showMsg('검색창에 한자를 입력하세요'); clearDetail(); closeJiza(); return; }
+  if ([...q].length > 1) {
+    // 集字 mode
+    runJiza(q);
+  } else {
+    closeJiza();
+    runSearch(q);
+  }
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchInput.dispatchEvent(new Event('input'));
+  searchInput.focus();
+});
+
+function runSearch(char) {
+  if (!S.data) return;
+  const positions = S.data.positions?.[char] || [];
+  clearResults();
+  if (positions.length === 0) {
+    showMsg(`'${char}' 검색 결과 없음`);
+    resultsCount.textContent = '0건';
+    return;
+  }
+  resultsCount.textContent = `${positions.length}건`;
+  S.resultCards = [];
+
+  // Group by variant
+  const byVariant = {};
+  positions.forEach(([page, col, row, variant]) => {
+    const k = variant ?? 0;
+    if (!byVariant[k]) byVariant[k] = [];
+    byVariant[k].push({ page, col, row, variant: k });
+  });
+
+  Object.entries(byVariant).forEach(([v, items], gi) => {
+    const group = document.createElement('div');
+    group.className = 'result-group';
+    if (Object.keys(byVariant).length > 1) {
+      const lbl = document.createElement('div');
+      lbl.className = 'result-group-label';
+      lbl.textContent = `이형 ${parseInt(v)}`;
+      group.appendChild(lbl);
+    }
+    items.forEach((item, ii) => {
+      const card = makeCard(char, item, gi * 100 + ii);
+      group.appendChild(card);
+      S.resultCards.push(card);
+    });
+    resultsScroll.appendChild(group);
+  });
+
+  // Auto-select first
+  if (S.resultCards.length > 0) {
+    S.activeCardIdx = 0;
+    S.resultCards[0].click();
+  }
+}
+
+function makeCard(char, { page, col, row, variant }, delay = 0) {
+  const charData = S.data.characters?.[char] || {};
+  const card = document.createElement('div');
+  card.className = 'result-card';
+  card.style.animationDelay = `${delay * 30}ms`;
+
+  const reading = charData.korean?.[0] || '';
+  const path = imgPath(page, col, row);
+
+  card.innerHTML = `
+    <div class="card-img-wrap">
+      <img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span class=card-img-placeholder>${char}</span>'">
+    </div>
+    <div class="card-info">
+      <div class="card-char">${char}</div>
+      <div class="card-reading">${reading}</div>
+      <div class="card-pos">p.${page} · ${col}열 ${row}행</div>
+    </div>
+    ${variant > 0 ? `<div class="card-variant-badge">이형${variant}</div>` : ''}
+  `;
+  card.addEventListener('click', () => {
+    S.resultCards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    S.activeCardIdx = S.resultCards.indexOf(card);
+    S.selectedCard = { char, page, col, row, variant };
+    showDetail(char, { page, col, row, variant });
+  });
+  return card;
+}
+
+// ── Detail ─────────────────────────────────────────────────────────────────
+function showDetail(char, { page, col, row, variant }) {
+  const charData = S.data.characters?.[char] || {};
+  const positions = S.data.positions?.[char] || [];
+  const path = imgPath(page, col, row);
+
+  detailEmpty.style.display = 'none';
+  detailContent.classList.add('visible');
+
+  const readings = charData.korean?.join(' · ') || '—';
+  const radical = charData.radical || '—';
+  const components = charData.components || [];
+  const variants = charData.variants || [];
+  const memo = charData.memo || '';
+
+  detailContent.innerHTML = `
+    <div class="detail-two-col">
+
+      <!-- 왼쪽: 이미지 + 글자 + 위치 -->
+      <div class="detail-left-col">
+        <div class="detail-img-large">
+          <img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span class=placeholder-char>${char}</span>'">
+        </div>
+        <div>
+          <div class="detail-char-display">${char}</div>
+          <div class="detail-reading">${readings}</div>
+          <div class="detail-pos-info">p.${page} · ${col}열 ${row}행${variant > 0 ? ` · 이형${variant}` : ''}</div>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 기본 정보 + 이체자 + 메모 -->
+      <div class="detail-right-col">
+
+        ${radical !== '—' ? `
+        <div class="detail-section">
+          <div class="detail-section-label">기본 정보</div>
+          <div class="detail-row">
+            <span class="detail-row-key">부수</span>
+            <span class="detail-row-val" style="font-family:'Noto Serif SC',serif;font-size:18px">${radical}</span>
+          </div>
+          ${components.length ? `
+          <div class="detail-row">
+            <span class="detail-row-key">구성 요소</span>
+            <span class="detail-row-val">
+              <div class="component-chips">${components.map(c => `<span class="component-chip">${c}</span>`).join('')}</div>
+            </span>
+          </div>` : ''}
+        </div>` : ''}
+
+        ${variants.length ? `
+        <div class="detail-section">
+          <div class="detail-section-label">이체자</div>
+          <div class="variant-chips">${variants.map(v => `<span class="variant-chip" data-char="${v}">${v}</span>`).join('')}</div>
+        </div>` : ''}
+
+        ${memo ? `
+        <div class="detail-section">
+          <div class="detail-section-label">메모</div>
+          <div class="detail-memo">${memo}</div>
+        </div>` : ''}
+
+        <div class="detail-section">
+          <div class="detail-section-label">전체 출현 (${positions.length}회)</div>
+          <div class="instances-grid" id="instances-grid"></div>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  // Build instances grid
+  const grid = detailContent.querySelector('#instances-grid');
+  positions.forEach(([p, c, r, v], i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'instance-thumb' + (p === page && c === col && r === row ? ' selected' : '');
+    const ipath = imgPath(p, c, r);
+    thumb.innerHTML = `
+      <img src="${ipath}" alt="${char}" onerror="this.style.opacity=0.3">
+      <span class="inst-pos">${p}·${c}·${r}</span>
+    `;
+    thumb.addEventListener('click', () => {
+      // Find and click matching card
+      const cardEl = S.resultCards.find(card => {
+        const pos = card.querySelector('.card-pos')?.textContent || '';
+        return pos.includes(`p.${p}`) && pos.includes(`${c}열`) && pos.includes(`${r}행`);
+      });
+      if (cardEl) {
+        cardEl.click();
+        cardEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    });
+    grid.appendChild(thumb);
+  });
+
+  // Variant chip click
+  detailContent.querySelectorAll('.variant-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      searchInput.value = chip.dataset.char;
+      searchInput.dispatchEvent(new Event('input'));
+    });
+  });
+}
+
+function clearDetail() {
+  detailEmpty.style.display = 'flex';
+  detailContent.classList.remove('visible');
+  detailContent.innerHTML = '';
+  S.selectedCard = null;
+}
+
+function clearResults() {
+  resultsScroll.innerHTML = '';
+  S.resultCards = [];
+  S.activeCardIdx = -1;
+  resultsCount.textContent = '—';
+}
+
+function showMsg(msg) {
+  resultsScroll.innerHTML = `<div class="state-msg"><span class="big">字</span>${msg}</div>`;
+}
+
+// ── 集字 ───────────────────────────────────────────────────────────────────
+function runJiza(str) {
+  const chars = [...str].filter(c => c.trim() && c !== '/0');
+  S.jizaSlots = chars.map(ch => {
+    const positions = S.data?.positions?.[ch] || [];
+    return { char: ch, instances: positions, currentIdx: 0 };
+  });
+  openJiza();
+  renderJiza();
+
+  // Also show search results for first char
+  if (chars.length > 0) runSearch(chars[0]);
+}
+
+function openJiza() {
+  S.jizaOpen = true;
+  jizaPanel.classList.add('open');
+}
+function closeJiza() {
+  S.jizaOpen = false;
+  jizaPanel.classList.remove('open');
+  S.jizaSlots = [];
+}
+
+function renderJiza() {
+  jizaChars.innerHTML = '';
+  S.jizaSlots.forEach((slot, si) => {
+    const hasInst = slot.instances.length > 0;
+    const inst = hasInst ? slot.instances[slot.currentIdx] : null;
+    const path = inst ? imgPath(inst[0], inst[1], inst[2]) : null;
+    const total = slot.instances.length;
+
+    const slotEl = document.createElement('div');
+    slotEl.className = 'jiza-char-slot';
+    slotEl.innerHTML = `
+      <div class="jiza-img-box">
+        ${path
+          ? `<img src="${path}" alt="${slot.char}" onerror="this.parentNode.innerHTML='<span class=missing>${slot.char}</span>'">`
+          : `<span class="missing">${slot.char}</span>`}
+      </div>
+      <div class="jiza-nav">
+        <button class="jiza-nav-btn" data-si="${si}" data-dir="-1">‹</button>
+        <span class="jiza-nav-idx">${hasInst ? slot.currentIdx+1+'/'+total : '0'}</span>
+        <button class="jiza-nav-btn" data-si="${si}" data-dir="1">›</button>
+      </div>
+      <div class="jiza-char-label">${slot.char}</div>
+    `;
+    // 슬롯 이미지 클릭 → 상세 패널
+    const imgBox = slotEl.querySelector('.jiza-img-box');
+    imgBox.style.cursor = 'pointer';
+    imgBox.addEventListener('click', () => {
+      if (!inst) return;
+      showDetail(slot.char, { page: inst[0], col: inst[1], row: inst[2], variant: inst[3] ?? 0 });
+    });
+
+    jizaChars.appendChild(slotEl);
+  });
+
+  jizaChars.querySelectorAll('.jiza-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const si = parseInt(btn.dataset.si);
+      const dir = parseInt(btn.dataset.dir);
+      const slot = S.jizaSlots[si];
+      if (!slot.instances.length) return;
+      slot.currentIdx = (slot.currentIdx + dir + slot.instances.length) % slot.instances.length;
+      renderJiza();
+    });
+  });
+}
+
+// 集字 download
+$('btn-jiza-download').addEventListener('click', downloadJiza);
+async function downloadJiza() {
+  if (!S.jizaSlots.length) return;
+  const size = 120;
+  const gap = 8;
+  const total = S.jizaSlots.length;
+  const cw = total * size + (total - 1) * gap;
+  const ch = size;
+  const cv = document.createElement('canvas');
+  cv.width = cw; cv.height = ch;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, cw, ch);
+
+  for (let i = 0; i < S.jizaSlots.length; i++) {
+    const slot = S.jizaSlots[i];
+    if (!slot.instances.length) continue;
+    const inst = slot.instances[slot.currentIdx];
+    const path = imgPath(inst[0], inst[1], inst[2]);
+    try {
+      const img = await loadImg(path);
+      const x = i * (size + gap);
+      ctx.drawImage(img, x, 0, size, size);
+    } catch {}
+  }
+
+  const a = document.createElement('a');
+  a.href = cv.toDataURL('image/png');
+  a.download = `집자_${[...S.jizaSlots.map(s=>s.char)].join('')}.png`;
+  a.click();
+}
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = src;
+  });
+}
+
+$('jiza-close').addEventListener('click', () => {
+  closeJiza();
+  if ([...S.query].length <= 1) return;
+  searchInput.value = '';
+  searchInput.dispatchEvent(new Event('input'));
+});
+
+
+// ── 集字 Editor ────────────────────────────────────────────────────────────
+const ED = {
+  open: false,
+  wMm: 350, hMm: 690,
+  orient: 'portrait',
+  scale: 1,
+  viewZoom: 1,
+  viewPanX: 0, viewPanY: 0,
+  DPI: 3.7795,
+  items: [],
+  selected: -1,
+  dragging: false,
+  dragOffX: 0, dragOffY: 0,
+  dragStartX: 0, dragStartY: 0,
+  panning: false,
+  panStartX: 0, panStartY: 0,
+  panOriginX: 0, panOriginY: 0,
+  spaceDown: false,
+  snapDist: 12,
+  // snap guide lines drawn during alt-drag
+  snapGuides: [],   // [{type:'x'|'y', v:number}]
+  altDragging: false,
+  // grid settings
+  grid: {
+    visible: true,
+    sizeMm: 10,       // grid cell size in mm
+    offsetXMm: 0,
+    offsetYMm: 0,
+    color: 'rgba(180,210,255,0.45)',
+    snapToGrid: false,
+  },
+};
+const PRESETS = {
+  '350,690':  [350,690],
+  '350,1380': [350,1380],
+  '700,1380': [700,1380],
+  '210,297':  [210,297],
+  '297,420':  [297,420],
+};
+
+function edCanvas() { return document.getElementById('editor-canvas'); }
+function edCtx()    { return edCanvas().getContext('2d'); }
+
+function edCanvasWPx() { return Math.round(ED.wMm * ED.scale); }
+function edCanvasHPx() { return Math.round(ED.hMm * ED.scale); }
+
+function openEditor() {
+  if (!S.jizaSlots.length) return;
+  ED.open = true;
+  ED.items = [];
+  ED.selected = -1;
+  document.getElementById('editor-overlay').classList.add('open');
+  edApplyDimensions();
+  edInitItems();
+  edRenderSlotsList();
+  edDraw();
+}
+
+function closeEditor() {
+  ED.open = false;
+  document.getElementById('editor-overlay').classList.remove('open');
+}
+
+function edApplyDimensions() {
+  // Canvas pixels = actual mm * DPI for full quality
+  // But render at DPI so 1 canvas px = 1 output px
+  // Display via CSS transform scale for zoom
+  const cv = edCanvas();
+  // Use 2px per mm as base (good quality, manageable size)
+  ED.scale = 2;
+  cv.width  = Math.round(ED.wMm * ED.scale);
+  cv.height = Math.round(ED.hMm * ED.scale);
+  // Fit initial viewZoom so canvas fits in area
+  const area = document.getElementById('editor-canvas-area');
+  const areaW = area.clientWidth  || 700;
+  const areaH = area.clientHeight || 560;
+  const fitZ = Math.min((areaW - 48) / cv.width, (areaH - 48) / cv.height, 1);
+  ED.viewZoom = fitZ;
+  ED.viewPanX = 0; ED.viewPanY = 0;
+  edApplyViewTransform();
+  document.getElementById('editor-w').value = ED.wMm;
+  document.getElementById('editor-h').value = ED.hMm;
+}
+
+function edApplyViewTransform() {
+  const wrap = document.getElementById('editor-canvas-wrap');
+  wrap.style.transform = `translate(${ED.viewPanX}px, ${ED.viewPanY}px) scale(${ED.viewZoom})`;
+  wrap.style.transformOrigin = '0 0';
+}
+
+// Convert screen coords → canvas px
+function edScreenToCanvas(sx, sy) {
+  const area = document.getElementById('editor-canvas-area');
+  const rect  = area.getBoundingClientRect();
+  const wrap  = document.getElementById('editor-canvas-wrap');
+  const wrect = wrap.getBoundingClientRect();
+  return {
+    x: (sx - wrect.left) / ED.viewZoom,
+    y: (sy - wrect.top)  / ED.viewZoom,
+  };
+}
+
+function edInitItems() {
+  const cw = edCanvas().width;
+  const ch = edCanvas().height;
+  const cellSizeMm = Math.min(ED.wMm / Math.max(S.jizaSlots.length, 1), ED.hMm * 0.8);
+  const cellPx = Math.round(cellSizeMm * ED.scale);
+  const totalW = cellPx * S.jizaSlots.length;
+  const startX = Math.round((cw - totalW) / 2);
+  const startY = Math.round((ch - cellPx) / 2);
+
+  ED.items = S.jizaSlots.map((slot, i) => {
+    const inst = slot.instances.length ? slot.instances[slot.currentIdx] : null;
+    const src  = inst ? imgPath(inst[0], inst[1], inst[2]) : null;
+    const item = {
+      char: slot.char,
+      src,
+      x: startX + i * cellPx,
+      y: startY,
+      w: cellPx,
+      h: cellPx,
+      img: null,
+    };
+    if (src) {
+      const im = new Image();
+      im.onload = () => { item.img = im; edDraw(); edRenderSlotsList(); };
+      im.onerror = () => {};
+      im.src = src;
+    }
+    return item;
+  });
+}
+
+function edDraw() {
+  const cv = edCanvas();
+  const ctx = edCtx();
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, cv.width, cv.height);
+
+  // ── Grid ──
+  const g = ED.grid;
+  if (g.visible && g.sizeMm > 0) {
+    const gPx = g.sizeMm * ED.scale;
+    const offX = (g.offsetXMm * ED.scale) % gPx;
+    const offY = (g.offsetYMm * ED.scale) % gPx;
+    ctx.save();
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([]);
+    for (let x = offX; x <= cv.width; x += gPx) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cv.height); ctx.stroke();
+    }
+    for (let y = offY; y <= cv.height; y += gPx) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cv.width, y); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // ── Items ──
+  ED.items.forEach((item, i) => {
+    if (item.img) {
+      ctx.drawImage(item.img, item.x, item.y, item.w, item.h);
+    } else {
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(item.x, item.y, item.w, item.h);
+      ctx.fillStyle = '#aaa';
+      ctx.font = `${Math.round(item.w * 0.5)}px 'Noto Serif SC', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.char, item.x + item.w/2, item.y + item.h/2);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+    }
+    // Selection highlight
+    if (i === ED.selected) {
+      ctx.save();
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.strokeRect(item.x - 1, item.y - 1, item.w + 2, item.h + 2);
+      // 8 handles
+      const hs = 7;
+      const handles = [
+        [item.x - hs/2,            item.y - hs/2],
+        [item.x + item.w/2 - hs/2, item.y - hs/2],
+        [item.x + item.w - hs/2,   item.y - hs/2],
+        [item.x + item.w - hs/2,   item.y + item.h/2 - hs/2],
+        [item.x + item.w - hs/2,   item.y + item.h - hs/2],
+        [item.x + item.w/2 - hs/2, item.y + item.h - hs/2],
+        [item.x - hs/2,            item.y + item.h - hs/2],
+        [item.x - hs/2,            item.y + item.h/2 - hs/2],
+      ];
+      ctx.fillStyle = '#fff';
+      handles.forEach(([hx,hy]) => {
+        ctx.fillRect(hx, hy, hs, hs);
+        ctx.strokeRect(hx, hy, hs, hs);
+      });
+      ctx.restore();
+    }
+  });
+
+  // ── Snap guide lines (alt-drag) ──
+  if (ED.snapGuides.length > 0) {
+    ctx.save();
+    ctx.strokeStyle = '#ff3b82';  // hot pink — highly visible
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ED.snapGuides.forEach(g => {
+      if (g.type === 'x') {
+        ctx.beginPath(); ctx.moveTo(g.v, 0); ctx.lineTo(g.v, cv.height); ctx.stroke();
+        // Triangle marker
+        ctx.fillStyle = '#ff3b82';
+        ctx.beginPath();
+        ctx.moveTo(g.v, 8); ctx.lineTo(g.v - 5, 0); ctx.lineTo(g.v + 5, 0);
+        ctx.closePath(); ctx.fill();
+      } else {
+        ctx.beginPath(); ctx.moveTo(0, g.v); ctx.lineTo(cv.width, g.v); ctx.stroke();
+        ctx.fillStyle = '#ff3b82';
+        ctx.beginPath();
+        ctx.moveTo(8, g.v); ctx.lineTo(0, g.v - 5); ctx.lineTo(0, g.v + 5);
+        ctx.closePath(); ctx.fill();
+      }
+    });
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+}
+
+function edRenderSlotsList() {
+  const list = document.getElementById('editor-slots-scroll');
+  if (!list) return;
+  list.innerHTML = '';
+  ED.items.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'editor-slot-item' + (i === ED.selected ? ' selected' : '');
+    const thumbHtml = item.img
+      ? `<img src="${item.src}" alt="${item.char}">`
+      : `<span style="font-family:'Noto Serif SC',serif;font-size:18px;color:var(--fg3)">${item.char}</span>`;
+    el.innerHTML = `
+      <div class="editor-slot-thumb">${thumbHtml}</div>
+      <div class="editor-slot-info">
+        <div class="editor-slot-char">${item.char}</div>
+        <div class="editor-slot-size">${item.w}×${item.h}px</div>
+      </div>
+    `;
+    el.addEventListener('click', () => {
+      ED.selected = i;
+      edDraw();
+      edRenderSlotsList();
+      edUpdateSizeInputs();
+    });
+    list.appendChild(el);
+  });
+}
+
+function edUpdateSizeInputs() {
+  if (ED.selected < 0) return;
+  const item = ED.items[ED.selected];
+  document.getElementById('editor-char-w').value = item.w;
+  document.getElementById('editor-char-h').value = item.h;
+}
+
+// Canvas mouse events — coords in canvas px
+function edGetMousePos(e) {
+  return edScreenToCanvas(e.clientX, e.clientY);
+}
+function edHitTest(mx, my) {
+  // Test in reverse order (top items first)
+  for (let i = ED.items.length - 1; i >= 0; i--) {
+    const it = ED.items[i];
+    if (mx >= it.x && mx <= it.x+it.w && my >= it.y && my <= it.y+it.h) return i;
+  }
+  return -1;
+}
+function edIsOnResizeHandle(item, mx, my) {
+  const hs = 10;
+  return mx >= item.x+item.w-hs && mx <= item.x+item.w+2 &&
+         my >= item.y+item.h-hs && my <= item.y+item.h+2;
+}
+
+let edResizing = false;
+let edResizeStart = null;
+
+// Snap helpers — returns snapped value and records guide
+function edSnapX(item, nx, skipIdx) {
+  const cv = edCanvas();
+  // Edge targets: left edge of item, right edge of item
+  const tests = [
+    { v: 0,                          result: 0 },
+    { v: cv.width,                   result: cv.width - item.w },
+    { v: cv.width / 2,               result: cv.width / 2 - item.w / 2 },
+  ];
+  // Grid snap
+  const g = ED.grid;
+  if (g.visible && g.snapToGrid && g.sizeMm > 0) {
+    const gPx = g.sizeMm * ED.scale;
+    const offX = (g.offsetXMm * ED.scale) % gPx;
+    const nearest = Math.round((nx - offX) / gPx) * gPx + offX;
+    tests.push({ v: nearest, result: nearest });
+  }
+  ED.items.forEach((it, i) => {
+    if (i === skipIdx) return;
+    tests.push(
+      { v: it.x,              result: it.x },
+      { v: it.x + it.w,      result: it.x + it.w },
+      { v: it.x + it.w,      result: it.x + it.w - item.w },
+      { v: it.x,              result: it.x - item.w },
+      { v: it.x + it.w/2,    result: it.x + it.w/2 - item.w/2 },
+    );
+  });
+  for (const t of tests) {
+    if (Math.abs(nx - t.result) < ED.snapDist) {
+      ED.snapGuides.push({ type: 'x', v: t.v });
+      return t.result;
+    }
+  }
+  return nx;
+}
+function edSnapY(item, ny, skipIdx) {
+  const cv = edCanvas();
+  const tests = [
+    { v: 0,                          result: 0 },
+    { v: cv.height,                  result: cv.height - item.h },
+    { v: cv.height / 2,              result: cv.height / 2 - item.h / 2 },
+  ];
+  const g = ED.grid;
+  if (g.visible && g.snapToGrid && g.sizeMm > 0) {
+    const gPx = g.sizeMm * ED.scale;
+    const offY = (g.offsetYMm * ED.scale) % gPx;
+    const nearest = Math.round((ny - offY) / gPx) * gPx + offY;
+    tests.push({ v: nearest, result: nearest });
+  }
+  ED.items.forEach((it, i) => {
+    if (i === skipIdx) return;
+    tests.push(
+      { v: it.y,              result: it.y },
+      { v: it.y + it.h,      result: it.y + it.h },
+      { v: it.y + it.h,      result: it.y + it.h - item.h },
+      { v: it.y,              result: it.y - item.h },
+      { v: it.y + it.h/2,    result: it.y + it.h/2 - item.h/2 },
+    );
+  });
+  for (const t of tests) {
+    if (Math.abs(ny - t.result) < ED.snapDist) {
+      ED.snapGuides.push({ type: 'y', v: t.v });
+      return t.result;
+    }
+  }
+  return ny;
+}
+
+const edArea = document.getElementById('editor-canvas-area');
+
+// Space key pan
+document.getElementById('editor-overlay').addEventListener('keydown', e => {
+  if (e.code === 'Space') { ED.spaceDown = true; e.preventDefault(); }
+}, true);
+document.getElementById('editor-overlay').addEventListener('keyup', e => {
+  if (e.code === 'Space') ED.spaceDown = false;
+}, true);
+
+// Wheel zoom
+edArea.addEventListener('wheel', e => {
+  e.preventDefault();
+  const f = e.deltaY < 0 ? 1.1 : 0.91;
+  ED.viewZoom = Math.max(0.05, Math.min(8, ED.viewZoom * f));
+  edApplyViewTransform();
+}, { passive: false });
+
+// Pan mousedown on area (space held OR middle button)
+edArea.addEventListener('mousedown', e => {
+  if (ED.spaceDown || e.button === 1) {
+    ED.panning = true;
+    ED.panStartX = e.clientX;
+    ED.panStartY = e.clientY;
+    ED.panOriginX = ED.viewPanX;
+    ED.panOriginY = ED.viewPanY;
+    edArea.style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+});
+
+document.getElementById('editor-canvas').addEventListener('mousedown', e => {
+  if (ED.spaceDown) return; // Let area handler take it
+  const { x, y } = edGetMousePos(e);
+  if (ED.selected >= 0) {
+    const item = ED.items[ED.selected];
+    if (edIsOnResizeHandle(item, x, y)) {
+      edResizing = true;
+      edResizeStart = { x, y, w: item.w, h: item.h };
+      return;
+    }
+  }
+  const hit = edHitTest(x, y);
+  if (hit >= 0) {
+    ED.selected = hit;
+    ED.dragging = true;
+    ED.dragOffX = x - ED.items[hit].x;
+    ED.dragOffY = y - ED.items[hit].y;
+    // Store drag start for shift-constrain
+    ED.dragStartX = ED.items[hit].x;
+    ED.dragStartY = ED.items[hit].y;
+    edDraw();
+    edRenderSlotsList();
+    edUpdateSizeInputs();
+  } else {
+    ED.selected = -1;
+    edDraw();
+    edRenderSlotsList();
+  }
+});
+
+document.addEventListener('mousemove', e => {
+  // Pan
+  if (ED.panning) {
+    ED.viewPanX = ED.panOriginX + (e.clientX - ED.panStartX);
+    ED.viewPanY = ED.panOriginY + (e.clientY - ED.panStartY);
+    edApplyViewTransform();
+    return;
+  }
+  if (!ED.open) return;
+  const { x, y } = edGetMousePos(e);
+
+  if (edResizing && ED.selected >= 0) {
+    const item = ED.items[ED.selected];
+    const dx = x - edResizeStart.x;
+    const dy = y - edResizeStart.y;
+    item.w = Math.max(20, edResizeStart.w + dx);
+    item.h = Math.max(20, edResizeStart.h + dy);
+    edDraw();
+    edUpdateSizeInputs();
+    edRenderSlotsList();
+    return;
+  }
+  if (ED.dragging && ED.selected >= 0) {
+    const item = ED.items[ED.selected];
+    let nx = x - ED.dragOffX;
+    let ny = y - ED.dragOffY;
+
+    // Shift: constrain to axis
+    if (e.shiftKey) {
+      const dx = Math.abs(nx - ED.dragStartX);
+      const dy = Math.abs(ny - ED.dragStartY);
+      if (dx > dy) ny = ED.dragStartY;
+      else nx = ED.dragStartX;
+    }
+
+    // Alt: snap with guide lines
+    if (e.altKey) {
+      ED.snapGuides = [];  // reset before computing
+      nx = edSnapX(item, nx, ED.selected);
+      ny = edSnapY(item, ny, ED.selected);
+    } else {
+      ED.snapGuides = [];
+    }
+
+    item.x = nx;
+    item.y = ny;
+    edDraw();
+  }
+  // Cursor
+  const cv = edCanvas();
+  if (ED.spaceDown) {
+    cv.style.cursor = 'grab';
+  } else if (ED.selected >= 0 && edIsOnResizeHandle(ED.items[ED.selected], x, y)) {
+    cv.style.cursor = 'nwse-resize';
+  } else if (edHitTest(x,y) >= 0) {
+    cv.style.cursor = 'move';
+  } else {
+    cv.style.cursor = 'default';
+  }
+});
+
+document.addEventListener('mouseup', e => {
+  if (ED.panning) {
+    ED.panning = false;
+    edArea.style.cursor = '';
+  }
+  ED.dragging = false;
+  edResizing = false;
+  edResizeStart = null;
+  ED.snapGuides = [];
+  edDraw();
+});
+
+// Size inputs
+document.getElementById('editor-char-w').addEventListener('input', () => {
+  if (ED.selected < 0) return;
+  ED.items[ED.selected].w = Math.max(10, parseInt(document.getElementById('editor-char-w').value)||100);
+  edDraw(); edRenderSlotsList();
+});
+document.getElementById('editor-char-h').addEventListener('input', () => {
+  if (ED.selected < 0) return;
+  ED.items[ED.selected].h = Math.max(10, parseInt(document.getElementById('editor-char-h').value)||100);
+  edDraw(); edRenderSlotsList();
+});
+
+// Dimension inputs
+document.getElementById('editor-w').addEventListener('change', () => {
+  ED.wMm = Math.max(10, parseInt(document.getElementById('editor-w').value)||350);
+  document.getElementById('editor-preset').value = '';
+  edApplyDimensions(); edDraw();
+});
+document.getElementById('editor-h').addEventListener('change', () => {
+  ED.hMm = Math.max(10, parseInt(document.getElementById('editor-h').value)||690);
+  document.getElementById('editor-preset').value = '';
+  edApplyDimensions(); edDraw();
+});
+
+// Preset
+document.getElementById('editor-preset').addEventListener('change', e => {
+  const v = e.target.value;
+  if (!v) return;
+  const [w, h] = PRESETS[v];
+  const isLandscape = document.querySelector('.orient-btn.active')?.dataset.orient === 'landscape';
+  ED.wMm = isLandscape ? h : w;
+  ED.hMm = isLandscape ? w : h;
+  edApplyDimensions(); edDraw();
+});
+
+// Orientation
+document.querySelectorAll('.orient-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.orient-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const landscape = btn.dataset.orient === 'landscape';
+    if (landscape && ED.wMm < ED.hMm) { [ED.wMm, ED.hMm] = [ED.hMm, ED.wMm]; }
+    if (!landscape && ED.wMm > ED.hMm) { [ED.wMm, ED.hMm] = [ED.hMm, ED.wMm]; }
+    edApplyDimensions(); edDraw();
+  });
+});
+
+// Export
+// Grid settings
+document.getElementById('btn-grid-toggle').addEventListener('click', () => {
+  ED.grid.visible = !ED.grid.visible;
+  document.getElementById('btn-grid-toggle').style.opacity = ED.grid.visible ? '1' : '0.4';
+  edDraw();
+});
+
+document.getElementById('btn-grid-settings').addEventListener('click', (e) => {
+  const pop = document.getElementById('grid-popover');
+  pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+  e.stopPropagation();
+});
+document.getElementById('editor-modal').addEventListener('click', e => {
+  const pop = document.getElementById('grid-popover');
+  if (!pop.contains(e.target) && e.target.id !== 'btn-grid-settings') {
+    pop.style.display = 'none';
+  }
+});
+
+function edUpdateGridColor() {
+  const hex = document.getElementById('grid-color').value;
+  const opacity = parseInt(document.getElementById('grid-opacity').value) / 100;
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  ED.grid.color = `rgba(${r},${g},${b},${opacity})`;
+  edDraw();
+}
+document.getElementById('grid-size').addEventListener('input', e => {
+  ED.grid.sizeMm = Math.max(1, parseFloat(e.target.value)||10);
+  edDraw();
+});
+document.getElementById('grid-offset-x').addEventListener('input', e => {
+  ED.grid.offsetXMm = parseFloat(e.target.value)||0;
+  edDraw();
+});
+document.getElementById('grid-offset-y').addEventListener('input', e => {
+  ED.grid.offsetYMm = parseFloat(e.target.value)||0;
+  edDraw();
+});
+document.getElementById('grid-color').addEventListener('input', edUpdateGridColor);
+document.getElementById('grid-opacity').addEventListener('input', e => {
+  document.getElementById('grid-opacity-val').textContent = e.target.value + '%';
+  edUpdateGridColor();
+});
+document.getElementById('grid-snap').addEventListener('change', e => {
+  ED.grid.snapToGrid = e.target.checked;
+});
+
+document.getElementById('btn-editor-export').addEventListener('click', async () => {
+  // High-res canvas at 96dpi
+  // Output at DPI resolution: scale canvas coords by DPI/scale ratio
+  const outW = Math.round(ED.wMm * ED.DPI);
+  const outH = Math.round(ED.hMm * ED.DPI);
+  const outCv = document.createElement('canvas');
+  outCv.width = outW; outCv.height = outH;
+  const outCtx = outCv.getContext('2d');
+  outCtx.fillStyle = '#ffffff';
+  outCtx.fillRect(0, 0, outW, outH);
+  const ratio = ED.DPI / ED.scale;  // canvas px → output px
+  for (const item of ED.items) {
+    if (!item.img) continue;
+    outCtx.drawImage(item.img,
+      Math.round(item.x * ratio), Math.round(item.y * ratio),
+      Math.round(item.w * ratio), Math.round(item.h * ratio));
+  }
+  const a = document.createElement('a');
+  a.href = outCv.toDataURL('image/png');
+  a.download = `집자_${ED.items.map(i=>i.char).join('')}.png`;
+  a.click();
+});
+
+document.getElementById('btn-editor-close').addEventListener('click', closeEditor);
+document.getElementById('editor-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('editor-overlay')) closeEditor();
+});
+document.getElementById('btn-jiza-edit').addEventListener('click', openEditor);
+
+// ── Keyboard ───────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  const inInput = tag === 'INPUT' || tag === 'TEXTAREA';
+
+  // Editor overlay
+  if (document.getElementById('editor-overlay').classList.contains('open')) {
+    if (e.key === 'Escape') closeEditor();
+    return;
+  }
+
+  // Help overlay open
+  if ($('help-overlay').classList.contains('open')) {
+    if (e.key === 'Escape') closeHelp();
+    return;
+  }
+
+  // / → focus search (if not in input) or open help (if in input? no — help button)
+  if (e.key === '/' && !inInput) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+    return;
+  }
+
+  // Shift+T → theme
+  if (e.key === 'T' && e.shiftKey && !inInput) {
+    applyTheme(S.theme === 'dark' ? 'light' : 'dark');
+    return;
+  }
+
+  // Escape → clear search / close jiza
+  if (e.key === 'Escape') {
+    if (inInput) {
+      searchInput.blur();
+    } else {
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input'));
+    }
+    return;
+  }
+
+  // Alt+← / Alt+→ → card navigation
+  if (e.altKey && !e.shiftKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+    e.preventDefault();
+    const dir = e.key === 'ArrowLeft' ? -1 : 1;
+    const next = S.activeCardIdx + dir;
+    if (next >= 0 && next < S.resultCards.length) {
+      S.resultCards[next].click();
+      S.resultCards[next].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    return;
+  }
+
+  // Alt+P → page panel toggle
+  if (e.altKey && e.key === 'p' && !inInput) { e.preventDefault(); pbToggle(); return; }
+  // Alt+, / Alt+. → prev/next page
+  if (e.altKey && e.key === ',') { e.preventDefault(); pbGoTo(PB.currentPage - 1); return; }
+  if (e.altKey && e.key === '.') { e.preventDefault(); pbGoTo(PB.currentPage + 1); return; }
+
+  // Alt+E → open editor
+  if (e.altKey && e.key === 'e') {
+    e.preventDefault();
+    if (ED.open) closeEditor();
+    else openEditor();
+    return;
+  }
+
+  // Alt+J → toggle 集字
+  if (e.altKey && e.key === 'j' && !inInput) {
+    e.preventDefault();
+    if (S.jizaOpen) closeJiza();
+    else if (S.jizaSlots.length > 0) openJiza();
+    return;
+  }
+
+  // Alt+S → download 集字
+  if (e.altKey && e.key === 's') {
+    e.preventDefault();
+    downloadJiza();
+    return;
+  }
+
+  // [ / ] → cycle 集字 slot instance (cycles focused slot, or all)
+  if ((e.key === '[' || e.key === ']') && S.jizaOpen && !inInput) {
+    e.preventDefault();
+    const dir = e.key === ']' ? 1 : -1;
+    S.jizaSlots.forEach(slot => {
+      if (!slot.instances.length) return;
+      slot.currentIdx = (slot.currentIdx + dir + slot.instances.length) % slot.instances.length;
+    });
+    renderJiza();
+    return;
+  }
+});
+
+// ── Help ───────────────────────────────────────────────────────────────────
+$('btn-help').addEventListener('click', openHelp);
+$('help-close').addEventListener('click', closeHelp);
+$('help-overlay').addEventListener('click', e => { if (e.target === $('help-overlay')) closeHelp(); });
+function openHelp() { $('help-overlay').classList.add('open'); }
+function closeHelp() { $('help-overlay').classList.remove('open'); }
+
+// Theme button
+$('btn-theme').addEventListener('click', () => applyTheme(S.theme === 'dark' ? 'light' : 'dark'));
+
+// ── Demo data (fallback when no files present) ─────────────────────────────
+function getDemoConfig() {
+  return {
+    sections: [{
+      id: 'demo',
+      title: '道因法師碑',
+      subtitle: '구양통 해서 · 당',
+      dataPath: './도인법사비/DB.json',
+      imageBase: './도인법사비/'
+    }]
+  };
+}
+function getDemoData() {
+  return {
+    metadata: { title: '道因法師碑 (데모)', generated: new Date().toISOString() },
+    positions: {
+      '大': [[1,1,1,0],[1,1,6,0],[4,1,5,0]],
+      '唐': [[1,1,2,0]],
+      '故': [[1,1,3,0]],
+      '道': [[1,2,5,0],[3,3,2,0]],
+      '因': [[1,2,6,0]],
+    },
+    characters: {
+      '大': {
+        variants: ['亣','太','𠘲'],
+        radical: '大',
+        components: ['大'],
+        korean: ['클 대','큰 대'],
+        memo: '사람이 팔을 크게 벌린 형태. 亣, 𠘲는 고문(古文)이다.'
+      },
+      '唐': {
+        variants: [],
+        radical: '口',
+        components: ['庚','口'],
+        korean: ['당나라 당','당황할 당'],
+        memo: ''
+      },
+      '道': {
+        variants: ['道','𨑒'],
+        radical: '辵',
+        components: ['首','辵'],
+        korean: ['길 도','도리 도'],
+        memo: '길, 방법, 이치를 뜻한다.'
+      },
+    },
+    pages: {
+      '1': { cells: {'1,1':'大','1,2':'唐','1,3':'故','2,5':'道','2,6':'因'}, imagePath: '' },
+      totalPages: 3,
+      general: { cols: 5, rows: 8, cellRatio: { width: 1, height: 1 } }
+    }
+  };
+}
+
+
+// ── 한자 검색 ──────────────────────────────────────────────────────────────
+const csrInput  = document.getElementById('char-search-input');
+const csrResults = document.getElementById('char-search-results');
+const csrFilterPop = document.getElementById('char-search-filter-pop');
+
+document.getElementById('btn-char-search-filter').addEventListener('click', e => {
+  csrFilterPop.classList.toggle('open');
+  e.stopPropagation();
+});
+document.addEventListener('click', e => {
+  if (!csrFilterPop.contains(e.target) && e.target.id !== 'btn-char-search-filter') {
+    csrFilterPop.classList.remove('open');
+  }
+  if (!document.getElementById('char-search-wrap').contains(e.target)) {
+    csrResults.classList.remove('open');
+  }
+});
+
+csrInput.addEventListener('input', () => {
+  const q = csrInput.value.trim();
+  if (!q || !S.data) { csrResults.classList.remove('open'); return; }
+  const filters = [...document.querySelectorAll('.csr-filter')]
+    .filter(cb => cb.checked).map(cb => cb.dataset.field);
+  if (!filters.length) { csrResults.innerHTML = '<div class="csr-empty">검색 범위를 하나 이상 선택하세요</div>'; csrResults.classList.add('open'); return; }
+
+  const chars = S.data.characters || {};
+  const matches = [];
+  for (const [ch, data] of Object.entries(chars)) {
+    let matchField = null, matchSnippet = '';
+    for (const field of filters) {
+      const val = data[field];
+      if (!val) continue;
+      const haystack = Array.isArray(val) ? val.join(' ') : String(val);
+      if (haystack.includes(q)) { matchField = field; matchSnippet = haystack; break; }
+    }
+    if (matchField) matches.push({ ch, data, matchField, matchSnippet });
+    if (matches.length >= 40) break;
+  }
+
+  if (!matches.length) {
+    csrResults.innerHTML = '<div class="csr-empty">검색 결과 없음</div>';
+    csrResults.classList.add('open'); return;
+  }
+
+  const fieldLabel = { korean:'훈독', radical:'부수', components:'구성요소', variants:'이체자', memo:'메모' };
+  csrResults.innerHTML = '';
+  matches.forEach(({ ch, data, matchField, matchSnippet }) => {
+    const reading = data.korean?.[0] || '';
+    const escaped = q.replace(/[-[\]/{}()*+?.\^$|]/g, '\$&');
+    const hl = matchSnippet.replace(new RegExp(escaped, 'g'), `<span class="csr-hl">${q}</span>`);
+    const btn = document.createElement('button');
+    btn.className = 'csr-item';
+    btn.dataset.char = ch;
+    btn.innerHTML = `
+      <span class="csr-char">${ch}</span>
+      <span class="csr-meta">
+        <span class="csr-reading">${reading}</span>
+        <span class="csr-detail">${fieldLabel[matchField]}: ${hl.slice(0,60)}${hl.length>60?'…':''}</span>
+      </span>`;
+    btn.addEventListener('click', () => {
+      csrInput.value = '';
+      csrResults.classList.remove('open');
+      searchInput.value = ch;
+      searchInput.dispatchEvent(new Event('input'));
+    });
+    csrResults.appendChild(btn);
+  });
+  csrResults.classList.add('open');
+});
+
+csrInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { csrInput.value=''; csrResults.classList.remove('open'); }
+});
+
+// ── 글자 자르기 ────────────────────────────────────────────────────────────
+const CR = {
+  open: false,
+  srcImg: null,    // HTMLImageElement of the source char image
+  srcChar: '',
+  srcSlotIdx: -1,  // which editor item we're cropping
+  // canvas display transform
+  scale: 1,
+  // selection rect (in src image coords)
+  sel: null,       // {x,y,w,h}
+  dragging: false,
+  dragStart: null,
+};
+
+function openCropEditor(slotIdx) {
+  const item = ED.items[slotIdx];
+  if (!item || !item.img) return;
+  CR.open = true;
+  CR.srcImg = item.img;
+  CR.srcChar = item.char;
+  CR.srcSlotIdx = slotIdx;
+  CR.sel = null;
+  document.getElementById('crop-overlay').classList.add('open');
+  document.getElementById('crop-src-char').textContent = item.char;
+  document.getElementById('crop-coords').textContent = '—';
+  document.getElementById('crop-preview').style.display = 'none';
+  crInitCanvas();
+}
+
+function crInitCanvas() {
+  const cv = document.getElementById('crop-canvas');
+  const area = document.getElementById('crop-canvas-area');
+  const img = CR.srcImg;
+  const maxW = area.clientWidth  - 40 || 580;
+  const maxH = area.clientHeight - 40 || 520;
+  CR.scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 3);
+  cv.width  = Math.round(img.naturalWidth  * CR.scale);
+  cv.height = Math.round(img.naturalHeight * CR.scale);
+  crDraw();
+}
+
+function crDraw() {
+  const cv = document.getElementById('crop-canvas');
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.drawImage(CR.srcImg, 0, 0, cv.width, cv.height);
+
+  if (CR.sel) {
+    const { x, y, w, h } = crSelPx();
+    // Dim outside
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0, 0, cv.width, y);
+    ctx.fillRect(0, y+h, cv.width, cv.height - y - h);
+    ctx.fillRect(0, y, x, h);
+    ctx.fillRect(x+w, y, cv.width - x - w, h);
+    // Selection border
+    ctx.strokeStyle = '#ff3b82';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,3]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
+    // Handles
+    const hs = 6;
+    [[x,y],[x+w/2,y],[x+w,y],[x+w,y+h/2],[x+w,y+h],[x+w/2,y+h],[x,y+h],[x,y+h/2]].forEach(([hx,hy])=>{
+      ctx.fillStyle='#fff'; ctx.fillRect(hx-hs/2,hy-hs/2,hs,hs);
+      ctx.strokeStyle='#ff3b82'; ctx.lineWidth=1; ctx.strokeRect(hx-hs/2,hy-hs/2,hs,hs);
+    });
+  }
+}
+
+function crSelPx() {
+  // Return sel in canvas px
+  const s = CR.sel;
+  return {
+    x: Math.round(Math.min(s.x, s.x+s.w) * CR.scale),
+    y: Math.round(Math.min(s.y, s.y+s.h) * CR.scale),
+    w: Math.round(Math.abs(s.w) * CR.scale),
+    h: Math.round(Math.abs(s.h) * CR.scale),
+  };
+}
+
+function crUpdatePreview() {
+  if (!CR.sel) return;
+  const { x, y, w, h } = crSelPx();
+  if (w < 2 || h < 2) return;
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  off.getContext('2d').drawImage(document.getElementById('crop-canvas'), x, y, w, h, 0, 0, w, h);
+  const prev = document.getElementById('crop-preview');
+  prev.src = off.toDataURL();
+  prev.style.display = 'block';
+  // Update coords label (in original image coords)
+  const ix = Math.round(Math.min(CR.sel.x, CR.sel.x+CR.sel.w));
+  const iy = Math.round(Math.min(CR.sel.y, CR.sel.y+CR.sel.h));
+  const iw = Math.round(Math.abs(CR.sel.w));
+  const ih = Math.round(Math.abs(CR.sel.h));
+  document.getElementById('crop-coords').textContent = `${ix},${iy}  ${iw}×${ih}px`;
+}
+
+const cropCv = document.getElementById('crop-canvas');
+cropCv.addEventListener('mousedown', e => {
+  const r = cropCv.getBoundingClientRect();
+  const cx = (e.clientX - r.left) / CR.scale;
+  const cy = (e.clientY - r.top)  / CR.scale;
+  CR.dragging = true;
+  CR.dragStart = { x: cx, y: cy };
+  CR.sel = { x: cx, y: cy, w: 0, h: 0 };
+});
+cropCv.addEventListener('mousemove', e => {
+  if (!CR.dragging) return;
+  const r = cropCv.getBoundingClientRect();
+  const cx = (e.clientX - r.left) / CR.scale;
+  const cy = (e.clientY - r.top)  / CR.scale;
+  CR.sel.w = cx - CR.dragStart.x;
+  CR.sel.h = cy - CR.dragStart.y;
+  crDraw();
+});
+cropCv.addEventListener('mouseup', () => {
+  CR.dragging = false;
+  if (CR.sel && Math.abs(CR.sel.w) > 4 && Math.abs(CR.sel.h) > 4) {
+    crUpdatePreview();
+  } else {
+    CR.sel = null; crDraw();
+  }
+});
+
+document.getElementById('btn-crop-reset').addEventListener('click', () => {
+  CR.sel = null; crDraw();
+  document.getElementById('crop-preview').style.display = 'none';
+  document.getElementById('crop-coords').textContent = '—';
+});
+
+document.getElementById('btn-crop-confirm').addEventListener('click', () => {
+  if (!CR.sel) return;
+  const { x, y, w, h } = crSelPx();
+  if (w < 2 || h < 2) return;
+  // Draw cropped portion to offscreen canvas
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  off.getContext('2d').drawImage(document.getElementById('crop-canvas'), x, y, w, h, 0, 0, w, h);
+  // Create new img
+  const newImg = new Image();
+  newImg.onload = () => {
+    // Add as new item in editor, placed next to original
+    const orig = ED.items[CR.srcSlotIdx];
+    ED.items.push({
+      char: CR.srcChar + '′',
+      src: off.toDataURL(),
+      x: orig ? orig.x + orig.w + 10 : 20,
+      y: orig ? orig.y : 20,
+      w: w, h: h,
+      img: newImg,
+    });
+    ED.selected = ED.items.length - 1;
+    edDraw(); edRenderSlotsList();
+    closeCropEditor();
+  };
+  newImg.src = off.toDataURL();
+});
+
+document.getElementById('btn-crop-close').addEventListener('click', closeCropEditor);
+document.getElementById('crop-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('crop-overlay')) closeCropEditor();
+});
+
+function closeCropEditor() {
+  CR.open = false;
+  document.getElementById('crop-overlay').classList.remove('open');
+}
+
+document.getElementById('btn-open-crop').addEventListener('click', () => {
+  if (ED.selected < 0) { alert('슬롯 목록에서 자를 글자를 먼저 선택하세요'); return; }
+  openCropEditor(ED.selected);
+});
+
+
+// ── Page Browser ───────────────────────────────────────────────────────────
+const PB = { open: false, currentPage: 1, activeCellKey: null };
+
+function pbToggle() {
+  PB.open = !PB.open;
+  document.getElementById('page-panel').classList.toggle('open', PB.open);
+  document.getElementById('btn-page-panel-toggle').textContent = PB.open ? '›' : '頁';
+  if (PB.open && S.data) { pbUpdateNavBtns(); pbRender(); }
+}
+
+function pbGetTotalPages() {
+  return parseInt(S.data?.pages?.totalPages) ||
+    Object.keys(S.data?.pages || {}).filter(k => !isNaN(k)).length;
+}
+
+function pbGoTo(n) {
+  const total = pbGetTotalPages();
+  PB.currentPage = Math.max(1, Math.min(n, total));
+  document.getElementById('page-num-input').value = PB.currentPage;
+  pbUpdateNavBtns();
+  pbRender();
+}
+
+function pbUpdateNavBtns() {
+  const total = pbGetTotalPages();
+  document.getElementById('btn-page-first').disabled = PB.currentPage <= 1;
+  document.getElementById('btn-page-prev').disabled  = PB.currentPage <= 1;
+  document.getElementById('btn-page-next').disabled  = PB.currentPage >= total;
+  document.getElementById('btn-page-last').disabled  = PB.currentPage >= total;
+  document.getElementById('page-total-label').textContent = `/ ${total}`;
+}
+
+function pbRender() {
+  if (!S.data) return;
+  const grid = document.getElementById('page-grid');
+  grid.innerHTML = '';
+  const pageData = S.data.pages?.[String(PB.currentPage)];
+  if (!pageData) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;font-size:12px;color:var(--fg3)">데이터 없음</div>`;
+    return;
+  }
+  const cols = S.data.pages?.general?.cols || 5;
+  const rows = S.data.pages?.general?.rows || 8;
+
+  // row 바깥, col 안쪽 → 한 행씩 왼→오 생성, direction:rtl이 오→왼으로 뒤집음
+  for (let row = 1; row <= rows; row++) {
+    for (let col = 1; col <= cols; col++) {
+      const key = `${col},${row}`;
+      const char = pageData.cells?.[key];
+      const isEmpty = !char || char === '/0';
+      const cell = document.createElement('div');
+      cell.className = 'pg-cell' + (isEmpty ? ' empty' : '') + (key === PB.activeCellKey ? ' active' : '');
+
+      if (isEmpty) {
+        cell.style.background = '#ffffff';
+        cell.style.cursor = 'default';
+        cell.innerHTML = '';
+      } else {
+        const path = imgPath(PB.currentPage, col, row);
+        cell.innerHTML = `
+          <img src="${path}" alt="${char}"
+               onerror="this.parentNode.innerHTML='<span class=pg-cell-char>${char}</span>'">
+          <span class="pg-cell-pos">${col},${row}</span>`;
+        cell.addEventListener('click', () => {
+          document.querySelectorAll('.pg-cell').forEach(c => c.classList.remove('active'));
+          cell.classList.add('active');
+          PB.activeCellKey = key;
+          searchInput.value = char;
+          searchInput.dispatchEvent(new Event('input'));
+          setTimeout(() => {
+            const target = S.resultCards.find(c => {
+              const pos = c.querySelector('.card-pos')?.textContent || '';
+              return pos.includes(`p.${PB.currentPage}`) &&
+                     pos.includes(`${col}열`) && pos.includes(`${row}행`);
+            });
+            if (target) { target.click(); target.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+          }, 80);
+        });
+      }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+document.getElementById('btn-page-first').addEventListener('click', () => pbGoTo(1));
+document.getElementById('btn-page-prev').addEventListener('click',  () => pbGoTo(PB.currentPage - 1));
+document.getElementById('btn-page-next').addEventListener('click',  () => pbGoTo(PB.currentPage + 1));
+document.getElementById('btn-page-last').addEventListener('click',  () => pbGoTo(pbGetTotalPages()));
+document.getElementById('btn-page-panel-toggle').addEventListener('click', pbToggle);
+document.getElementById('page-num-input').addEventListener('change', e => pbGoTo(parseInt(e.target.value) || 1));
+document.getElementById('page-num-input').addEventListener('keydown', e => { if (e.key === 'Enter') pbGoTo(parseInt(e.target.value) || 1); });
+
+
+// ══════════════════════════════════════════════════════════════
+// MOBILE JS
+// ══════════════════════════════════════════════════════════════
+const isMobile = () => window.innerWidth <= 768;
+
+// ── 모바일 탭바 ────────────────────────────────────────────────
+document.querySelectorAll('.m-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.m-tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+function mSwitchTab(tabId) {
+  document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+  document.querySelectorAll('.m-tab-pane').forEach(p => p.classList.toggle('active', p.id === tabId));
+}
+
+// ── 시트 열기/닫기 ─────────────────────────────────────────────
+function mOpenSheet(id) { document.getElementById(id).classList.add('open'); }
+function mCloseSheet(id) { document.getElementById(id).classList.remove('open'); }
+
+// 오버레이 탭으로 닫기
+document.querySelectorAll('.m-sheet-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+document.getElementById('m-jiza-close').addEventListener('click', () => mCloseSheet('m-jiza-sheet'));
+document.getElementById('m-detail-close').addEventListener('click', () => mCloseSheet('m-detail-sheet'));
+document.getElementById('m-page-detail-close').addEventListener('click', () => mCloseSheet('m-page-detail-sheet'));
+document.getElementById('m-settings-close').addEventListener('click', () => mCloseSheet('m-settings-sheet'));
+
+// ── 헤더 버튼 ──────────────────────────────────────────────────
+document.getElementById('m-btn-settings').addEventListener('click', () => mOpenSheet('m-settings-sheet'));
+document.getElementById('m-btn-theme').addEventListener('click', () => applyTheme(S.theme === 'dark' ? 'light' : 'dark'));
+document.getElementById('m-btn-theme-toggle').addEventListener('click', () => applyTheme(S.theme === 'dark' ? 'light' : 'dark'));
+document.getElementById('m-btn-load-db').addEventListener('click', () => document.getElementById('db-file-input').click());
+document.getElementById('m-btn-load-db2').addEventListener('click', () => { mCloseSheet('m-settings-sheet'); document.getElementById('db-file-input').click(); });
+
+// ── 글자 검색 슬라이드다운 ─────────────────────────────────────
+const mCharPanel = document.getElementById('m-char-search-panel');
+document.getElementById('m-btn-char-search-toggle').addEventListener('click', () => {
+  mCharPanel.classList.toggle('open');
+});
+
+// 필터 칩
+document.querySelectorAll('.m-filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('active'));
+});
+document.getElementById('m-btn-char-filter').addEventListener('click', () => {
+  document.getElementById('m-char-filter-pop').classList.toggle('open');
+});
+
+// 글자 검색 입력
+document.getElementById('m-char-search-field').addEventListener('input', () => {
+  const q = document.getElementById('m-char-search-field').value.trim();
+  const resultsEl = document.getElementById('m-char-search-results');
+  if (!q || !S.data) { resultsEl.classList.remove('open'); resultsEl.innerHTML = ''; return; }
+
+  const activeFields = [...document.querySelectorAll('.m-filter-chip.active')].map(c => c.dataset.field);
+  const chars = S.data.characters || {};
+  const matches = [];
+  const fieldLabel = { korean:'훈독', radical:'부수', components:'구성요소', variants:'이체자', memo:'메모' };
+
+  for (const [ch, data] of Object.entries(chars)) {
+    for (const field of activeFields) {
+      const val = data[field];
+      if (!val) continue;
+      const haystack = Array.isArray(val) ? val.join(' ') : String(val);
+      if (haystack.includes(q)) {
+        matches.push({ ch, data, field, haystack });
+        break;
+      }
+    }
+    if (matches.length >= 30) break;
+  }
+
+  if (!matches.length) {
+    resultsEl.innerHTML = '<div style="padding:12px;text-align:center;font-size:12px;color:var(--fg3)">결과 없음</div>';
+    resultsEl.classList.add('open'); return;
+  }
+
+  resultsEl.innerHTML = '';
+  matches.forEach(({ ch, data, field, haystack }) => {
+    const btn = document.createElement('button');
+    btn.className = 'm-csr-btn';
+    const reading = data.korean?.[0] || '';
+    btn.innerHTML = `<span class="m-csr-char">${ch}</span>
+      <span class="m-csr-meta">
+        <span class="m-csr-reading">${reading}</span>
+        <span class="m-csr-detail">${fieldLabel[field]}: ${haystack.slice(0,40)}</span>
+      </span>`;
+    btn.addEventListener('click', () => {
+      document.getElementById('m-search-input').value = ch;
+      document.getElementById('m-char-search-field').value = '';
+      resultsEl.classList.remove('open');
+      mCharPanel.classList.remove('open');
+      mRunSearch(ch);
+    });
+    resultsEl.appendChild(btn);
+  });
+  resultsEl.classList.add('open');
+});
+
+// ── 메인 검색 ──────────────────────────────────────────────────
+function mRunSearch(query) {
+  if (!query) return;
+  if (!S.data) { alert('DB를 먼저 불러오세요'); return; }
+  const chars = [...query];
+
+  if (chars.length === 1) {
+    // 단일 글자 검색
+    mCloseSheet('m-jiza-sheet');
+    mSwitchTab('m-tab-search');
+    mShowSearchResults(chars[0]);
+  } else {
+    // 집자 모드
+    mBuildJiza(chars);
+    mOpenSheet('m-jiza-sheet');
+  }
+}
+
+document.getElementById('m-btn-search').addEventListener('click', () => {
+  mRunSearch(document.getElementById('m-search-input').value.trim());
+});
+document.getElementById('m-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') mRunSearch(document.getElementById('m-search-input').value.trim());
+});
+
+// ── 검색 결과 ──────────────────────────────────────────────────
+function mShowSearchResults(char) {
+  const scroll = document.getElementById('m-results-scroll');
+  const positions = S.data.positions?.[char] || [];
+  if (!positions.length) {
+    scroll.innerHTML = `<div class="state-msg"><span class="big">${char}</span>검색 결과 없음</div>`;
+    return;
+  }
+  scroll.innerHTML = '';
+  positions.forEach(([page, col, row, variant], idx) => {
+    const card = document.createElement('div');
+    card.className = 'm-card';
+    const path = imgPath(page, col, row);
+    const reading = S.data.characters?.[char]?.korean?.[0] || '';
+    card.innerHTML = `
+      <div class="m-card-img">
+        <img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:28px>${char}</span>'">
+      </div>
+      <div>
+        <div class="m-card-char">${char}</div>
+        <div class="m-card-reading">${reading}</div>
+        <div class="m-card-pos">p.${page} · ${col}열 ${row}행${variant ? ' · 이형'+variant : ''}</div>
+      </div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      mShowDetail(char, page, col, row, variant ?? 0, null);
+    });
+    scroll.appendChild(card);
+  });
+}
+
+// ── 글자 상세 시트 ─────────────────────────────────────────────
+// mode: null=일반상세, 'jiza'=집자슬롯 선택용
+function mShowDetail(char, page, col, row, variant, jizaSlotIdx) {
+  const data = S.data.characters?.[char] || {};
+  const path = imgPath(page, col, row);
+  const sheetId = jizaSlotIdx !== null ? 'm-detail-sheet' : 'm-detail-sheet';
+
+  document.getElementById('m-detail-title').textContent = char;
+  const body = document.getElementById('m-detail-body');
+  const positions = S.data.positions?.[char] || [];
+  const isJizaMode = jizaSlotIdx !== null;
+
+  body.innerHTML = `
+    <div class="m-detail-img-wrap">
+      <img src="${path}" alt="${char}" onerror="this.src=''">
+    </div>
+    <div class="m-detail-body" style="padding:16px">
+      <div class="m-detail-char">${char}</div>
+      <div class="m-detail-reading">${data.korean?.join(' · ') || '—'}</div>
+      <div class="m-detail-pos">p.${page} · ${col}열 ${row}행</div>
+
+      ${data.radical ? `
+      <div class="m-detail-section">
+        <div class="m-detail-section-label">기본 정보</div>
+        <div class="m-detail-row"><span class="m-detail-key">부수</span><span class="m-detail-val" style="font-family:'Noto Serif SC',serif;font-size:18px">${data.radical}</span></div>
+        ${data.components?.length ? `<div class="m-detail-row"><span class="m-detail-key">구성요소</span><span class="m-detail-val">${data.components.join(' · ')}</span></div>` : ''}
+      </div>` : ''}
+
+      ${data.variants?.length ? `
+      <div class="m-detail-section">
+        <div class="m-detail-section-label">이체자</div>
+        <div class="m-variant-chips">
+          ${data.variants.map(v => `<span class="m-variant-chip" data-char="${v}">${v}</span>`).join('')}
+        </div>
+      </div>` : ''}
+
+      ${data.memo ? `
+      <div class="m-detail-section">
+        <div class="m-detail-section-label">메모</div>
+        <div style="font-size:13px;color:var(--fg1);line-height:1.8;padding:10px;background:var(--bg2);border-left:2px solid var(--border2);border-radius:0 3px 3px 0">${data.memo}</div>
+      </div>` : ''}
+
+      <div class="m-detail-section">
+        <div class="m-detail-section-label">${isJizaMode ? '탭하여 이 글자로 변경' : '전체 출현'} (${positions.length}회)</div>
+        <div class="m-instances-grid" id="m-inst-grid"></div>
+      </div>
+    </div>`;
+
+  // 이체자 클릭
+  body.querySelectorAll('.m-variant-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.getElementById('m-search-input').value = chip.dataset.char;
+      mCloseSheet('m-detail-sheet');
+      mRunSearch(chip.dataset.char);
+    });
+  });
+
+  // 인스턴스 격자
+  const grid = body.querySelector('#m-inst-grid');
+  positions.forEach(([p, c, r, v]) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'm-instance-thumb' + (p===page&&c===col&&r===row?' selected':'') + (isJizaMode?' pick-mode':'');
+    thumb.innerHTML = `<img src="${imgPath(p,c,r)}" alt="${char}"><span class="m-inst-pos">${p}·${c}·${r}</span>`;
+    thumb.addEventListener('click', () => {
+      if (isJizaMode) {
+        // 집자 슬롯 교체
+        M.jizaSlots[jizaSlotIdx].currentIdx = M.jizaSlots[jizaSlotIdx].instances.findIndex(inst => inst[0]===p&&inst[1]===c&&inst[2]===r);
+        if (M.jizaSlots[jizaSlotIdx].currentIdx < 0) M.jizaSlots[jizaSlotIdx].currentIdx = 0;
+        mCloseSheet('m-detail-sheet');
+        mRenderJiza();
+        // 편집기도 열려있으면 업데이트
+        if (ED.open) {
+          const item = ED.items[jizaSlotIdx];
+          if (item) {
+            const newImg = new Image();
+            newImg.onload = () => { item.img = newImg; item.src = imgPath(p,c,r); edDraw(); };
+            newImg.src = imgPath(p,c,r);
+          }
+        }
+      } else {
+        mShowDetail(char, p, c, r, v??0, null);
+      }
+    });
+    grid.appendChild(thumb);
+  });
+
+  mOpenSheet('m-detail-sheet');
+}
+
+// ── 집자 ───────────────────────────────────────────────────────
+const M = { jizaSlots: [] };
+
+function mBuildJiza(chars) {
+  M.jizaSlots = chars.map(ch => {
+    const instances = S.data.positions?.[ch] || [];
+    return { char: ch, instances, currentIdx: 0 };
+  });
+  // 데스크탑 S.jizaSlots도 동기화
+  S.jizaSlots = M.jizaSlots;
+  mRenderJiza();
+}
+
+function mRenderJiza() {
+  const wrap = document.getElementById('m-jiza-slots');
+  wrap.innerHTML = '';
+  M.jizaSlots.forEach((slot, si) => {
+    const inst = slot.instances[slot.currentIdx];
+    const path = inst ? imgPath(inst[0], inst[1], inst[2]) : null;
+    const total = slot.instances.length;
+
+    const el = document.createElement('div');
+    el.className = 'm-jiza-slot';
+    el.innerHTML = `
+      <div class="m-jiza-img" id="m-jiza-img-${si}">
+        ${path ? `<img src="${path}" alt="${slot.char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:28px;color:var(--fg3)>${slot.char}</span>'">` : `<span style="font-family:'Noto Serif SC',serif;font-size:28px;color:var(--fg3)">${slot.char}</span>`}
+      </div>
+      <div class="m-jiza-nav">
+        <button class="m-jiza-nav-btn" data-si="${si}" data-dir="-1">‹</button>
+        <span class="m-jiza-nav-idx">${total ? slot.currentIdx+1+'/'+total : '0'}</span>
+        <button class="m-jiza-nav-btn" data-si="${si}" data-dir="1">›</button>
+      </div>
+      <div class="m-jiza-char">${slot.char}</div>`;
+
+    // 이미지 탭 → 글자 상세 (집자 선택 모드)
+    el.querySelector('.m-jiza-img').addEventListener('click', () => {
+      if (!inst) return;
+      mShowDetail(slot.char, inst[0], inst[1], inst[2], inst[3]??0, si);
+    });
+    // 인스턴스 전환 버튼
+    el.querySelectorAll('.m-jiza-nav-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.si);
+        const dir = parseInt(btn.dataset.dir);
+        const s = M.jizaSlots[idx];
+        if (!s.instances.length) return;
+        s.currentIdx = (s.currentIdx + dir + s.instances.length) % s.instances.length;
+        S.jizaSlots = M.jizaSlots; // 동기화
+        mRenderJiza();
+      });
+    });
+    wrap.appendChild(el);
+  });
+}
+
+document.getElementById('m-btn-jiza-editor').addEventListener('click', () => {
+  mCloseSheet('m-jiza-sheet');
+  // 편집기 크기 설정 적용
+  const w = parseInt(document.getElementById('m-paper-w').value) || 350;
+  const h = parseInt(document.getElementById('m-paper-h').value) || 690;
+  ED.wMm = w; ED.hMm = h;
+  openEditor();
+});
+
+document.getElementById('m-btn-jiza-save').addEventListener('click', () => downloadJiza());
+
+// ── 모바일 페이지 브라우저 ────────────────────────────────────
+const MB = { currentPage: 1 };
+
+function mbGetTotal() {
+  return parseInt(S.data?.pages?.totalPages) ||
+    Object.keys(S.data?.pages || {}).filter(k => !isNaN(k)).length;
+}
+function mbGoTo(n) {
+  const total = mbGetTotal();
+  MB.currentPage = Math.max(1, Math.min(n, total));
+  document.getElementById('m-page-num-input').value = MB.currentPage;
+  mbUpdateNav();
+  mbRender();
+}
+function mbUpdateNav() {
+  const total = mbGetTotal();
+  document.getElementById('m-btn-page-first').disabled = MB.currentPage <= 1;
+  document.getElementById('m-btn-page-prev').disabled  = MB.currentPage <= 1;
+  document.getElementById('m-btn-page-next').disabled  = MB.currentPage >= total;
+  document.getElementById('m-btn-page-last').disabled  = MB.currentPage >= total;
+  document.getElementById('m-page-total').textContent  = `/ ${total}`;
+}
+function mbRender() {
+  if (!S.data) return;
+  const grid = document.getElementById('m-page-grid');
+  grid.innerHTML = '';
+  const pageData = S.data.pages?.[String(MB.currentPage)];
+  if (!pageData) return;
+  const cols = S.data.pages?.general?.cols || 5;
+  const rows = S.data.pages?.general?.rows || 8;
+
+  for (let row = 1; row <= rows; row++) {
+    for (let col = 1; col <= cols; col++) {
+      const key = `${col},${row}`;
+      const char = pageData.cells?.[key];
+      const isEmpty = !char || char === '/0';
+      const cell = document.createElement('div');
+      cell.className = 'm-pg-cell';
+      if (isEmpty) {
+        cell.style.background = '#fff';
+      } else {
+        const path = imgPath(MB.currentPage, col, row);
+        cell.innerHTML = `<img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:14px;color:#aaa>${char}</span>'">`;
+        cell.addEventListener('click', () => {
+          document.querySelectorAll('.m-pg-cell').forEach(c => c.classList.remove('active'));
+          cell.classList.add('active');
+          // 페이지 글자 상세
+          mShowPageDetail(char, MB.currentPage, col, row);
+        });
+      }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function mShowPageDetail(char, page, col, row) {
+  const data = S.data.characters?.[char] || {};
+  const path = imgPath(page, col, row);
+  document.getElementById('m-page-detail-title').textContent = char;
+  const body = document.getElementById('m-page-detail-body');
+  body.innerHTML = `
+    <div class="m-detail-img-wrap"><img src="${path}" alt="${char}"></div>
+    <div style="padding:16px">
+      <div class="m-detail-char">${char}</div>
+      <div class="m-detail-reading">${data.korean?.join(' · ') || '—'}</div>
+      <div class="m-detail-pos">p.${page} · ${col}열 ${row}행</div>
+      ${data.radical ? `<div class="m-detail-row" style="margin-top:12px"><span class="m-detail-key">부수</span><span class="m-detail-val" style="font-family:'Noto Serif SC',serif;font-size:18px">${data.radical}</span></div>` : ''}
+      ${data.korean?.length ? `<div class="m-detail-row"><span class="m-detail-key">훈독</span><span class="m-detail-val">${data.korean.join(', ')}</span></div>` : ''}
+      ${data.memo ? `<div style="margin-top:12px;font-size:13px;color:var(--fg1);line-height:1.8;padding:10px;background:var(--bg2);border-left:2px solid var(--border2);border-radius:0 3px 3px 0">${data.memo}</div>` : ''}
+    </div>`;
+  mOpenSheet('m-page-detail-sheet');
+}
+
+document.getElementById('m-btn-page-first').addEventListener('click', () => mbGoTo(1));
+document.getElementById('m-btn-page-prev').addEventListener('click',  () => mbGoTo(MB.currentPage - 1));
+document.getElementById('m-btn-page-next').addEventListener('click',  () => mbGoTo(MB.currentPage + 1));
+document.getElementById('m-btn-page-last').addEventListener('click',  () => mbGoTo(mbGetTotal()));
+document.getElementById('m-page-num-input').addEventListener('change', e => mbGoTo(parseInt(e.target.value)||1));
+document.getElementById('m-page-num-input').addEventListener('keydown', e => { if(e.key==='Enter') mbGoTo(parseInt(e.target.value)||1); });
+
+// DB 로드 후 모바일 업데이트
+const _mOrigLoadMsg = 'roLoadComplete';
+function mOnDataLoad() {
+  if (!isMobile()) return;
+  mbUpdateNav();
+  // 현재 탭이 페이지면 렌더
+  if (document.getElementById('m-tab-page').classList.contains('active')) mbRender();
+}
+
+// 페이지 탭 클릭 시 렌더
+document.querySelector('[data-tab="m-tab-page"]').addEventListener('click', () => {
+  if (S.data) { mbUpdateNav(); mbRender(); }
+});
+
+
+// ══════════════════════════════════════════════════════════════
+// MOBILE EDITOR — TOUCH GESTURES
+// ══════════════════════════════════════════════════════════════
+
+(function() {
+  // 터치 상태
+  const T = {
+    mode: null,        // null | 'drag' | 'pinch' | 'pan'
+    t0: null, t1: null,  // 첫째, 둘째 터치
+    dragItemIdx: -1,
+    dragStartX: 0, dragStartY: 0,
+    dragItemOrigX: 0, dragItemOrigY: 0,
+    pinchStartDist: 0,
+    pinchStartW: 0, pinchStartH: 0,
+    pinchCenterX: 0, pinchCenterY: 0,
+    panStartX: 0, panStartY: 0,
+    panOriginX: 0, panOriginY: 0,
+  };
+
+  function getTouchCanvas(touch) {
+    // touch → canvas px
+    const wrap = document.getElementById('editor-canvas-wrap');
+    const rect = wrap.getBoundingClientRect();
+    return {
+      x: (touch.clientX - rect.left) / ED.viewZoom,
+      y: (touch.clientY - rect.top)  / ED.viewZoom,
+    };
+  }
+
+  function pinchDist(t0, t1) {
+    return Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+  }
+  function pinchCenter(t0, t1) {
+    return {
+      x: (t0.clientX + t1.clientX) / 2,
+      y: (t0.clientY + t1.clientY) / 2,
+    };
+  }
+
+  const cv = document.getElementById('editor-canvas');
+
+  cv.addEventListener('touchstart', e => {
+    if (!ED.open) return;
+    e.preventDefault();
+    const touches = e.touches;
+
+    if (touches.length === 1) {
+      // 단일 터치 → 글자 선택/드래그
+      T.t0 = touches[0];
+      const pos = getTouchCanvas(T.t0);
+      const hit = edHitTest(pos.x, pos.y);
+
+      if (hit >= 0) {
+        ED.selected = hit;
+        T.mode = 'drag';
+        T.dragItemIdx = hit;
+        T.dragStartX = pos.x;
+        T.dragStartY = pos.y;
+        T.dragItemOrigX = ED.items[hit].x;
+        T.dragItemOrigY = ED.items[hit].y;
+        ED.dragStartX = T.dragItemOrigX;
+        ED.dragStartY = T.dragItemOrigY;
+        edDraw();
+        edRenderSlotsList();
+        edUpdateSizeInputs();
+      } else {
+        ED.selected = -1;
+        T.mode = null;
+        edDraw();
+        edRenderSlotsList();
+      }
+    } else if (touches.length === 2) {
+      T.t0 = touches[0];
+      T.t1 = touches[1];
+      T.pinchStartDist = pinchDist(T.t0, T.t1);
+      const c = pinchCenter(T.t0, T.t1);
+      T.pinchCenterX = c.x;
+      T.pinchCenterY = c.y;
+
+      if (ED.selected >= 0 && T.mode === 'drag') {
+        // 글자 선택 중 두 손가락 → 핀치 리사이즈
+        T.mode = 'pinch';
+        T.pinchStartW = ED.items[ED.selected].w;
+        T.pinchStartH = ED.items[ED.selected].h;
+      } else {
+        // 빈 곳 두 손가락 → 캔버스 패닝
+        T.mode = 'pan';
+        T.panStartX = c.x;
+        T.panStartY = c.y;
+        T.panOriginX = ED.viewPanX;
+        T.panOriginY = ED.viewPanY;
+      }
+    }
+  }, { passive: false });
+
+  cv.addEventListener('touchmove', e => {
+    if (!ED.open) return;
+    e.preventDefault();
+    const touches = e.touches;
+
+    if (T.mode === 'drag' && touches.length >= 1) {
+      const pos = getTouchCanvas(touches[0]);
+      const item = ED.items[T.dragItemIdx];
+      let nx = T.dragItemOrigX + (pos.x - T.dragStartX);
+      let ny = T.dragItemOrigY + (pos.y - T.dragStartY);
+      // 모바일에서는 스냅 항상 켜짐
+      ED.snapGuides = [];
+      nx = edSnapX(item, nx, T.dragItemIdx);
+      ny = edSnapY(item, ny, T.dragItemIdx);
+      item.x = nx;
+      item.y = ny;
+      edDraw();
+
+    } else if (T.mode === 'pinch' && touches.length >= 2) {
+      const dist = pinchDist(touches[0], touches[1]);
+      const scale = dist / T.pinchStartDist;
+      const item = ED.items[ED.selected];
+      item.w = Math.max(20, Math.round(T.pinchStartW * scale));
+      item.h = Math.max(20, Math.round(T.pinchStartH * scale));
+      edDraw();
+      edUpdateSizeInputs();
+
+    } else if (T.mode === 'pan' && touches.length >= 2) {
+      const c = pinchCenter(touches[0], touches[1]);
+      ED.viewPanX = T.panOriginX + (c.x - T.panStartX);
+      ED.viewPanY = T.panOriginY + (c.y - T.panStartY);
+      edApplyViewTransform();
+    }
+  }, { passive: false });
+
+  cv.addEventListener('touchend', e => {
+    if (!ED.open) return;
+    ED.snapGuides = [];
+    edDraw();
+    if (e.touches.length === 0) {
+      T.mode = null;
+      T.dragItemIdx = -1;
+    } else if (e.touches.length === 1 && T.mode === 'pinch') {
+      // 손가락 하나 뗌 → 드래그로 전환
+      T.mode = 'drag';
+      T.t0 = e.touches[0];
+      const pos = getTouchCanvas(T.t0);
+      if (ED.selected >= 0) {
+        T.dragItemIdx = ED.selected;
+        T.dragStartX = pos.x;
+        T.dragStartY = pos.y;
+        T.dragItemOrigX = ED.items[ED.selected].x;
+        T.dragItemOrigY = ED.items[ED.selected].y;
+      }
+    }
+    edRenderSlotsList();
+  }, { passive: false });
+
+  // 편집기 영역 두 손가락 패닝 (캔버스 밖 영역에서)
+  const edArea = document.getElementById('editor-canvas-area');
+  let areaT0 = null, areaT1 = null, areaPanOX = 0, areaPanOY = 0;
+
+  edArea.addEventListener('touchstart', e => {
+    if (!ED.open) return;
+    if (e.touches.length === 2) {
+      areaT0 = e.touches[0];
+      areaT1 = e.touches[1];
+      const c = pinchCenter(areaT0, areaT1);
+      areaPanOX = ED.viewPanX;
+      areaPanOY = ED.viewPanY;
+      // 핀치 줌도
+      T.pinchStartDist = pinchDist(areaT0, areaT1);
+    }
+  }, { passive: true });
+
+  edArea.addEventListener('touchmove', e => {
+    if (!ED.open || e.touches.length < 2) return;
+    e.preventDefault();
+    const c = pinchCenter(e.touches[0], e.touches[1]);
+    ED.viewPanX = areaPanOX + (c.x - pinchCenter(areaT0, areaT1).x);
+    ED.viewPanY = areaPanOY + (c.y - pinchCenter(areaT0, areaT1).y);
+    // 핀치 줌
+    const dist = pinchDist(e.touches[0], e.touches[1]);
+    const scale = dist / T.pinchStartDist;
+    ED.viewZoom = Math.max(0.05, Math.min(8, ED.viewZoom * scale));
+    T.pinchStartDist = dist;
+    edApplyViewTransform();
+  }, { passive: false });
+
+  // 모바일 편집기 툴바 — 축 고정 토글 버튼 추가
+  function addMobileEditorToolbar() {
+    const topbar = document.getElementById('editor-topbar');
+    if (topbar.querySelector('#m-ed-axis-btn')) return;
+    const sep = document.createElement('div');
+    sep.className = 'editor-sep';
+    const axisBtn = document.createElement('button');
+    axisBtn.className = 'editor-btn';
+    axisBtn.id = 'm-ed-axis-btn';
+    axisBtn.textContent = '↕ 자유';
+    axisBtn.title = '이동 축 고정';
+    let axisLocked = false;
+    axisBtn.addEventListener('click', () => {
+      axisLocked = !axisLocked;
+      axisBtn.textContent = axisLocked ? '→ 가로 고정' : '↕ 자유';
+      axisBtn.style.borderColor = axisLocked ? 'var(--gold2)' : '';
+      axisBtn.style.color = axisLocked ? 'var(--gold)' : '';
+      // T에 저장
+      T.axisLock = axisLocked ? 'detect' : null;
+    });
+    topbar.insertBefore(sep, topbar.querySelector('#btn-editor-export'));
+    topbar.insertBefore(axisBtn, topbar.querySelector('#btn-editor-export'));
+  }
+
+  // 편집기 열릴 때 모바일 툴바 추가
+  const _origOpenEditor = openEditor;
+  window.openEditor = function() {
+    _origOpenEditor();
+    if (isMobile()) {
+      setTimeout(addMobileEditorToolbar, 100);
+    }
+  };
+
+  // ── 모바일 설정 시트 ──────────────────────────────────────────
+
+  function openEditorSettingsSheet() {
+    // 현재 ED 상태를 시트 인풋에 반영
+    document.getElementById('m-paper-w').value = ED.wMm;
+    document.getElementById('m-paper-h').value = ED.hMm;
+    document.getElementById('m-grid-size').value = ED.grid.sizeMm;
+    document.getElementById('m-grid-offset-x').value = ED.grid.offsetXMm;
+    document.getElementById('m-grid-offset-y').value = ED.grid.offsetYMm;
+    document.getElementById('m-grid-snap').checked = ED.grid.snapToGrid;
+    // 방향 버튼 동기화
+    const isLandscape = ED.wMm > ED.hMm;
+    document.querySelectorAll('.m-orient-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.orient === (isLandscape ? 'landscape' : 'portrait'));
+    });
+    document.getElementById('m-editor-settings-sheet').classList.add('open');
+  }
+
+  function closeEditorSettingsSheet() {
+    document.getElementById('m-editor-settings-sheet').classList.remove('open');
+  }
+
+  // 설정 버튼 → 시트 열기
+  document.getElementById('btn-editor-settings-mobile').addEventListener('click', () => {
+    if (isMobile()) openEditorSettingsSheet();
+  });
+
+  // 닫기
+  document.getElementById('m-editor-settings-close').addEventListener('click', closeEditorSettingsSheet);
+  document.getElementById('m-editor-settings-sheet').addEventListener('click', e => {
+    if (e.target === document.getElementById('m-editor-settings-sheet')) closeEditorSettingsSheet();
+  });
+
+  // 프리셋 칩
+  document.querySelectorAll('#m-ed-preset-chips .m-preset-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#m-ed-preset-chips .m-preset-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const w = parseInt(chip.dataset.w), h = parseInt(chip.dataset.h);
+      const isLandscape = document.querySelector('.m-orient-btn.active')?.dataset.orient === 'landscape';
+      ED.wMm = isLandscape ? h : w;
+      ED.hMm = isLandscape ? w : h;
+      document.getElementById('m-paper-w').value = ED.wMm;
+      document.getElementById('m-paper-h').value = ED.hMm;
+      edApplyDimensions(); edDraw();
+    });
+  });
+
+  // 방향 버튼
+  document.querySelectorAll('.m-orient-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.m-orient-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const landscape = btn.dataset.orient === 'landscape';
+      if (landscape && ED.wMm < ED.hMm) { [ED.wMm, ED.hMm] = [ED.hMm, ED.wMm]; }
+      if (!landscape && ED.wMm > ED.hMm) { [ED.wMm, ED.hMm] = [ED.hMm, ED.wMm]; }
+      document.getElementById('m-paper-w').value = ED.wMm;
+      document.getElementById('m-paper-h').value = ED.hMm;
+      edApplyDimensions(); edDraw();
+    });
+  });
+
+  // 용지 크기 직접 입력
+  document.getElementById('m-paper-w').addEventListener('change', e => {
+    ED.wMm = Math.max(10, parseInt(e.target.value) || 350);
+    document.getElementById('editor-w').value = ED.wMm;
+    edApplyDimensions(); edDraw();
+  });
+  document.getElementById('m-paper-h').addEventListener('change', e => {
+    ED.hMm = Math.max(10, parseInt(e.target.value) || 690);
+    document.getElementById('editor-h').value = ED.hMm;
+    edApplyDimensions(); edDraw();
+  });
+
+  // 그리드 토글
+  document.getElementById('m-btn-grid-toggle').addEventListener('click', () => {
+    ED.grid.visible = !ED.grid.visible;
+    const btn = document.getElementById('m-btn-grid-toggle');
+    btn.style.opacity = ED.grid.visible ? '1' : '0.4';
+    document.getElementById('btn-grid-toggle').style.opacity = ED.grid.visible ? '1' : '0.4';
+    edDraw();
+  });
+
+  // 그리드 설정 인풋
+  document.getElementById('m-grid-size').addEventListener('input', e => {
+    ED.grid.sizeMm = Math.max(1, parseFloat(e.target.value) || 10);
+    document.getElementById('grid-size').value = ED.grid.sizeMm;
+    edDraw();
+  });
+  document.getElementById('m-grid-offset-x').addEventListener('input', e => {
+    ED.grid.offsetXMm = parseFloat(e.target.value) || 0;
+    document.getElementById('grid-offset-x').value = ED.grid.offsetXMm;
+    edDraw();
+  });
+  document.getElementById('m-grid-offset-y').addEventListener('input', e => {
+    ED.grid.offsetYMm = parseFloat(e.target.value) || 0;
+    document.getElementById('grid-offset-y').value = ED.grid.offsetYMm;
+    edDraw();
+  });
+  document.getElementById('m-grid-snap').addEventListener('change', e => {
+    ED.grid.snapToGrid = e.target.checked;
+    document.getElementById('grid-snap').checked = e.target.checked;
+  });
+
+  function mEdUpdateGridColor() {
+    const hex = document.getElementById('m-grid-color').value;
+    const opacity = parseInt(document.getElementById('m-grid-opacity').value) / 100;
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    ED.grid.color = `rgba(${r},${g},${b},${opacity})`;
+    // 데스크탑 인풋도 동기
+    document.getElementById('grid-color').value = hex;
+    document.getElementById('grid-opacity').value = parseInt(document.getElementById('m-grid-opacity').value);
+    document.getElementById('grid-opacity-val').textContent = document.getElementById('m-grid-opacity').value + '%';
+    edDraw();
+  }
+  document.getElementById('m-grid-color').addEventListener('input', mEdUpdateGridColor);
+  document.getElementById('m-grid-opacity').addEventListener('input', e => {
+    document.getElementById('m-grid-opacity-val').textContent = e.target.value + '%';
+    mEdUpdateGridColor();
+  });
+
+})();
+// ── Start ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
