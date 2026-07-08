@@ -1180,18 +1180,19 @@ kbd {
 
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE LAYOUT  (≤768px)
+   MOBILE LAYOUT  (≤768px)  — rebuilt shell
    ════════════════════════════════════════════════════════════════ */
+
+/* 셸 루트는 기본 숨김, 모바일에서만 표시 */
+#m-root { display: none; }
+.ed-mobile-only { display: none; }
+
 @media (max-width: 768px) {
 
   /* 데스크탑 요소 숨김 */
-  #header { display: none !important; flex: none !important; }
-  #content { display: none !important; flex: none !important; }
-  #jiza-panel { display: none !important; flex: none !important; }
-  #page-panel { display: none !important; flex: none !important; }
+  #header, #content, #jiza-panel { display: none !important; }
   #btn-page-panel-toggle { display: none !important; }
 
-  /* 앱 전체 */
   html, body { overflow: hidden; height: 100dvh; }
   #app {
     height: 100dvh;
@@ -1199,549 +1200,531 @@ kbd {
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    /* 노치/홈바 대응 */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* ── 모바일 헤더 ── */
-  #m-header {
-    display: flex !important;
+  #m-root {
+    display: flex;
     flex-direction: column;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg0);
+  }
+
+  /* ── 상단 앱바 ─────────────────────────────────────── */
+  #m-appbar {
+    flex-shrink: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px 0 14px;
+    padding-top: env(safe-area-inset-top, 0px);
     background: var(--bg1);
     border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    z-index: 200;
-    width: 100%;
-    /* 헤더가 화면 절반 이상 차지하지 않도록 */
-    max-height: 50dvh;
-    overflow: hidden;
+    z-index: 30;
   }
-  #m-header-top {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    gap: 8px;
-    height: 48px;
-  }
-  #m-logo {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 15px;
-    color: var(--gold);
-    letter-spacing: .08em;
+  #m-title {
     margin-right: auto;
-  }
-  .m-icon-btn {
-    width: 34px; height: 34px;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    border-radius: 6px;
-    color: var(--fg2);
-    font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background var(--transition);
-  }
-  .m-icon-btn:hover, .m-icon-btn:active { background: var(--bg3); }
-
-  /* ── 검색바 ── */
-  #m-search-bar {
-    padding: 0 14px 10px;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  #m-search-input-wrap {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: visible;
-    position: relative;
-  }
-  #m-search-input {
-    flex: 1;
-    height: 38px;
-    padding: 0 10px;
-    background: transparent;
-    border: none;
-    color: var(--fg0);
-    font-family: 'Noto Serif SC','Noto Serif KR',serif;
-    font-size: 18px;
-    outline: none;
-    letter-spacing: .05em;
-  }
-  #m-search-input::placeholder { font-size: 13px; color: var(--fg3); }
-  #m-btn-search {
-    width: 38px; height: 38px;
-    border: none;
-    background: transparent;
-    color: var(--gold);
-    font-size: 16px;
-    cursor: pointer;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  #m-btn-char-search-toggle {
-    width: 28px; height: 38px;
-    border: none; border-left: 1px solid var(--border);
-    background: transparent;
-    color: var(--fg3);
-    font-size: 11px;
-    cursor: pointer;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* ── 글자 검색 슬라이드다운 ── */
-  #m-char-search-panel {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.25s ease;
-    border-top: 0px solid var(--border);
-  }
-  #m-char-search-panel.open {
-    max-height: 200px;
-    border-top-width: 1px;
-  }
-  #m-char-search-inner {
-    padding: 10px 14px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: flex-start;
+    gap: 1px;
+    border: none; background: none; cursor: pointer;
+    padding: 4px 0; font-family: inherit; text-align: left;
+    -webkit-tap-highlight-color: transparent;
   }
-  #m-char-search-row {
-    display: flex;
-    gap: 6px;
-    align-items: center;
+  #m-title-main {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px; font-weight: 500;
+    color: var(--gold); letter-spacing: .06em;
   }
-  #m-char-search-field {
-    flex: 1;
-    height: 36px;
-    padding: 0 10px;
+  #m-title-sub { font-size: 9.5px; color: var(--fg3); letter-spacing: .1em; }
+  .m-ico {
+    width: 38px; height: 38px; flex-shrink: 0;
+    border: none; background: transparent;
+    border-radius: 9px; color: var(--fg2);
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition), color var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-ico:active { background: var(--bg3); color: var(--gold); }
+
+  /* ── 본문 / 페인 ──────────────────────────────────── */
+  #m-body { flex: 1 1 0; position: relative; min-height: 0; }
+  .m-pane {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    min-height: 0;
+  }
+  .m-pane.is-active { display: flex; }
+  .m-scroll {
+    flex: 1 1 0; min-height: 0;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* ── 검색 헤더 ────────────────────────────────────── */
+  .m-searchbar {
+    flex-shrink: 0;
+    padding: 10px 12px 8px;
+    background: var(--bg1);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .m-seg {
+    display: flex; padding: 3px;
+    background: var(--bg3); border-radius: 9px;
+    align-self: flex-start;
+  }
+  .m-seg-btn {
+    border: none; background: transparent;
+    padding: 6px 16px; border-radius: 7px;
+    font-family: inherit; font-size: 12px; letter-spacing: .04em;
+    color: var(--fg3); cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-seg-btn.is-on { background: var(--bg1); color: var(--gold); box-shadow: var(--shadow); }
+
+  .m-field {
+    display: flex; align-items: center;
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
+    transition: border-color var(--transition);
+  }
+  .m-field:focus-within { border-color: var(--border2); }
+  .m-field input {
+    flex: 1; min-width: 0;
+    height: 44px; padding: 0 4px 0 14px;
+    background: transparent; border: none; outline: none;
     color: var(--fg0);
-    font-family: inherit;
-    font-size: 14px;
-    outline: none;
+    font-family: 'Noto Serif SC', 'Noto Serif KR', serif;
+    font-size: 19px; letter-spacing: .04em;
   }
-  #m-char-search-field:focus { border-color: var(--border2); }
-  #m-btn-char-filter {
-    height: 36px; padding: 0 10px;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    color: var(--fg2);
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: pointer;
-    white-space: nowrap;
+  .m-field input::placeholder { font-size: 13px; color: var(--fg3); letter-spacing: 0; font-family: 'Noto Serif KR', serif; }
+  .m-field-x {
+    width: 34px; height: 44px; flex-shrink: 0;
+    border: none; background: transparent; color: var(--fg3);
+    font-size: 13px; cursor: pointer;
   }
-  /* 필터 체크박스 */
-  #m-char-filter-pop {
-    display: none;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 8px 0 2px;
+  .m-field-go {
+    flex-shrink: 0; height: 34px; margin-right: 5px;
+    padding: 0 14px; border: none; border-radius: 8px;
+    background: var(--gold); color: var(--bg0);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    letter-spacing: .04em; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  #m-char-filter-pop.open { display: flex; }
-  .m-filter-chip {
-    padding: 4px 10px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--fg2);
-    cursor: pointer;
-    background: var(--bg2);
-    transition: all var(--transition);
-    user-select: none;
+  .m-field-go:active { background: var(--gold2); }
+
+  /* 필터/섹션 칩 */
+  .m-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .m-chip {
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--fg3); border-radius: 20px;
+    padding: 5px 12px; font-family: inherit; font-size: 12px;
+    cursor: pointer; transition: all var(--transition);
+    -webkit-tap-highlight-color: transparent;
   }
-  .m-filter-chip.active {
-    border-color: var(--border2);
-    color: var(--gold2);
-    background: var(--match-hl);
+  .m-chip.is-on { border-color: var(--border2); color: var(--gold); background: var(--match-hl); }
+
+  /* ── 검색 결과 카드 ───────────────────────────────── */
+  #m-search-scroll { padding: 8px; }
+  .m-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px; margin-bottom: 8px;
+    background: var(--bg1);
+    border: 1px solid var(--border); border-radius: 10px;
+    cursor: pointer; transition: border-color var(--transition), background var(--transition);
+    -webkit-tap-highlight-color: transparent;
   }
-  /* 글자검색 결과 */
-  #m-char-search-results {
-    max-height: 0;
+  .m-card:active { background: var(--bg2); border-color: var(--border2); }
+  .m-thumb {
+    width: 56px; height: 60px; flex-shrink: 0;
+    background: var(--img-box-bg);
+    border: 1px solid var(--border); border-radius: 5px;
     overflow: hidden;
-    transition: max-height 0.2s ease;
-    border-top: 0 solid var(--border);
+    display: flex; align-items: center; justify-content: center;
   }
-  #m-char-search-results.open {
-    max-height: 240px;
-    overflow-y: auto;
-    border-top-width: 1px;
-  }
-  .m-csr-btn {
-    display: flex; align-items: center; gap: 10px;
-    width: 100%; padding: 8px 14px;
+  .m-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .m-thumb .glyph { font-family: 'Noto Serif SC', serif; font-size: 30px; color: var(--fg3); }
+  .m-card-meta { flex: 1; min-width: 0; }
+  .m-card-char { font-family: 'Noto Serif SC', serif; font-size: 23px; color: var(--fg0); line-height: 1.1; }
+  .m-card-read { font-size: 12.5px; color: var(--fg1); margin-top: 3px; }
+  .m-card-pos  { font-size: 10.5px; color: var(--fg3); font-family: monospace; margin-top: 3px; letter-spacing: .02em; }
+  .m-card-go   { color: var(--fg4); font-size: 18px; flex-shrink: 0; padding-right: 4px; }
+
+  /* 뜻·부수 검색 리스트 */
+  .m-hit {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; padding: 11px 12px;
     border: none; border-bottom: 1px solid var(--border);
     background: transparent; color: var(--fg0);
     font-family: inherit; text-align: left; cursor: pointer;
-    transition: background var(--transition);
-  }
-  .m-csr-btn:active { background: var(--bg2); }
-  .m-csr-char { font-family: 'Noto Serif SC',serif; font-size: 22px; min-width: 28px; }
-  .m-csr-meta { flex: 1; }
-  .m-csr-reading { font-size: 12px; color: var(--fg2); }
-  .m-csr-detail { font-size: 11px; color: var(--fg3); margin-top: 1px; }
-
-  /* ── 메인 탭 영역 ── */
-  #m-main {
-    flex: 1 1 0;
-    overflow: hidden;
-    position: relative;
-    min-height: 0;
-    display: block;
-    width: 100%;
-  }
-  /* 숨겨진 데스크탑 요소가 flex 공간 차지 못하게 */
-  #header { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
-  #content { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
-  #jiza-panel { display: none !important; flex: none !important; height: 0 !important; overflow: hidden !important; }
-  #page-panel { display: none !important; }
-  .m-tab-pane {
-    position: absolute;
-    inset: 0;
-    overflow-y: auto;
-    display: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .m-tab-pane.active { display: block; }
-
-  /* ── 검색결과 탭 ── */
-  #m-results-scroll { padding: 8px; }
-  .m-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    margin-bottom: 8px;
-    background: var(--bg1);
-    cursor: pointer;
-    transition: background var(--transition);
     -webkit-tap-highlight-color: transparent;
   }
-  .m-card:active { background: var(--bg2); }
-  .m-card.active { border-color: var(--border2); background: var(--match-hl); }
-  .m-card-img {
-    width: 52px; height: 52px;
-    background: var(--img-box-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    flex-shrink: 0;
+  .m-hit:active { background: var(--bg2); }
+  .m-hit-char { font-family: 'Noto Serif SC', serif; font-size: 26px; min-width: 34px; text-align: center; }
+  .m-hit-read { font-size: 13px; color: var(--fg1); }
+  .m-hit-sub  { font-size: 11px; color: var(--fg3); margin-top: 2px; }
+  .m-hit mark { background: var(--match-hl); color: var(--gold); }
+
+  /* 빈 상태 (표본 힌트) */
+  .m-empty {
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; padding: 40px 24px; text-align: center;
+  }
+  .m-empty .mark {
+    width: 96px; height: 96px;
     display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif SC', serif; font-size: 52px;
+    color: var(--fg3); background: var(--img-box-bg);
+    border-radius: 6px; position: relative;
   }
-  .m-card-img img { width: 100%; height: 100%; object-fit: contain; }
-  .m-card-char { font-family: 'Noto Serif SC',serif; font-size: 22px; color: var(--fg0); }
-  .m-card-reading { font-size: 12px; color: var(--fg2); margin-top: 2px; }
-  .m-card-pos { font-size: 10px; color: var(--fg3); font-family: monospace; margin-top: 2px; }
+  .m-empty .mark::before, .m-empty .mark::after {
+    content: ''; position: absolute; width: 12px; height: 12px;
+    border: 1.5px solid var(--border2); opacity: .55;
+  }
+  .m-empty .mark::before { top: 7px; left: 7px; border-right: none; border-bottom: none; }
+  .m-empty .mark::after  { bottom: 7px; right: 7px; border-left: none; border-top: none; }
+  .m-empty p { font-size: 13.5px; color: var(--fg2); line-height: 1.7; }
+  .m-empty small { font-size: 11.5px; color: var(--fg4); }
 
-  /* ── 하단 탭바 ── */
-  #m-tabbar {
-    display: flex !important;
-    border-top: 1px solid var(--border);
-    background: var(--bg1);
+  /* ── 集字 페인 ────────────────────────────────────── */
+  .m-composebar {
     flex-shrink: 0;
-    height: 52px;
-    width: 100%;
-    z-index: 100;
-    /* 홈바 있는 기기 대응 */
-    padding-bottom: 0;
-  }
-  .m-tab-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    border: none;
-    background: transparent;
-    color: var(--fg3);
-    font-family: inherit;
-    cursor: pointer;
-    transition: color var(--transition);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .m-tab-btn.active { color: var(--gold); }
-  .m-tab-btn .tab-icon { font-size: 16px; font-family: 'Noto Serif SC',serif; }
-  .m-tab-btn .tab-label { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
-
-  /* ── 페이지 탭 ── */
-  #m-page-tab { background: var(--bg0); }
-  #m-page-nav {
-    position: sticky; top: 0; z-index: 10;
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     background: var(--bg1);
     border-bottom: 1px solid var(--border);
   }
-  #m-page-nav-label { font-size: 10px; color: var(--fg3); letter-spacing: .12em; margin-right: auto; }
-  .m-page-nav-btn {
-    width: 30px; height: 30px;
+  #m-jiza-scroll { padding: 14px 12px 20px; }
+  .m-jz-grid {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    justify-content: center;
+  }
+  .m-jz-slot {
+    width: calc(33.333% - 10px);
+    max-width: 110px;
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+  }
+  .m-mat {
+    width: 100%; aspect-ratio: 5 / 6;
+    background: var(--img-box-bg);
+    border: 1px solid var(--border2);
+    border-radius: 4px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; cursor: pointer;
+    box-shadow: var(--shadow);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-mat img { width: 100%; height: 100%; object-fit: contain; }
+  .m-mat .glyph { font-family: 'Noto Serif SC', serif; font-size: 40px; color: var(--fg3); }
+  .m-mat:active { border-color: var(--gold); }
+  .m-jz-nav { display: flex; align-items: center; gap: 4px; }
+  .m-jz-nav button {
+    width: 26px; height: 26px;
     border: 1px solid var(--border); background: var(--bg2);
-    color: var(--fg2); border-radius: 5px; font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
+    color: var(--fg2); border-radius: 6px; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .m-page-nav-btn:disabled { opacity: .3; }
-  #m-page-num-input {
-    width: 44px; height: 30px; padding: 0 4px;
-    background: var(--bg0); border: 1px solid var(--border);
-    border-radius: 5px; color: var(--fg0);
-    font-family: monospace; font-size: 13px; text-align: center; outline: none;
-  }
-  #m-page-total { font-size: 12px; color: var(--fg3); font-family: monospace; }
-  #m-page-grid-wrap {
-    padding: 10px;
-  }
-  #m-page-grid {
-    background: #fff;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0;
-    direction: rtl;
-    margin: 0 auto;
-  }
-  .m-pg-cell {
-    aspect-ratio: 372 / 402;
-    background: #fff;
-    overflow: hidden;
-    position: relative;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .m-pg-cell img { width: 100%; height: 100%; object-fit: contain; }
-  .m-pg-cell.active { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .m-jz-nav button:active { background: var(--bg3); }
+  .m-jz-idx { font-size: 10px; color: var(--fg3); font-family: monospace; min-width: 30px; text-align: center; }
+  .m-jz-label { font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--fg1); }
 
-  /* ── 슬라이드업 시트 공통 ── */
+  .m-actionbar {
+    flex-shrink: 0;
+    display: flex; gap: 8px;
+    padding: 10px 12px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--bg1);
+    border-top: 1px solid var(--border);
+  }
+  .m-btn {
+    height: 44px; border-radius: 10px;
+    font-family: inherit; font-size: 13.5px; letter-spacing: .03em;
+    cursor: pointer; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background var(--transition), border-color var(--transition);
+  }
+  .m-btn.ghost { flex: 1; background: var(--bg2); color: var(--fg1); }
+  .m-btn.ghost:active { background: var(--bg3); }
+  .m-btn.solid { flex: 1.4; background: var(--gold); color: var(--bg0); border-color: var(--gold); font-weight: 500; }
+  .m-btn.solid:active { background: var(--gold2); }
+  .m-btn.sm { height: 34px; min-width: 78px; font-size: 12px; padding: 0 12px; flex: 0; }
+
+  /* ── 페이지 페인 ──────────────────────────────────── */
+  .m-pagenav {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 12px;
+    background: var(--bg1);
+    border-bottom: 1px solid var(--border);
+  }
+  .m-pg-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--fg2); border-radius: 7px; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-pg-btn:active { background: var(--bg3); }
+  .m-pg-btn:disabled { opacity: .3; }
+  #m-pg-num {
+    width: 56px; height: 34px; text-align: center;
+    background: var(--bg0); border: 1px solid var(--border);
+    border-radius: 7px; color: var(--fg0);
+    font-family: monospace; font-size: 16px; outline: none;
+  }
+  .m-pg-total { font-size: 13px; color: var(--fg3); font-family: monospace; margin-right: auto; }
+  #m-page-scroll { padding: 14px; background: var(--bg0); }
+  .m-paper {
+    background: #fff; padding: 10px;
+    display: grid; gap: 0; direction: rtl;
+    margin: 0 auto; max-width: 460px;
+    border-radius: 2px;
+    box-shadow: 0 6px 30px rgba(0,0,0,.35);
+  }
+  .m-pgcell {
+    aspect-ratio: 372 / 402;
+    background: #fff; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-pgcell img { width: 100%; height: 100%; object-fit: contain; }
+  .m-pgcell.filled { cursor: pointer; }
+  .m-pgcell.filled:active { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .m-pgcell .glyph { font-family: 'Noto Serif SC', serif; font-size: 15px; color: #bbb; }
+
+  /* ── 하단 탭바 ────────────────────────────────────── */
+  #m-tabs {
+    flex-shrink: 0; display: flex;
+    height: 56px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--bg1);
+    border-top: 1px solid var(--border);
+    z-index: 30;
+  }
+  .m-tab {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; border: none; background: transparent;
+    color: var(--fg4); font-family: inherit; cursor: pointer;
+    transition: color var(--transition);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  .m-tab .gl { font-family: 'Noto Serif SC', serif; font-size: 18px; line-height: 1; }
+  .m-tab .lb { font-size: 9.5px; letter-spacing: .1em; }
+  .m-tab.is-active { color: var(--gold); }
+  .m-tab.is-active::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 26px; height: 2px; background: var(--gold); border-radius: 0 0 2px 2px;
+  }
+
+  /* ── 글자 상세 (전체화면 라우트) ──────────────────── */
+  .m-route {
+    position: absolute; inset: 0; z-index: 40;
+    background: var(--bg0);
+    display: flex; flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .26s cubic-bezier(.2,.7,.3,1);
+    visibility: hidden;
+  }
+  .m-route.is-open { transform: translateX(0); visibility: visible; }
+  .m-route-bar {
+    flex-shrink: 0; height: 50px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 12px;
+    background: var(--bg1); border-bottom: 1px solid var(--border);
+  }
+  .m-back {
+    border: none; background: transparent; color: var(--gold);
+    font-family: inherit; font-size: 15px; cursor: pointer;
+    padding: 6px 4px 6px 0; letter-spacing: .02em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-route-title { font-family: 'Noto Serif SC', serif; font-size: 17px; color: var(--fg0); }
+  #m-detail-scroll { padding-bottom: 30px; }
+
+  /* hero 표구(裱) */
+  .m-hero {
+    display: flex; justify-content: center;
+    padding: 26px 20px 20px;
+    background: linear-gradient(180deg, var(--bg1), var(--bg0));
+  }
+  .m-hero-mat {
+    width: 54vw; max-width: 240px; aspect-ratio: 5 / 6;
+    background: var(--img-box-bg);
+    border: 1px solid var(--border2);
+    padding: 10px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow2);
+  }
+  .m-hero-mat::before {
+    content: ''; position: absolute; inset: 4px;
+    border: 1px solid var(--border2); opacity: .35; pointer-events: none;
+  }
+  .m-hero-mat img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .m-hero-mat .glyph { font-family: 'Noto Serif SC', serif; font-size: 88px; color: var(--fg2); }
+
+  .m-detail-head { padding: 4px 20px 18px; text-align: center; border-bottom: 1px solid var(--border); }
+  .m-detail-glyph { font-family: 'Noto Serif SC', serif; font-size: 44px; color: var(--fg0); line-height: 1; }
+  .m-detail-read { font-size: 15px; color: var(--fg1); margin-top: 6px; }
+  .m-detail-loc { font-size: 11px; color: var(--fg3); font-family: monospace; margin-top: 6px; letter-spacing: .04em; }
+
+  .m-sec { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .m-sec-label { font-size: 9px; text-transform: uppercase; letter-spacing: .18em; color: var(--fg3); margin-bottom: 12px; }
+  .m-kv { display: flex; gap: 12px; padding: 7px 0; }
+  .m-kv + .m-kv { border-top: 1px solid var(--border); }
+  .m-kv-k { min-width: 62px; color: var(--fg3); font-size: 12px; padding-top: 2px; }
+  .m-kv-v { flex: 1; color: var(--fg0); font-size: 14px; }
+  .m-radical { font-family: 'Noto Serif SC', serif; font-size: 20px; }
+  .m-comp { display: flex; flex-wrap: wrap; gap: 6px; }
+  .m-comp span {
+    font-family: 'Noto Serif SC', serif; font-size: 16px;
+    padding: 2px 10px; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 5px; color: var(--fg1);
+  }
+  .m-variants { display: flex; flex-wrap: wrap; gap: 8px; }
+  .m-variant {
+    font-family: 'Noto Serif SC', serif; font-size: 22px;
+    padding: 6px 14px; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 6px;
+    color: var(--fg1); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-variant:active { background: var(--match-hl); border-color: var(--border2); color: var(--gold); }
+  .m-memo {
+    font-size: 13.5px; color: var(--fg1); line-height: 1.85;
+    padding: 12px 14px; background: var(--bg2);
+    border-left: 2px solid var(--border2); border-radius: 0 4px 4px 0;
+    white-space: pre-wrap;
+  }
+  .m-insts {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 7px;
+  }
+  .m-inst {
+    aspect-ratio: 1; background: var(--img-box-bg);
+    border: 1px solid var(--border); border-radius: 5px;
+    overflow: hidden; position: relative; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-inst img { width: 100%; height: 100%; object-fit: contain; }
+  .m-inst.is-current { border-color: var(--gold); }
+  .m-inst.pickable { border-color: var(--border2); }
+  .m-inst.pickable:active { background: var(--match-hl); }
+  .m-inst .loc {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    font-size: 8px; background: rgba(0,0,0,.5); color: #fff;
+    text-align: center; font-family: monospace; padding: 1px 0;
+  }
+  .m-pickhint {
+    font-size: 12px; color: var(--gold); background: var(--match-hl);
+    border: 1px solid var(--border2); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 12px; text-align: center;
+  }
+
+  /* ── 시트 (설정 + 편집기 설정 공용) ───────────────── */
   .m-sheet-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 9000;
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.55); z-index: 9000;
     align-items: flex-end;
   }
   .m-sheet-overlay.open { display: flex; }
   .m-sheet {
-    width: 100%;
-    background: var(--bg1);
-    border-radius: 16px 16px 0 0;
-    max-height: 80dvh;
-    display: flex;
-    flex-direction: column;
-    animation: slideUp 0.25s ease;
+    width: 100%; background: var(--bg1);
+    border-radius: 18px 18px 0 0; max-height: 82dvh;
+    display: flex; flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: mSheetUp .26s cubic-bezier(.2,.7,.3,1);
   }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to   { transform: translateY(0); }
-  }
-  .m-sheet-handle {
-    width: 36px; height: 4px;
-    background: var(--border2);
-    border-radius: 2px;
-    margin: 10px auto 0;
-    flex-shrink: 0;
-  }
-  .m-sheet-header {
-    display: flex; align-items: center;
-    padding: 12px 16px 10px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .m-sheet-title {
-    font-size: 13px; font-weight: 500;
-    color: var(--fg0); letter-spacing: .06em;
-  }
+  @keyframes mSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .m-sheet-handle { width: 38px; height: 4px; background: var(--border2); opacity: .5; border-radius: 2px; margin: 10px auto 0; flex-shrink: 0; }
+  .m-sheet-header { display: flex; align-items: center; padding: 12px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .m-sheet-title { font-size: 13px; font-weight: 500; color: var(--fg0); letter-spacing: .06em; }
   .m-sheet-close {
-    margin-left: auto; width: 28px; height: 28px;
-    border: none; background: var(--bg2);
-    border-radius: 50%; color: var(--fg2);
-    font-size: 14px; cursor: pointer;
+    margin-left: auto; width: 30px; height: 30px;
+    border: none; background: var(--bg3); border-radius: 50%;
+    color: var(--fg2); font-size: 14px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-  }
-  .m-sheet-body {
-    flex: 1; overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px;
-  }
-
-  /* ── 집자 시트 ── */
-  #m-jiza-slots {
-    display: flex; gap: 10px;
-    overflow-x: auto; padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
-  }
-  #m-jiza-slots::-webkit-scrollbar { display: none; }
-  .m-jiza-slot {
-    flex-shrink: 0;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-  .m-jiza-img {
-    width: 72px; height: 78px;
-    background: var(--img-box-bg);
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    transition: border-color var(--transition);
-  }
-  .m-jiza-img.selected { border-color: var(--gold); }
-  .m-jiza-img img { width: 100%; height: 100%; object-fit: contain; }
-  .m-jiza-char { font-family: 'Noto Serif SC',serif; font-size: 13px; color: var(--fg2); }
-  .m-jiza-nav { display: flex; gap: 2px; align-items: center; }
-  .m-jiza-nav-btn {
-    width: 22px; height: 22px;
-    border: 1px solid var(--border); background: var(--bg2);
-    color: var(--fg2); border-radius: 3px; font-size: 12px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-  }
-  .m-jiza-nav-idx { font-size: 9px; color: var(--fg3); font-family: monospace; min-width: 20px; text-align: center; }
-  #m-jiza-actions {
-    display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
-  }
-  .m-action-btn {
-    flex: 1; min-width: 120px;
-    height: 40px; border: 1px solid var(--border);
-    background: var(--bg2); color: var(--fg1);
-    border-radius: 8px; font-family: inherit; font-size: 13px;
-    cursor: pointer; transition: background var(--transition);
-  }
-  .m-action-btn.primary { border-color: var(--gold2); color: var(--gold); }
-  .m-action-btn:active { background: var(--bg3); }
+  .m-sheet-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px; }
 
-  /* ── 글자 상세 시트 ── */
-  #m-detail-sheet .m-sheet-body { padding: 0; }
-  .m-detail-img-wrap {
-    width: 100%; background: var(--img-box-bg);
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px; border-bottom: 1px solid var(--border);
-  }
-  .m-detail-img-wrap img { max-width: 160px; max-height: 160px; object-fit: contain; }
-  .m-detail-body { padding: 16px; }
-  .m-detail-char { font-family: 'Noto Serif SC',serif; font-size: 48px; color: var(--fg0); line-height: 1; }
-  .m-detail-reading { font-size: 14px; color: var(--fg1); margin-top: 4px; }
-  .m-detail-pos { font-size: 11px; color: var(--fg3); font-family: monospace; margin-top: 4px; margin-bottom: 16px; }
-  .m-detail-section { margin-bottom: 16px; }
-  .m-detail-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--fg3); margin-bottom: 8px; }
-  .m-detail-row { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .m-detail-key { min-width: 60px; color: var(--fg3); font-size: 11px; }
-  .m-detail-val { color: var(--fg0); flex: 1; }
-  .m-variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .m-variant-chip {
-    font-family: 'Noto Serif SC',serif; font-size: 20px;
-    padding: 4px 12px; background: var(--bg2);
-    border: 1px solid var(--border); border-radius: 4px;
-    cursor: pointer; color: var(--fg1);
-  }
-  .m-variant-chip:active { background: var(--match-hl); border-color: var(--border2); }
-  .m-instances-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(60px,1fr)); gap: 6px;
-  }
-  .m-instance-thumb {
-    aspect-ratio: 1; background: var(--img-box-bg);
-    border: 1px solid var(--border); border-radius: 3px;
-    overflow: hidden; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-  .m-instance-thumb img { width: 100%; height: 100%; object-fit: contain; }
-  .m-instance-thumb.selected { border-color: var(--gold); }
-  .m-inst-pos {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    font-size: 8px; background: rgba(0,0,0,.5); color: #fff;
-    text-align: center; font-family: monospace; padding: 1px;
-  }
-  /* 집자에서 인스턴스 선택 시 강조 */
-  .m-instance-thumb.pick-mode { border-color: var(--border2); }
-  .m-instance-thumb.pick-mode:active { border-color: var(--gold); background: var(--match-hl); }
-
-  /* ── 설정 시트 ── */
-  .m-settings-group { margin-bottom: 20px; }
-  .m-settings-group-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--fg3); margin-bottom: 10px; }
-  .m-settings-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .m-settings-group { margin-bottom: 22px; }
+  .m-settings-group:last-child { margin-bottom: 4px; }
+  .m-settings-group-label { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--fg3); margin-bottom: 12px; }
+  .m-settings-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
   .m-settings-row:last-child { border-bottom: none; }
-  .m-settings-label { flex: 1; font-size: 13px; color: var(--fg1); }
-  .m-settings-val { font-size: 13px; color: var(--fg0); }
-  .m-preset-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .m-preset-chip {
-    padding: 5px 12px; border: 1px solid var(--border);
-    border-radius: 20px; font-size: 12px; color: var(--fg2);
-    background: var(--bg2); cursor: pointer;
-  }
-  .m-preset-chip.active { border-color: var(--border2); color: var(--gold2); background: var(--match-hl); }
-  .m-orient-btns { display: flex; gap: 6px; }
-  .m-orient-btn {
-    flex: 1; height: 34px; border: 1px solid var(--border);
-    background: var(--bg2); color: var(--fg2);
-    border-radius: 6px; font-family: inherit; font-size: 12px; cursor: pointer;
-  }
-  .m-orient-btn.active { border-color: var(--border2); color: var(--gold2); background: var(--match-hl); }
-  .m-size-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-  .m-size-input {
-    flex: 1; height: 36px; padding: 0 8px;
-    background: var(--bg0); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--fg0); font-family: monospace; font-size: 14px;
-    outline: none; text-align: center;
-  }
+  .m-settings-label { flex: 1; font-size: 13.5px; color: var(--fg1); }
+
+  /* 편집기 설정 시트용 (기존 마크업 재사용) */
+  .m-preset-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .m-preset-chip { padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--fg2); background: var(--bg2); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .m-preset-chip.active { border-color: var(--border2); color: var(--gold); background: var(--match-hl); }
+  .m-orient-btns { display: flex; gap: 8px; }
+  .m-orient-btn { flex: 1; height: 38px; border: 1px solid var(--border); background: var(--bg2); color: var(--fg2); border-radius: 8px; font-family: inherit; font-size: 13px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .m-orient-btn.active { border-color: var(--border2); color: var(--gold); background: var(--match-hl); }
+  .m-size-row { display: flex; gap: 8px; align-items: center; }
+  .m-size-input { flex: 1; height: 38px; padding: 0 8px; background: var(--bg0); border: 1px solid var(--border); border-radius: 8px; color: var(--fg0); font-family: monospace; font-size: 16px; text-align: center; outline: none; }
   .m-size-input:focus { border-color: var(--border2); }
 
-  /* 모바일에서 편집기 모달 풀화면 */
+  /* ── 편집기 모달 (동작 유지, 모바일 레이아웃 정리) ── */
   #editor-overlay.open { align-items: stretch; }
-  #editor-modal {
-    width: 100% !important; height: 100% !important;
-    border-radius: 0; max-width: none; max-height: none;
-  }
-  /* 모바일 topbar: 단순 1줄 바 */
-  #editor-topbar {
-    flex-wrap: nowrap;
-    overflow: visible;
-    padding: 0 10px;
-    height: 48px;
-    gap: 8px;
-  }
-  #editor-topbar-title {
-    font-size: 12px;
-    margin-right: 0;
-    flex-shrink: 0;
-  }
-  /* 데스크탑 전용 항목 숨김 */
+  #editor-modal { width: 100% !important; height: 100dvh !important; border-radius: 0; max-width: none; max-height: none; }
+  #editor-topbar { flex-wrap: nowrap; overflow-x: auto; padding: 0 10px; height: 50px; gap: 8px; padding-top: env(safe-area-inset-top,0px); }
+  #editor-topbar::-webkit-scrollbar { display: none; }
+  #editor-topbar-title { font-size: 12px; margin-right: 0; flex-shrink: 0; }
   .ed-desktop-only { display: none !important; }
-  /* 모바일 전용 항목 표시 */
   .ed-mobile-only { display: flex !important; }
-  #btn-editor-export, #btn-editor-close {
-    height: 32px;
-    padding: 0 12px;
-    flex-shrink: 0;
-    font-size: 12px;
-  }
+  #btn-editor-export, #btn-editor-close { height: 34px; padding: 0 12px; flex-shrink: 0; font-size: 12px; }
   #btn-editor-close { margin-left: auto !important; }
-  #editor-canvas-area { padding: 8px; }
+  #editor-body { flex-direction: column; }
+  #editor-canvas-area { flex: 1 1 0; padding: 8px; min-height: 0; }
+  #editor-slots-panel {
+    width: 100% !important; max-width: none !important;
+    max-height: 32vh; flex: none !important;
+    border-left: none !important; border-top: 1px solid var(--border);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .m-route { transition: none; }
+    .m-sheet { animation: none; }
+  }
+
+  /* ── 글자 자르기 (모바일) ── */
+  #crop-modal { width: 100% !important; height: 100dvh !important; border-radius: 0; max-width: none; }
+  #crop-topbar { padding: 0 10px; padding-top: env(safe-area-inset-top,0); height: 50px; gap: 8px; flex-wrap: nowrap; overflow-x: auto; }
+  #crop-topbar::-webkit-scrollbar { display: none; }
+  #crop-topbar .editor-sep, #crop-topbar .editor-label { display: none !important; }
+  #crop-topbar-title { flex-shrink: 0; }
+  #btn-crop-reset, #btn-crop-confirm, #btn-crop-close { flex-shrink: 0; height: 34px; font-size: 12px; padding: 0 12px; white-space: nowrap; }
+  #btn-crop-close { margin-left: auto !important; }
+  #crop-body { flex-direction: column; }
+  #crop-canvas-area { flex: 1 1 0; padding: 10px; min-height: 0; }
+  #crop-canvas { touch-action: none; }
+  #editor-canvas { touch-action: none; }
+  #crop-side { width: 100% !important; flex-direction: row; align-items: center; border-left: none; border-top: 1px solid var(--border); padding: 10px 12px; gap: 12px; }
+  #crop-side > div:first-child { width: 64px; flex-shrink: 0; }
+  #crop-preview-box { width: 64px; height: 64px; aspect-ratio: auto; }
+  #line-tool-opts .orient-btn { height: 34px; }
 
 } /* end @media mobile */
 
-/* 데스크탑에서 모바일 요소 숨김 */
+/* 데스크탑: 모바일 전용 오버레이 숨김 */
 @media (min-width: 769px) {
-  #m-header { display: none; }
-  #m-main { display: none; }
-  #m-tabbar { display: none; }
-  .ed-mobile-only { display: none !important; }
+  #m-root { display: none !important; }
   #m-editor-settings-sheet { display: none !important; }
-  #m-jiza-sheet { display: none; }
-  #m-detail-sheet { display: none; }
-  #m-settings-sheet { display: none; }
-  #m-page-detail-sheet { display: none; }
+  .ed-mobile-only { display: none !important; }
 }
 
 /* ── Animations ─────────────────────────────────────────────── */
@@ -1885,6 +1868,18 @@ kbd {
       <button class="editor-btn ed-desktop-only" id="btn-grid-settings" title="그리드 설정">⚙</button>
       <!-- 모바일 전용 설정 버튼 -->
       <button class="editor-btn ed-mobile-only" id="btn-editor-settings-mobile" title="설정">⚙ 설정</button>
+      <!-- 선 그리기 도구 (데스크탑 + 모바일) -->
+      <div class="editor-sep"></div>
+      <button class="editor-btn" id="btn-line-tool" title="선 그리기 도구">╱ 선</button>
+      <div id="line-tool-opts" style="display:none;align-items:center;gap:6px;">
+        <button class="orient-btn active" id="line-h" data-o="h">가로</button>
+        <button class="orient-btn" id="line-v" data-o="v">세로</button>
+        <label class="editor-label" style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;">
+          <input type="checkbox" id="line-bisect" style="accent-color:var(--gold2);"> 이분선
+        </label>
+      </div>
+      <button class="editor-btn" id="btn-del-item" title="선택 삭제 (Delete)">🗑</button>
+      <button class="editor-btn ed-mobile-only" id="btn-crop-mobile" title="선택 글자 자르기">✂</button>
       <button class="editor-btn primary" id="btn-editor-export">↓ PNG 저장</button>
       <button class="editor-btn" id="btn-editor-close" style="margin-left:auto">✕ 닫기</button>
     </div>
@@ -2052,151 +2047,126 @@ kbd {
     </div>
   </div>
 </div>
-<!-- ══ MOBILE UI ══════════════════════════════════════════════ -->
+<!-- ══════════════════ MOBILE UI (rebuilt) ══════════════════ -->
+<div id="m-root">
 
-<!-- 모바일 헤더 -->
-<div id="m-header">
-  <div id="m-header-top">
-    <div id="m-logo">慈河字典</div>
-    <button class="m-icon-btn" id="m-btn-load-db" title="DB 불러오기">📂</button>
-    <button class="m-icon-btn" id="m-btn-settings" title="설정">⚙</button>
-    <button class="m-icon-btn" id="m-btn-theme" title="테마">◐</button>
-  </div>
-  <div id="m-search-bar">
-    <div id="m-search-input-wrap">
-      <input type="text" id="m-search-input" placeholder="한자 입력" autocomplete="off" spellcheck="false" inputmode="text">
-      <button id="m-btn-search">🔎</button>
-      <button id="m-btn-char-search-toggle" title="글자 검색">▾</button>
-    </div>
-  </div>
-  <!-- 글자 검색 슬라이드다운 -->
-  <div id="m-char-search-panel">
-    <div id="m-char-search-inner">
-      <div id="m-char-search-row">
-        <input type="text" id="m-char-search-field" placeholder="훈독·부수·구성요소…" autocomplete="off">
-        <button id="m-btn-char-filter">필터 ▾</button>
-      </div>
-      <div id="m-char-filter-pop">
-        <span class="m-filter-chip active" data-field="korean">훈독</span>
-        <span class="m-filter-chip active" data-field="radical">부수</span>
-        <span class="m-filter-chip active" data-field="components">구성요소</span>
-        <span class="m-filter-chip active" data-field="variants">이체자</span>
-        <span class="m-filter-chip active" data-field="memo">메모</span>
-      </div>
-      <div id="m-char-search-results"></div>
-    </div>
-  </div>
-</div>
+  <!-- 상단 앱바 -->
+  <header id="m-appbar">
+    <button id="m-title" type="button">
+      <span id="m-title-main">慈河字典</span>
+      <span id="m-title-sub">JAHA JAJEON</span>
+    </button>
+    <button class="m-ico" id="m-theme" title="테마 전환" aria-label="테마 전환">◐</button>
+    <button class="m-ico" id="m-gear" title="설정" aria-label="설정">⚙</button>
+  </header>
 
-<!-- 모바일 메인 -->
-<div id="m-main">
-  <!-- 검색결과 탭 -->
-  <div class="m-tab-pane active" id="m-tab-search">
-    <div id="m-results-scroll">
-      <div class="state-msg"><span class="big">字</span>한자를 입력하세요</div>
-    </div>
-  </div>
-  <!-- 페이지 탭 -->
-  <div class="m-tab-pane" id="m-tab-page">
-    <div id="m-page-nav">
-      <button class="m-page-nav-btn" id="m-btn-page-first">«</button>
-      <button class="m-page-nav-btn" id="m-btn-page-prev">‹</button>
-      <input type="number" id="m-page-num-input" value="1" min="1">
-      <span id="m-page-total">/ —</span>
-      <button class="m-page-nav-btn" id="m-btn-page-next">›</button>
-      <button class="m-page-nav-btn" id="m-btn-page-last">»</button>
-      <span id="m-page-nav-label" style="margin-left:auto;font-size:10px;color:var(--fg3);letter-spacing:.1em;">페이지</span>
-    </div>
-    <div id="m-page-grid-wrap">
-      <div id="m-page-grid"></div>
-    </div>
-  </div>
-</div>
+  <main id="m-body">
 
-<!-- 하단 탭바 -->
-<div id="m-tabbar">
-  <button class="m-tab-btn active" data-tab="m-tab-search">
-    <span class="tab-icon">字</span>
-    <span class="tab-label">검색</span>
-  </button>
-  <button class="m-tab-btn" data-tab="m-tab-page">
-    <span class="tab-icon">頁</span>
-    <span class="tab-label">페이지</span>
-  </button>
-</div>
-
-<!-- 집자 시트 -->
-<div class="m-sheet-overlay" id="m-jiza-sheet">
-  <div class="m-sheet">
-    <div class="m-sheet-handle"></div>
-    <div class="m-sheet-header">
-      <span class="m-sheet-title">集字</span>
-      <button class="m-sheet-close" id="m-jiza-close">✕</button>
-    </div>
-    <div class="m-sheet-body">
-      <div id="m-jiza-slots"></div>
-      <div id="m-jiza-actions">
-        <button class="m-action-btn" id="m-btn-jiza-editor">✎ 편집기</button>
-        <button class="m-action-btn primary" id="m-btn-jiza-save">↓ 저장</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 글자 상세 시트 -->
-<div class="m-sheet-overlay" id="m-detail-sheet">
-  <div class="m-sheet">
-    <div class="m-sheet-handle"></div>
-    <div class="m-sheet-header">
-      <span class="m-sheet-title" id="m-detail-title">—</span>
-      <button class="m-sheet-close" id="m-detail-close">✕</button>
-    </div>
-    <div class="m-sheet-body" id="m-detail-body"></div>
-  </div>
-</div>
-
-<!-- 페이지 글자 상세 시트 (페이지탭에서 글자 클릭 시) -->
-<div class="m-sheet-overlay" id="m-page-detail-sheet">
-  <div class="m-sheet">
-    <div class="m-sheet-handle"></div>
-    <div class="m-sheet-header">
-      <span class="m-sheet-title" id="m-page-detail-title">—</span>
-      <button class="m-sheet-close" id="m-page-detail-close">✕</button>
-    </div>
-    <div class="m-sheet-body" id="m-page-detail-body"></div>
-  </div>
-</div>
-
-<!-- 설정 시트 -->
-<div class="m-sheet-overlay" id="m-settings-sheet">
-  <div class="m-sheet">
-    <div class="m-sheet-handle"></div>
-    <div class="m-sheet-header">
-      <span class="m-sheet-title">설정</span>
-      <button class="m-sheet-close" id="m-settings-close">✕</button>
-    </div>
-    <div class="m-sheet-body">
-      <!-- 테마 -->
-      <div class="m-settings-group">
-        <div class="m-settings-group-label">테마</div>
-        <div class="m-settings-row">
-          <span class="m-settings-label">라이트 / 다크</span>
-          <button class="m-action-btn" id="m-btn-theme-toggle" style="flex:0;min-width:80px;height:32px;font-size:12px;">전환</button>
+    <!-- 검색 -->
+    <section class="m-pane is-active" id="pane-search">
+      <div class="m-searchbar">
+        <div class="m-seg">
+          <button class="m-seg-btn is-on" data-mode="hanja">한자</button>
+          <button class="m-seg-btn" data-mode="meaning">뜻·부수</button>
+        </div>
+        <div class="m-field">
+          <input id="m-q" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="한자를 입력">
+          <button id="m-q-clear" class="m-field-x" aria-label="지우기" hidden>✕</button>
+          <button id="m-q-go" class="m-field-go">검색</button>
+        </div>
+        <div class="m-chips" id="m-fields" hidden>
+          <button class="m-chip is-on" data-field="korean">훈독</button>
+          <button class="m-chip is-on" data-field="radical">부수</button>
+          <button class="m-chip is-on" data-field="components">구성요소</button>
+          <button class="m-chip is-on" data-field="variants">이체자</button>
+          <button class="m-chip is-on" data-field="memo">메모</button>
         </div>
       </div>
-      <!-- DB -->
-      <div class="m-settings-group">
-        <div class="m-settings-group-label">데이터</div>
-        <div class="m-settings-row">
-          <span class="m-settings-label">DB.json 불러오기</span>
-          <button class="m-action-btn" id="m-btn-load-db2" style="flex:0;min-width:80px;height:32px;font-size:12px;">열기</button>
+      <div class="m-scroll" id="m-search-scroll"></div>
+    </section>
+
+    <!-- 集字 -->
+    <section class="m-pane" id="pane-jiza">
+      <div class="m-composebar">
+        <div class="m-field">
+          <input id="m-jz-q" type="text" autocomplete="off" spellcheck="false" placeholder="집자할 글자 입력  예) 道因">
+          <button id="m-jz-go" class="m-field-go">集字</button>
+        </div>
+      </div>
+      <div class="m-scroll" id="m-jiza-scroll"></div>
+      <div class="m-actionbar" id="m-jiza-actions" hidden>
+        <button class="m-btn ghost" id="m-jz-clear">비우기</button>
+        <button class="m-btn ghost" id="m-jz-save">PNG 저장</button>
+        <button class="m-btn solid" id="m-jz-edit">편집기 열기</button>
+      </div>
+    </section>
+
+    <!-- 페이지 -->
+    <section class="m-pane" id="pane-page">
+      <div class="m-pagenav">
+        <button class="m-pg-btn" id="m-pg-first">«</button>
+        <button class="m-pg-btn" id="m-pg-prev">‹</button>
+        <input id="m-pg-num" type="number" min="1" value="1">
+        <span id="m-pg-total" class="m-pg-total">/ —</span>
+        <button class="m-pg-btn" id="m-pg-next">›</button>
+        <button class="m-pg-btn" id="m-pg-last">»</button>
+      </div>
+      <div class="m-scroll" id="m-page-scroll">
+        <div class="m-paper" id="m-paper"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 하단 탭바 -->
+  <nav id="m-tabs">
+    <button class="m-tab is-active" data-pane="pane-search"><span class="gl">字</span><span class="lb">검색</span></button>
+    <button class="m-tab" data-pane="pane-jiza"><span class="gl">集</span><span class="lb">集字</span></button>
+    <button class="m-tab" data-pane="pane-page"><span class="gl">頁</span><span class="lb">페이지</span></button>
+  </nav>
+
+  <!-- 글자 상세 (전체화면 라우트) -->
+  <div class="m-route" id="m-detail" aria-hidden="true">
+    <header class="m-route-bar">
+      <button class="m-back" id="m-detail-back">‹ 뒤로</button>
+      <span class="m-route-title" id="m-detail-name">—</span>
+    </header>
+    <div class="m-scroll" id="m-detail-scroll"></div>
+  </div>
+
+  <!-- 설정 시트 -->
+  <div class="m-sheet-overlay" id="m-set-sheet">
+    <div class="m-sheet">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <span class="m-sheet-title">설정</span>
+        <button class="m-sheet-close" id="m-set-close">✕</button>
+      </div>
+      <div class="m-sheet-body">
+        <div class="m-settings-group" id="m-set-sections-group" hidden>
+          <div class="m-settings-group-label">사전</div>
+          <div class="m-chips" id="m-set-sections"></div>
+        </div>
+        <div class="m-settings-group">
+          <div class="m-settings-group-label">테마</div>
+          <div class="m-settings-row">
+            <span class="m-settings-label">라이트 / 다크</span>
+            <button class="m-btn ghost sm" id="m-set-theme">전환</button>
+          </div>
+        </div>
+        <div class="m-settings-group">
+          <div class="m-settings-group-label">데이터</div>
+          <div class="m-settings-row">
+            <span class="m-settings-label">DB.json 불러오기</span>
+            <button class="m-btn ghost sm" id="m-set-db">열기</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ══ END MOBILE UI ══════════════════════════════════════════ -->
+</div>
+<!-- ════════════════ END MOBILE UI (rebuilt) ════════════════ -->
 
 </div>
 
@@ -2317,21 +2287,19 @@ function setLoading(v) {
 async function init() {
   setLoading(true);
   try {
-    // Hardcoded section registry — add new sections here
-    const config = {
-      sections: [
-        {
-          id: 'doin',
-          title: '道因法師碑',
-          subtitle: '구양통 해서 · 당',
-          dataPath: './도인법사비/DB.json',
-          imageBase: './도인법사비/'
-        }
-      ]
-    };
-    S.sections = config.sections || [];
+    // manifest.json = 서체 폴더 목록. 예: ["도인법사비", "구성궁예천명"]
+    // 항목을 문자열(폴더명) 또는 {folder,title,sub} 객체로 적을 수 있음.
+    let entries;
+    try {
+      entries = await (await fetch('./manifest.json')).json();
+    } catch {
+      entries = ['도인법사비'];   // manifest 없으면 기본 폴더
+    }
+    if (!Array.isArray(entries) || !entries.length) entries = ['도인법사비'];  // 없거나 비면 기본 폴더
+    S.sections = entries.map((e, i) => mkSection(e, i));
     buildTabs();
-    if (S.sections.length > 0) await loadSection(S.sections[0]);
+    await loadSection(S.sections[0]);                                 // 첫 서체 즉시 로드
+    S.sections.forEach((sec, i) => { if (i > 0) primeSectionMeta(sec); }); // 나머지 탭 이름 채우기
   } catch(e) {
     console.error(e);
     showMsg('데이터를 불러올 수 없습니다');
@@ -2339,11 +2307,37 @@ async function init() {
   setLoading(false);
 }
 
+// 폴더명(또는 {folder,title,sub})으로 섹션 객체 생성
+function mkSection(entry, i) {
+  const folder = typeof entry === 'string' ? entry : entry.folder;
+  return {
+    idx: i,
+    id: folder,
+    folder,
+    title: (typeof entry === 'object' && entry.title) || folder,
+    subtitle: (typeof entry === 'object' && (entry.sub || entry.subtitle)) || '',
+    dataPath: `./${folder}/DB.json`,
+    imageBase: `./${folder}/`,
+    data: null,   // 한 번 불러오면 캐시
+  };
+}
+
+// 탭 이름을 해당 서체 DB.json의 metadata에서 채움 (데이터도 캐시)
+async function primeSectionMeta(sec) {
+  try {
+    if (!sec.data) sec.data = await (await fetch(sec.dataPath)).json();
+    sec.title = sec.data.metadata?.title || sec.folder;
+    sec.subtitle = sec.data.metadata?.sub || sec.data.metadata?.subtitle || '';
+    updateTabLabel(sec);
+  } catch { /* 폴더 없거나 오류 → 폴더명 라벨 유지 */ }
+}
+
 function buildTabs() {
   sectionTabs.innerHTML = '';
   S.sections.forEach((sec, i) => {
     const tab = document.createElement('button');
     tab.className = 'section-tab' + (i === 0 ? ' active' : '');
+    tab.dataset.idx = i;
     tab.innerHTML = `${sec.title}<span class="tab-sub">${sec.subtitle || ''}</span>`;
     tab.addEventListener('click', () => {
       document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
@@ -2352,6 +2346,10 @@ function buildTabs() {
     });
     sectionTabs.appendChild(tab);
   });
+}
+function updateTabLabel(sec) {
+  const tab = sectionTabs.querySelector(`[data-idx="${sec.idx}"]`);
+  if (tab) tab.innerHTML = `${sec.title}<span class="tab-sub">${sec.subtitle || ''}</span>`;
 }
 
 async function loadSection(sec) {
@@ -2366,16 +2364,20 @@ async function loadSection(sec) {
 
   setLoading(true);
   try {
-    let data;
-    try {
-      const r = await fetch(sec.dataPath);
-      data = await r.json();
-    } catch {
-      showMsg('DB.json을 찾을 수 없습니다<br><small style="color:var(--fg4)">상단 "DB 불러오기" 버튼으로 파일을 선택하세요</small>');
-      setLoading(false);
-      return;
+    if (!sec.data) {
+      try {
+        sec.data = await (await fetch(sec.dataPath)).json();
+      } catch {
+        showMsg('DB.json을 찾을 수 없습니다<br><small style="color:var(--fg4)">상단 "DB 불러오기" 버튼으로 파일을 선택하세요</small>');
+        setLoading(false);
+        return;
+      }
     }
-    S.data = data;
+    S.data = sec.data;
+    // 제목은 metadata에서 간접 참조
+    sec.title = sec.data.metadata?.title || sec.folder;
+    sec.subtitle = sec.data.metadata?.sub || sec.data.metadata?.subtitle || '';
+    updateTabLabel(sec);
     showMsg('검색창에 한자를 입력하세요');
   } catch(e) {
     showMsg('데이터 로드 실패');
@@ -2756,6 +2758,14 @@ const ED = {
     color: 'rgba(180,210,255,0.45)',
     snapToGrid: false,
   },
+  // 선 그리기 도구
+  lineTool: false,
+  lineOrient: 'h',        // 'h' | 'v'
+  lineBisect: false,
+  lineLwMm: 0.5,
+  lineDraft: null,        // 이분선 드래그 중 {x1,y1,x2,y2}
+  draggingLine: false,
+  lineDragStart: null,
 };
 const PRESETS = {
   '350,690':  [350,690],
@@ -2886,6 +2896,23 @@ function edDraw() {
 
   // ── Items ──
   ED.items.forEach((item, i) => {
+    if (item.type === 'line') {
+      ctx.save();
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = Math.max(1, (item.lw || 0.5) * ED.scale);
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+      if (i === ED.selected) {
+        ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+        ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle = '#3b82f6';
+        [[item.x1, item.y1], [item.x2, item.y2]].forEach(([hx, hy]) => {
+          ctx.beginPath(); ctx.arc(hx, hy, 5, 0, Math.PI * 2); ctx.fill();
+        });
+      }
+      ctx.restore();
+      return;
+    }
     if (item.img) {
       ctx.drawImage(item.img, item.x, item.y, item.w, item.h);
     } else {
@@ -2927,6 +2954,26 @@ function edDraw() {
     }
   });
 
+  // ── 이분선 드래프트 미리보기 ──
+  if (ED.lineDraft) {
+    const d = ED.lineDraft;
+    const cv2 = edCanvas();
+    const mx = (d.x1 + d.x2) / 2, my = (d.y1 + d.y2) / 2;
+    ctx.save();
+    // a→b 연결선 (연하게)
+    ctx.strokeStyle = 'rgba(255,59,130,0.5)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(d.x1, d.y1); ctx.lineTo(d.x2, d.y2); ctx.stroke();
+    // 중점
+    ctx.fillStyle = '#ff3b82'; ctx.beginPath(); ctx.arc(mx, my, 3, 0, Math.PI * 2); ctx.fill();
+    // 결과 이분선 (강조)
+    ctx.strokeStyle = '#ff3b82'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 3]);
+    ctx.beginPath();
+    if (ED.lineOrient === 'v') { ctx.moveTo(mx, 0); ctx.lineTo(mx, cv2.height); }
+    else { ctx.moveTo(0, my); ctx.lineTo(cv2.width, my); }
+    ctx.stroke();
+    ctx.restore();
+  }
+
   // ── Snap guide lines (alt-drag) ──
   if (ED.snapGuides.length > 0) {
     ctx.save();
@@ -2961,16 +3008,24 @@ function edRenderSlotsList() {
   ED.items.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'editor-slot-item' + (i === ED.selected ? ' selected' : '');
-    const thumbHtml = item.img
-      ? `<img src="${item.src}" alt="${item.char}">`
-      : `<span style="font-family:'Noto Serif SC',serif;font-size:18px;color:var(--fg3)">${item.char}</span>`;
-    el.innerHTML = `
-      <div class="editor-slot-thumb">${thumbHtml}</div>
-      <div class="editor-slot-info">
-        <div class="editor-slot-char">${item.char}</div>
-        <div class="editor-slot-size">${item.w}×${item.h}px</div>
-      </div>
-    `;
+    if (item.type === 'line') {
+      el.innerHTML = `
+        <div class="editor-slot-thumb" style="font-size:20px;color:var(--fg3)">${item.x1===item.x2?'│':'─'}</div>
+        <div class="editor-slot-info">
+          <div class="editor-slot-char">선</div>
+          <div class="editor-slot-size">${item.x1===item.x2?'세로':(item.y1===item.y2?'가로':'이분')}</div>
+        </div>`;
+    } else {
+      const thumbHtml = item.img
+        ? `<img src="${item.src}" alt="${item.char}">`
+        : `<span style="font-family:'Noto Serif SC',serif;font-size:18px;color:var(--fg3)">${item.char}</span>`;
+      el.innerHTML = `
+        <div class="editor-slot-thumb">${thumbHtml}</div>
+        <div class="editor-slot-info">
+          <div class="editor-slot-char">${item.char}</div>
+          <div class="editor-slot-size">${item.w}×${item.h}px</div>
+        </div>`;
+    }
     el.addEventListener('click', () => {
       ED.selected = i;
       edDraw();
@@ -2984,6 +3039,7 @@ function edRenderSlotsList() {
 function edUpdateSizeInputs() {
   if (ED.selected < 0) return;
   const item = ED.items[ED.selected];
+  if (item.type === 'line') return;
   document.getElementById('editor-char-w').value = item.w;
   document.getElementById('editor-char-h').value = item.h;
 }
@@ -2992,15 +3048,52 @@ function edUpdateSizeInputs() {
 function edGetMousePos(e) {
   return edScreenToCanvas(e.clientX, e.clientY);
 }
+function edDistToSeg(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1, L2 = dx*dx + dy*dy;
+  let t = L2 ? ((px - x1)*dx + (py - y1)*dy) / L2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (x1 + t*dx), py - (y1 + t*dy));
+}
+function edAddLine(x1, y1, x2, y2) {
+  ED.items.push({ type: 'line', x1, y1, x2, y2, lw: ED.lineLwMm });
+  edDraw(); edRenderSlotsList();
+}
+function edFullLineAt(x, y) {
+  const cv = edCanvas();
+  if (ED.lineOrient === 'v') edAddLine(x, 0, x, cv.height);
+  else edAddLine(0, y, cv.width, y);
+}
+// 이분선: a·b 중점을 지나는 전체 가로/세로선
+function edBisectLine(d) {
+  const cv = edCanvas();
+  if (ED.lineOrient === 'v') { const mx = (d.x1 + d.x2) / 2; return [mx, 0, mx, cv.height]; }
+  const my = (d.y1 + d.y2) / 2; return [0, my, cv.width, my];
+}
+function edCommitBisect(d) {
+  if (Math.hypot(d.x2 - d.x1, d.y2 - d.y1) <= 4) return;
+  const [x1, y1, x2, y2] = edBisectLine(d);
+  edAddLine(x1, y1, x2, y2);
+}
+function edDeleteSelected() {
+  if (ED.selected < 0) return;
+  ED.items.splice(ED.selected, 1);
+  ED.selected = -1;
+  edDraw(); edRenderSlotsList();
+}
 function edHitTest(mx, my) {
-  // Test in reverse order (top items first)
+  const tol = 8 / (ED.viewZoom || 1);
   for (let i = ED.items.length - 1; i >= 0; i--) {
     const it = ED.items[i];
-    if (mx >= it.x && mx <= it.x+it.w && my >= it.y && my <= it.y+it.h) return i;
+    if (it.type === 'line') {
+      if (edDistToSeg(mx, my, it.x1, it.y1, it.x2, it.y2) <= tol) return i;
+    } else if (mx >= it.x && mx <= it.x+it.w && my >= it.y && my <= it.y+it.h) {
+      return i;
+    }
   }
   return -1;
 }
 function edIsOnResizeHandle(item, mx, my) {
+  if (item.type === 'line') return false;
   const hs = 10;
   return mx >= item.x+item.w-hs && mx <= item.x+item.w+2 &&
          my >= item.y+item.h-hs && my <= item.y+item.h+2;
@@ -3111,9 +3204,15 @@ edArea.addEventListener('mousedown', e => {
 document.getElementById('editor-canvas').addEventListener('mousedown', e => {
   if (ED.spaceDown) return; // Let area handler take it
   const { x, y } = edGetMousePos(e);
+  // 선 그리기 도구
+  if (ED.lineTool) {
+    if (ED.lineBisect) { ED.lineDraft = { x1: x, y1: y, x2: x, y2: y }; }
+    else { edFullLineAt(x, y); }
+    return;
+  }
   if (ED.selected >= 0) {
     const item = ED.items[ED.selected];
-    if (edIsOnResizeHandle(item, x, y)) {
+    if (item.type !== 'line' && edIsOnResizeHandle(item, x, y)) {
       edResizing = true;
       edResizeStart = { x, y, w: item.w, h: item.h };
       return;
@@ -3122,12 +3221,17 @@ document.getElementById('editor-canvas').addEventListener('mousedown', e => {
   const hit = edHitTest(x, y);
   if (hit >= 0) {
     ED.selected = hit;
-    ED.dragging = true;
-    ED.dragOffX = x - ED.items[hit].x;
-    ED.dragOffY = y - ED.items[hit].y;
-    // Store drag start for shift-constrain
-    ED.dragStartX = ED.items[hit].x;
-    ED.dragStartY = ED.items[hit].y;
+    const it = ED.items[hit];
+    if (it.type === 'line') {
+      ED.draggingLine = true;
+      ED.lineDragStart = { mx: x, my: y, x1: it.x1, y1: it.y1, x2: it.x2, y2: it.y2 };
+    } else {
+      ED.dragging = true;
+      ED.dragOffX = x - it.x;
+      ED.dragOffY = y - it.y;
+      ED.dragStartX = it.x;
+      ED.dragStartY = it.y;
+    }
     edDraw();
     edRenderSlotsList();
     edUpdateSizeInputs();
@@ -3148,6 +3252,18 @@ document.addEventListener('mousemove', e => {
   }
   if (!ED.open) return;
   const { x, y } = edGetMousePos(e);
+
+  // 이분선 드래프트
+  if (ED.lineTool && ED.lineDraft) {
+    ED.lineDraft.x2 = x; ED.lineDraft.y2 = y; edDraw(); return;
+  }
+  // 선 오브젝트 이동
+  if (ED.draggingLine && ED.selected >= 0) {
+    const it = ED.items[ED.selected], s = ED.lineDragStart;
+    const dx = x - s.mx, dy = y - s.my;
+    it.x1 = s.x1 + dx; it.y1 = s.y1 + dy; it.x2 = s.x2 + dx; it.y2 = s.y2 + dy;
+    edDraw(); return;
+  }
 
   if (edResizing && ED.selected >= 0) {
     const item = ED.items[ED.selected];
@@ -3188,6 +3304,7 @@ document.addEventListener('mousemove', e => {
   }
   // Cursor
   const cv = edCanvas();
+  if (ED.lineTool) { cv.style.cursor = 'crosshair'; return; }
   if (ED.spaceDown) {
     cv.style.cursor = 'grab';
   } else if (ED.selected >= 0 && edIsOnResizeHandle(ED.items[ED.selected], x, y)) {
@@ -3204,6 +3321,12 @@ document.addEventListener('mouseup', e => {
     ED.panning = false;
     edArea.style.cursor = '';
   }
+  if (ED.lineDraft) {
+    edCommitBisect(ED.lineDraft);
+    ED.lineDraft = null;
+  }
+  ED.draggingLine = false;
+  ED.lineDragStart = null;
   ED.dragging = false;
   edResizing = false;
   edResizeStart = null;
@@ -3320,6 +3443,16 @@ document.getElementById('btn-editor-export').addEventListener('click', async () 
   outCtx.fillRect(0, 0, outW, outH);
   const ratio = ED.DPI / ED.scale;  // canvas px → output px
   for (const item of ED.items) {
+    if (item.type === 'line') {
+      outCtx.save();
+      outCtx.strokeStyle = '#111111';
+      outCtx.lineWidth = Math.max(1, (item.lw || 0.5) * ED.DPI);
+      outCtx.beginPath();
+      outCtx.moveTo(item.x1 * ratio, item.y1 * ratio);
+      outCtx.lineTo(item.x2 * ratio, item.y2 * ratio);
+      outCtx.stroke(); outCtx.restore();
+      continue;
+    }
     if (!item.img) continue;
     outCtx.drawImage(item.img,
       Math.round(item.x * ratio), Math.round(item.y * ratio),
@@ -3327,7 +3460,7 @@ document.getElementById('btn-editor-export').addEventListener('click', async () 
   }
   const a = document.createElement('a');
   a.href = outCv.toDataURL('image/png');
-  a.download = `집자_${ED.items.map(i=>i.char).join('')}.png`;
+  a.download = `집자_${ED.items.filter(i=>i.type!=='line').map(i=>i.char).join('')||'lines'}.png`;
   a.click();
 });
 
@@ -3345,6 +3478,7 @@ document.addEventListener('keydown', e => {
   // Editor overlay
   if (document.getElementById('editor-overlay').classList.contains('open')) {
     if (e.key === 'Escape') closeEditor();
+    else if ((e.key === 'Delete' || e.key === 'Backspace') && ED.selected >= 0 && !inInput) { e.preventDefault(); edDeleteSelected(); }
     return;
   }
 
@@ -3696,6 +3830,24 @@ cropCv.addEventListener('mouseup', () => {
     CR.sel = null; crDraw();
   }
 });
+// 모바일 터치 선택
+cropCv.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0], r = cropCv.getBoundingClientRect();
+  const cx = (t.clientX - r.left) / CR.scale, cy = (t.clientY - r.top) / CR.scale;
+  CR.dragging = true; CR.dragStart = { x: cx, y: cy }; CR.sel = { x: cx, y: cy, w: 0, h: 0 };
+}, { passive: false });
+cropCv.addEventListener('touchmove', e => {
+  if (!CR.dragging) return; e.preventDefault();
+  const t = e.touches[0], r = cropCv.getBoundingClientRect();
+  const cx = (t.clientX - r.left) / CR.scale, cy = (t.clientY - r.top) / CR.scale;
+  CR.sel.w = cx - CR.dragStart.x; CR.sel.h = cy - CR.dragStart.y; crDraw();
+}, { passive: false });
+cropCv.addEventListener('touchend', () => {
+  CR.dragging = false;
+  if (CR.sel && Math.abs(CR.sel.w) > 4 && Math.abs(CR.sel.h) > 4) crUpdatePreview();
+  else { CR.sel = null; crDraw(); }
+});
 
 document.getElementById('btn-crop-reset').addEventListener('click', () => {
   CR.sel = null; crDraw();
@@ -3742,9 +3894,37 @@ function closeCropEditor() {
 }
 
 document.getElementById('btn-open-crop').addEventListener('click', () => {
-  if (ED.selected < 0) { alert('슬롯 목록에서 자를 글자를 먼저 선택하세요'); return; }
+  if (ED.selected < 0 || ED.items[ED.selected]?.type === 'line') { alert('슬롯 목록에서 자를 글자를 먼저 선택하세요'); return; }
   openCropEditor(ED.selected);
 });
+
+// ── 선 그리기 도구 배선 ─────────────────────────────────────────
+(function () {
+  const btn = document.getElementById('btn-line-tool');
+  const opts = document.getElementById('line-tool-opts');
+  const bH = document.getElementById('line-h');
+  const bV = document.getElementById('line-v');
+  function setTool(on) {
+    ED.lineTool = on;
+    btn.style.borderColor = on ? 'var(--gold2)' : '';
+    btn.style.color = on ? 'var(--gold)' : '';
+    opts.style.display = on ? 'flex' : 'none';
+    if (on) ED.selected = -1;
+    edCanvas().style.cursor = on ? 'crosshair' : 'default';
+    edDraw(); edRenderSlotsList();
+  }
+  btn.addEventListener('click', () => setTool(!ED.lineTool));
+  bH.addEventListener('click', () => { ED.lineOrient = 'h'; bH.classList.add('active'); bV.classList.remove('active'); if (!ED.lineTool) setTool(true); });
+  bV.addEventListener('click', () => { ED.lineOrient = 'v'; bV.classList.add('active'); bH.classList.remove('active'); if (!ED.lineTool) setTool(true); });
+  document.getElementById('line-bisect').addEventListener('change', e => { ED.lineBisect = e.target.checked; if (!ED.lineTool) setTool(true); });
+  document.getElementById('btn-del-item').addEventListener('click', () => edDeleteSelected());
+  document.getElementById('btn-crop-mobile').addEventListener('click', () => {
+    if (ED.selected < 0 || ED.items[ED.selected]?.type === 'line') { alert('자를 글자를 먼저 선택하세요'); return; }
+    openCropEditor(ED.selected);
+  });
+  const _close = closeEditor;
+  closeEditor = function () { if (ED.lineTool) setTool(false); _close(); };
+})();
 
 
 // ── Page Browser ───────────────────────────────────────────────────────────
@@ -3841,420 +4021,433 @@ document.getElementById('page-num-input').addEventListener('keydown', e => { if 
 
 
 // ══════════════════════════════════════════════════════════════
-// MOBILE JS
+// MOBILE JS  — rebuilt shell
 // ══════════════════════════════════════════════════════════════
 const isMobile = () => window.innerWidth <= 768;
 
-// ── 모바일 탭바 ────────────────────────────────────────────────
-document.querySelectorAll('.m-tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.m-tab-pane').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+(function () {
+  const $ = id => document.getElementById(id);
+  const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ── 뒤로가기 스택 (하드웨어 back / 닫기 공용) ──────────────────
+  const overlayStack = [];
+  function pushOverlay(closeFn) {
+    overlayStack.push(closeFn);
+    history.pushState({ mOverlay: true }, '');
+  }
+  function dismissTop() { if (overlayStack.length) history.back(); }
+  window.addEventListener('popstate', () => {
+    const fn = overlayStack.pop();
+    if (fn) fn();
   });
-});
 
-function mSwitchTab(tabId) {
-  document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
-  document.querySelectorAll('.m-tab-pane').forEach(p => p.classList.toggle('active', p.id === tabId));
-}
+  // ── 탭 전환 ──────────────────────────────────────────────────
+  function switchPane(id) {
+    document.querySelectorAll('.m-pane').forEach(p => p.classList.toggle('is-active', p.id === id));
+    document.querySelectorAll('.m-tab').forEach(t => t.classList.toggle('is-active', t.dataset.pane === id));
+    if (id === 'pane-page' && S.data) { pgUpdateNav(); if (!$('m-paper').childElementCount) pgRender(); }
+  }
+  document.querySelectorAll('.m-tab').forEach(t =>
+    t.addEventListener('click', () => switchPane(t.dataset.pane)));
 
-// ── 시트 열기/닫기 ─────────────────────────────────────────────
-function mOpenSheet(id) { document.getElementById(id).classList.add('open'); }
-function mCloseSheet(id) { document.getElementById(id).classList.remove('open'); }
+  // ── 앱바 ─────────────────────────────────────────────────────
+  function syncTheme() { $('m-theme').textContent = S.theme === 'light' ? '◑' : '◐'; }
+  function toggleTheme() { applyTheme(S.theme === 'dark' ? 'light' : 'dark'); syncTheme(); }
+  on('m-theme', 'click', toggleTheme);
+  on('m-set-theme', 'click', toggleTheme);
+  on('m-gear', 'click', openSettings);
+  on('m-title', 'click', openSettings);
+  on('m-set-db', 'click', () => { closeSettings(); $('db-file-input').click(); });
 
-// 오버레이 탭으로 닫기
-document.querySelectorAll('.m-sheet-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('open');
+  // ── 검색: 모드 세그먼트 ──────────────────────────────────────
+  let mode = 'hanja';
+  document.querySelectorAll('.m-seg-btn').forEach(b => b.addEventListener('click', () => {
+    mode = b.dataset.mode;
+    document.querySelectorAll('.m-seg-btn').forEach(x => x.classList.toggle('is-on', x === b));
+    $('m-fields').hidden = mode !== 'meaning';
+    $('m-q').placeholder = mode === 'meaning' ? '훈독·부수·구성요소…' : '한자를 입력';
+    $('m-q').value = '';
+    $('m-q-clear').hidden = true;
+    renderEmptySearch();
+  }));
+
+  const qInput = $('m-q');
+  qInput.addEventListener('input', () => {
+    $('m-q-clear').hidden = !qInput.value;
+    if (mode === 'meaning') renderMeaning(qInput.value.trim());
   });
-});
+  qInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitSearch(); });
+  on('m-q-go', 'click', submitSearch);
+  on('m-q-clear', 'click', () => { qInput.value = ''; $('m-q-clear').hidden = true; qInput.focus(); mode === 'meaning' ? renderMeaning('') : renderEmptySearch(); });
 
-document.getElementById('m-jiza-close').addEventListener('click', () => mCloseSheet('m-jiza-sheet'));
-document.getElementById('m-detail-close').addEventListener('click', () => mCloseSheet('m-detail-sheet'));
-document.getElementById('m-page-detail-close').addEventListener('click', () => mCloseSheet('m-page-detail-sheet'));
-document.getElementById('m-settings-close').addEventListener('click', () => mCloseSheet('m-settings-sheet'));
+  document.querySelectorAll('#m-fields .m-chip').forEach(c => c.addEventListener('click', () => {
+    c.classList.toggle('is-on'); renderMeaning(qInput.value.trim());
+  }));
 
-// ── 헤더 버튼 ──────────────────────────────────────────────────
-document.getElementById('m-btn-settings').addEventListener('click', () => mOpenSheet('m-settings-sheet'));
-document.getElementById('m-btn-theme').addEventListener('click', () => applyTheme(S.theme === 'dark' ? 'light' : 'dark'));
-document.getElementById('m-btn-theme-toggle').addEventListener('click', () => applyTheme(S.theme === 'dark' ? 'light' : 'dark'));
-document.getElementById('m-btn-load-db').addEventListener('click', () => document.getElementById('db-file-input').click());
-document.getElementById('m-btn-load-db2').addEventListener('click', () => { mCloseSheet('m-settings-sheet'); document.getElementById('db-file-input').click(); });
+  function submitSearch() {
+    const v = qInput.value.trim();
+    if (!v) return;
+    if (mode === 'meaning') { renderMeaning(v); return; }
+    submitHanja(v);
+  }
 
-// ── 글자 검색 슬라이드다운 ─────────────────────────────────────
-const mCharPanel = document.getElementById('m-char-search-panel');
-document.getElementById('m-btn-char-search-toggle').addEventListener('click', () => {
-  mCharPanel.classList.toggle('open');
-});
-
-// 필터 칩
-document.querySelectorAll('.m-filter-chip').forEach(chip => {
-  chip.addEventListener('click', () => chip.classList.toggle('active'));
-});
-document.getElementById('m-btn-char-filter').addEventListener('click', () => {
-  document.getElementById('m-char-filter-pop').classList.toggle('open');
-});
-
-// 글자 검색 입력
-document.getElementById('m-char-search-field').addEventListener('input', () => {
-  const q = document.getElementById('m-char-search-field').value.trim();
-  const resultsEl = document.getElementById('m-char-search-results');
-  if (!q || !S.data) { resultsEl.classList.remove('open'); resultsEl.innerHTML = ''; return; }
-
-  const activeFields = [...document.querySelectorAll('.m-filter-chip.active')].map(c => c.dataset.field);
-  const chars = S.data.characters || {};
-  const matches = [];
-  const fieldLabel = { korean:'훈독', radical:'부수', components:'구성요소', variants:'이체자', memo:'메모' };
-
-  for (const [ch, data] of Object.entries(chars)) {
-    for (const field of activeFields) {
-      const val = data[field];
-      if (!val) continue;
-      const haystack = Array.isArray(val) ? val.join(' ') : String(val);
-      if (haystack.includes(q)) {
-        matches.push({ ch, data, field, haystack });
-        break;
-      }
+  // ── 검색 실행 ────────────────────────────────────────────────
+  function submitHanja(str) {
+    if (!S.data) { renderNoData($('m-search-scroll')); return; }
+    const chars = [...str].filter(c => c.trim() && c !== '/0');
+    if (!chars.length) return;
+    if (chars.length === 1) {
+      switchPane('pane-search');
+      renderResults(chars[0]);
+    } else {
+      runJiza(chars.join(''));
+      renderCompose();
+      switchPane('pane-jiza');
     }
-    if (matches.length >= 30) break;
   }
 
-  if (!matches.length) {
-    resultsEl.innerHTML = '<div style="padding:12px;text-align:center;font-size:12px;color:var(--fg3)">결과 없음</div>';
-    resultsEl.classList.add('open'); return;
-  }
-
-  resultsEl.innerHTML = '';
-  matches.forEach(({ ch, data, field, haystack }) => {
-    const btn = document.createElement('button');
-    btn.className = 'm-csr-btn';
-    const reading = data.korean?.[0] || '';
-    btn.innerHTML = `<span class="m-csr-char">${ch}</span>
-      <span class="m-csr-meta">
-        <span class="m-csr-reading">${reading}</span>
-        <span class="m-csr-detail">${fieldLabel[field]}: ${haystack.slice(0,40)}</span>
-      </span>`;
-    btn.addEventListener('click', () => {
-      document.getElementById('m-search-input').value = ch;
-      document.getElementById('m-char-search-field').value = '';
-      resultsEl.classList.remove('open');
-      mCharPanel.classList.remove('open');
-      mRunSearch(ch);
-    });
-    resultsEl.appendChild(btn);
-  });
-  resultsEl.classList.add('open');
-});
-
-// ── 메인 검색 ──────────────────────────────────────────────────
-function mRunSearch(query) {
-  if (!query) return;
-  if (!S.data) { alert('DB를 먼저 불러오세요'); return; }
-  const chars = [...query];
-
-  if (chars.length === 1) {
-    // 단일 글자 검색
-    mCloseSheet('m-jiza-sheet');
-    mSwitchTab('m-tab-search');
-    mShowSearchResults(chars[0]);
-  } else {
-    // 집자 모드
-    mBuildJiza(chars);
-    mOpenSheet('m-jiza-sheet');
-  }
-}
-
-document.getElementById('m-btn-search').addEventListener('click', () => {
-  mRunSearch(document.getElementById('m-search-input').value.trim());
-});
-document.getElementById('m-search-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') mRunSearch(document.getElementById('m-search-input').value.trim());
-});
-
-// ── 검색 결과 ──────────────────────────────────────────────────
-function mShowSearchResults(char) {
-  const scroll = document.getElementById('m-results-scroll');
-  const positions = S.data.positions?.[char] || [];
-  if (!positions.length) {
-    scroll.innerHTML = `<div class="state-msg"><span class="big">${char}</span>검색 결과 없음</div>`;
-    return;
-  }
-  scroll.innerHTML = '';
-  positions.forEach(([page, col, row, variant], idx) => {
-    const card = document.createElement('div');
-    card.className = 'm-card';
-    const path = imgPath(page, col, row);
+  function renderResults(char) {
+    const scroll = $('m-search-scroll');
+    const positions = S.data.positions?.[char] || [];
+    if (!positions.length) {
+      scroll.innerHTML = `<div class="m-empty"><div class="mark">${esc(char)}</div><p>‘${esc(char)}’의 탁본을 찾지 못했습니다.</p></div>`;
+      return;
+    }
     const reading = S.data.characters?.[char]?.korean?.[0] || '';
-    card.innerHTML = `
-      <div class="m-card-img">
-        <img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:28px>${char}</span>'">
-      </div>
-      <div>
-        <div class="m-card-char">${char}</div>
-        <div class="m-card-reading">${reading}</div>
-        <div class="m-card-pos">p.${page} · ${col}열 ${row}행${variant ? ' · 이형'+variant : ''}</div>
-      </div>`;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      mShowDetail(char, page, col, row, variant ?? 0, null);
-    });
-    scroll.appendChild(card);
-  });
-}
-
-// ── 글자 상세 시트 ─────────────────────────────────────────────
-// mode: null=일반상세, 'jiza'=집자슬롯 선택용
-function mShowDetail(char, page, col, row, variant, jizaSlotIdx) {
-  const data = S.data.characters?.[char] || {};
-  const path = imgPath(page, col, row);
-  const sheetId = jizaSlotIdx !== null ? 'm-detail-sheet' : 'm-detail-sheet';
-
-  document.getElementById('m-detail-title').textContent = char;
-  const body = document.getElementById('m-detail-body');
-  const positions = S.data.positions?.[char] || [];
-  const isJizaMode = jizaSlotIdx !== null;
-
-  body.innerHTML = `
-    <div class="m-detail-img-wrap">
-      <img src="${path}" alt="${char}" onerror="this.src=''">
-    </div>
-    <div class="m-detail-body" style="padding:16px">
-      <div class="m-detail-char">${char}</div>
-      <div class="m-detail-reading">${data.korean?.join(' · ') || '—'}</div>
-      <div class="m-detail-pos">p.${page} · ${col}열 ${row}행</div>
-
-      ${data.radical ? `
-      <div class="m-detail-section">
-        <div class="m-detail-section-label">기본 정보</div>
-        <div class="m-detail-row"><span class="m-detail-key">부수</span><span class="m-detail-val" style="font-family:'Noto Serif SC',serif;font-size:18px">${data.radical}</span></div>
-        ${data.components?.length ? `<div class="m-detail-row"><span class="m-detail-key">구성요소</span><span class="m-detail-val">${data.components.join(' · ')}</span></div>` : ''}
-      </div>` : ''}
-
-      ${data.variants?.length ? `
-      <div class="m-detail-section">
-        <div class="m-detail-section-label">이체자</div>
-        <div class="m-variant-chips">
-          ${data.variants.map(v => `<span class="m-variant-chip" data-char="${v}">${v}</span>`).join('')}
+    scroll.innerHTML = '';
+    positions.forEach(([page, col, row, variant]) => {
+      const card = document.createElement('div');
+      card.className = 'm-card';
+      card.innerHTML = `
+        <div class="m-thumb"><img src="${imgPath(page, col, row)}" alt="${esc(char)}"
+          onerror="this.parentNode.innerHTML='<span class=glyph>${esc(char)}</span>'"></div>
+        <div class="m-card-meta">
+          <div class="m-card-char">${esc(char)}</div>
+          <div class="m-card-read">${esc(reading) || '—'}</div>
+          <div class="m-card-pos">p.${page} · ${col}열 ${row}행${variant ? ' · 이형' + variant : ''}</div>
         </div>
-      </div>` : ''}
-
-      ${data.memo ? `
-      <div class="m-detail-section">
-        <div class="m-detail-section-label">메모</div>
-        <div style="font-size:13px;color:var(--fg1);line-height:1.8;padding:10px;background:var(--bg2);border-left:2px solid var(--border2);border-radius:0 3px 3px 0">${data.memo}</div>
-      </div>` : ''}
-
-      <div class="m-detail-section">
-        <div class="m-detail-section-label">${isJizaMode ? '탭하여 이 글자로 변경' : '전체 출현'} (${positions.length}회)</div>
-        <div class="m-instances-grid" id="m-inst-grid"></div>
-      </div>
-    </div>`;
-
-  // 이체자 클릭
-  body.querySelectorAll('.m-variant-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.getElementById('m-search-input').value = chip.dataset.char;
-      mCloseSheet('m-detail-sheet');
-      mRunSearch(chip.dataset.char);
+        <span class="m-card-go">›</span>`;
+      card.addEventListener('click', () => openDetail(char, [page, col, row, variant ?? 0], null));
+      scroll.appendChild(card);
     });
-  });
+  }
 
-  // 인스턴스 격자
-  const grid = body.querySelector('#m-inst-grid');
-  positions.forEach(([p, c, r, v]) => {
-    const thumb = document.createElement('div');
-    thumb.className = 'm-instance-thumb' + (p===page&&c===col&&r===row?' selected':'') + (isJizaMode?' pick-mode':'');
-    thumb.innerHTML = `<img src="${imgPath(p,c,r)}" alt="${char}"><span class="m-inst-pos">${p}·${c}·${r}</span>`;
-    thumb.addEventListener('click', () => {
-      if (isJizaMode) {
-        // 집자 슬롯 교체
-        M.jizaSlots[jizaSlotIdx].currentIdx = M.jizaSlots[jizaSlotIdx].instances.findIndex(inst => inst[0]===p&&inst[1]===c&&inst[2]===r);
-        if (M.jizaSlots[jizaSlotIdx].currentIdx < 0) M.jizaSlots[jizaSlotIdx].currentIdx = 0;
-        mCloseSheet('m-detail-sheet');
-        mRenderJiza();
-        // 편집기도 열려있으면 업데이트
-        if (ED.open) {
-          const item = ED.items[jizaSlotIdx];
-          if (item) {
-            const newImg = new Image();
-            newImg.onload = () => { item.img = newImg; item.src = imgPath(p,c,r); edDraw(); };
-            newImg.src = imgPath(p,c,r);
-          }
-        }
-      } else {
-        mShowDetail(char, p, c, r, v??0, null);
+  const FIELD_LABEL = { korean: '훈독', radical: '부수', components: '구성요소', variants: '이체자', memo: '메모' };
+  function renderMeaning(q) {
+    const scroll = $('m-search-scroll');
+    if (!q) { renderEmptySearch(); return; }
+    if (!S.data) { renderNoData(scroll); return; }
+    const fields = [...document.querySelectorAll('#m-fields .m-chip.is-on')].map(c => c.dataset.field);
+    const chars = S.data.characters || {};
+    const hits = [];
+    for (const [ch, data] of Object.entries(chars)) {
+      for (const f of fields) {
+        const val = data[f];
+        if (!val) continue;
+        const hay = Array.isArray(val) ? val.join(' ') : String(val);
+        if (hay.includes(q)) { hits.push({ ch, data, field: f, hay }); break; }
       }
-    });
-    grid.appendChild(thumb);
-  });
-
-  mOpenSheet('m-detail-sheet');
-}
-
-// ── 집자 ───────────────────────────────────────────────────────
-const M = { jizaSlots: [] };
-
-function mBuildJiza(chars) {
-  M.jizaSlots = chars.map(ch => {
-    const instances = S.data.positions?.[ch] || [];
-    return { char: ch, instances, currentIdx: 0 };
-  });
-  // 데스크탑 S.jizaSlots도 동기화
-  S.jizaSlots = M.jizaSlots;
-  mRenderJiza();
-}
-
-function mRenderJiza() {
-  const wrap = document.getElementById('m-jiza-slots');
-  wrap.innerHTML = '';
-  M.jizaSlots.forEach((slot, si) => {
-    const inst = slot.instances[slot.currentIdx];
-    const path = inst ? imgPath(inst[0], inst[1], inst[2]) : null;
-    const total = slot.instances.length;
-
-    const el = document.createElement('div');
-    el.className = 'm-jiza-slot';
-    el.innerHTML = `
-      <div class="m-jiza-img" id="m-jiza-img-${si}">
-        ${path ? `<img src="${path}" alt="${slot.char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:28px;color:var(--fg3)>${slot.char}</span>'">` : `<span style="font-family:'Noto Serif SC',serif;font-size:28px;color:var(--fg3)">${slot.char}</span>`}
-      </div>
-      <div class="m-jiza-nav">
-        <button class="m-jiza-nav-btn" data-si="${si}" data-dir="-1">‹</button>
-        <span class="m-jiza-nav-idx">${total ? slot.currentIdx+1+'/'+total : '0'}</span>
-        <button class="m-jiza-nav-btn" data-si="${si}" data-dir="1">›</button>
-      </div>
-      <div class="m-jiza-char">${slot.char}</div>`;
-
-    // 이미지 탭 → 글자 상세 (집자 선택 모드)
-    el.querySelector('.m-jiza-img').addEventListener('click', () => {
-      if (!inst) return;
-      mShowDetail(slot.char, inst[0], inst[1], inst[2], inst[3]??0, si);
-    });
-    // 인스턴스 전환 버튼
-    el.querySelectorAll('.m-jiza-nav-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const idx = parseInt(btn.dataset.si);
-        const dir = parseInt(btn.dataset.dir);
-        const s = M.jizaSlots[idx];
-        if (!s.instances.length) return;
-        s.currentIdx = (s.currentIdx + dir + s.instances.length) % s.instances.length;
-        S.jizaSlots = M.jizaSlots; // 동기화
-        mRenderJiza();
+      if (hits.length >= 60) break;
+    }
+    if (!hits.length) {
+      scroll.innerHTML = `<div class="m-empty"><div class="mark">尋</div><p>일치하는 글자가 없습니다.</p><small>검색 범위 칩을 조정해 보세요.</small></div>`;
+      return;
+    }
+    scroll.innerHTML = '';
+    hits.forEach(({ ch, data, field, hay }) => {
+      const reading = data.korean?.[0] || '';
+      const snippet = hay.length > 44 ? hay.slice(0, 44) + '…' : hay;
+      const hl = esc(snippet).replace(esc(q), `<mark>${esc(q)}</mark>`);
+      const btn = document.createElement('button');
+      btn.className = 'm-hit';
+      btn.innerHTML = `<span class="m-hit-char">${esc(ch)}</span>
+        <span class="m-hit-meta"><span class="m-hit-read">${esc(reading) || '—'}</span>
+        <span class="m-hit-sub">${FIELD_LABEL[field]} · ${hl}</span></span>`;
+      btn.addEventListener('click', () => {
+        mode = 'hanja';
+        document.querySelectorAll('.m-seg-btn').forEach(x => x.classList.toggle('is-on', x.dataset.mode === 'hanja'));
+        $('m-fields').hidden = true;
+        qInput.value = ch; $('m-q-clear').hidden = false;
+        qInput.placeholder = '한자를 입력';
+        submitHanja(ch);
       });
+      scroll.appendChild(btn);
     });
-    wrap.appendChild(el);
-  });
-}
+  }
 
-document.getElementById('m-btn-jiza-editor').addEventListener('click', () => {
-  mCloseSheet('m-jiza-sheet');
-  // 편집기 크기 설정 적용
-  const w = parseInt(document.getElementById('m-paper-w').value) || 350;
-  const h = parseInt(document.getElementById('m-paper-h').value) || 690;
-  ED.wMm = w; ED.hMm = h;
-  openEditor();
-});
+  function renderEmptySearch() {
+    $('m-search-scroll').innerHTML = S.data
+      ? `<div class="m-empty"><div class="mark">字</div><p>한자를 입력해 탁본을 찾아보세요.<br>여러 글자를 넣으면 集字로 넘어갑니다.</p></div>`
+      : '';
+    if (!S.data) renderNoData($('m-search-scroll'));
+  }
+  function renderNoData(el) {
+    el.innerHTML = `<div class="m-empty"><div class="mark">典</div><p>사전 데이터를 불러오지 못했습니다.</p><small>설정 ⚙ → DB.json 불러오기</small></div>`;
+  }
 
-document.getElementById('m-btn-jiza-save').addEventListener('click', () => downloadJiza());
-
-// ── 모바일 페이지 브라우저 ────────────────────────────────────
-const MB = { currentPage: 1 };
-
-function mbGetTotal() {
-  return parseInt(S.data?.pages?.totalPages) ||
-    Object.keys(S.data?.pages || {}).filter(k => !isNaN(k)).length;
-}
-function mbGoTo(n) {
-  const total = mbGetTotal();
-  MB.currentPage = Math.max(1, Math.min(n, total));
-  document.getElementById('m-page-num-input').value = MB.currentPage;
-  mbUpdateNav();
-  mbRender();
-}
-function mbUpdateNav() {
-  const total = mbGetTotal();
-  document.getElementById('m-btn-page-first').disabled = MB.currentPage <= 1;
-  document.getElementById('m-btn-page-prev').disabled  = MB.currentPage <= 1;
-  document.getElementById('m-btn-page-next').disabled  = MB.currentPage >= total;
-  document.getElementById('m-btn-page-last').disabled  = MB.currentPage >= total;
-  document.getElementById('m-page-total').textContent  = `/ ${total}`;
-}
-function mbRender() {
-  if (!S.data) return;
-  const grid = document.getElementById('m-page-grid');
-  grid.innerHTML = '';
-  const pageData = S.data.pages?.[String(MB.currentPage)];
-  if (!pageData) return;
-  const cols = S.data.pages?.general?.cols || 5;
-  const rows = S.data.pages?.general?.rows || 8;
-
-  for (let row = 1; row <= rows; row++) {
-    for (let col = 1; col <= cols; col++) {
-      const key = `${col},${row}`;
-      const char = pageData.cells?.[key];
-      const isEmpty = !char || char === '/0';
-      const cell = document.createElement('div');
-      cell.className = 'm-pg-cell';
-      if (isEmpty) {
-        cell.style.background = '#fff';
-      } else {
-        const path = imgPath(MB.currentPage, col, row);
-        cell.innerHTML = `<img src="${path}" alt="${char}" onerror="this.parentNode.innerHTML='<span style=font-family:Noto Serif SC,serif;font-size:14px;color:#aaa>${char}</span>'">`;
-        cell.addEventListener('click', () => {
-          document.querySelectorAll('.m-pg-cell').forEach(c => c.classList.remove('active'));
-          cell.classList.add('active');
-          // 페이지 글자 상세
-          mShowPageDetail(char, MB.currentPage, col, row);
-        });
-      }
-      grid.appendChild(cell);
+  // ── 글자 상세 (전체화면 라우트) ──────────────────────────────
+  // pickSlot: 集字 인스턴스 선택 모드일 때 슬롯 인덱스, 아니면 null
+  let detailOpen = false;
+  function openDetail(char, pos, pickSlot) {
+    renderDetail(char, pos, pickSlot);
+    if (!detailOpen) {
+      detailOpen = true;
+      $('m-detail').classList.add('is-open');
+      $('m-detail').setAttribute('aria-hidden', 'false');
+      pushOverlay(() => {
+        detailOpen = false;
+        $('m-detail').classList.remove('is-open');
+        $('m-detail').setAttribute('aria-hidden', 'true');
+      });
     }
   }
-}
+  on('m-detail-back', 'click', dismissTop);
 
-function mShowPageDetail(char, page, col, row) {
-  const data = S.data.characters?.[char] || {};
-  const path = imgPath(page, col, row);
-  document.getElementById('m-page-detail-title').textContent = char;
-  const body = document.getElementById('m-page-detail-body');
-  body.innerHTML = `
-    <div class="m-detail-img-wrap"><img src="${path}" alt="${char}"></div>
-    <div style="padding:16px">
-      <div class="m-detail-char">${char}</div>
-      <div class="m-detail-reading">${data.korean?.join(' · ') || '—'}</div>
-      <div class="m-detail-pos">p.${page} · ${col}열 ${row}행</div>
-      ${data.radical ? `<div class="m-detail-row" style="margin-top:12px"><span class="m-detail-key">부수</span><span class="m-detail-val" style="font-family:'Noto Serif SC',serif;font-size:18px">${data.radical}</span></div>` : ''}
-      ${data.korean?.length ? `<div class="m-detail-row"><span class="m-detail-key">훈독</span><span class="m-detail-val">${data.korean.join(', ')}</span></div>` : ''}
-      ${data.memo ? `<div style="margin-top:12px;font-size:13px;color:var(--fg1);line-height:1.8;padding:10px;background:var(--bg2);border-left:2px solid var(--border2);border-radius:0 3px 3px 0">${data.memo}</div>` : ''}
-    </div>`;
-  mOpenSheet('m-page-detail-sheet');
-}
+  function renderDetail(char, [page, col, row, variant], pickSlot) {
+    const data = S.data.characters?.[char] || {};
+    const positions = S.data.positions?.[char] || [];
+    const isPick = pickSlot !== null && pickSlot !== undefined;
+    $('m-detail-name').textContent = char;
 
-document.getElementById('m-btn-page-first').addEventListener('click', () => mbGoTo(1));
-document.getElementById('m-btn-page-prev').addEventListener('click',  () => mbGoTo(MB.currentPage - 1));
-document.getElementById('m-btn-page-next').addEventListener('click',  () => mbGoTo(MB.currentPage + 1));
-document.getElementById('m-btn-page-last').addEventListener('click',  () => mbGoTo(mbGetTotal()));
-document.getElementById('m-page-num-input').addEventListener('change', e => mbGoTo(parseInt(e.target.value)||1));
-document.getElementById('m-page-num-input').addEventListener('keydown', e => { if(e.key==='Enter') mbGoTo(parseInt(e.target.value)||1); });
+    const readings = data.korean?.join(' · ') || '—';
+    let html = `
+      <div class="m-hero"><div class="m-hero-mat">
+        <img src="${imgPath(page, col, row)}" alt="${esc(char)}"
+          onerror="this.parentNode.innerHTML='<span class=glyph>${esc(char)}</span>'">
+      </div></div>
+      <div class="m-detail-head">
+        <div class="m-detail-glyph">${esc(char)}</div>
+        <div class="m-detail-read">${esc(readings)}</div>
+        <div class="m-detail-loc">p.${page} · ${col}열 ${row}행${variant ? ' · 이형' + variant : ''}</div>
+      </div>`;
 
-// DB 로드 후 모바일 업데이트
-const _mOrigLoadMsg = 'roLoadComplete';
-function mOnDataLoad() {
-  if (!isMobile()) return;
-  mbUpdateNav();
-  // 현재 탭이 페이지면 렌더
-  if (document.getElementById('m-tab-page').classList.contains('active')) mbRender();
-}
+    if (data.radical || data.components?.length) {
+      html += `<div class="m-sec"><div class="m-sec-label">기본 정보</div>`;
+      if (data.radical) html += `<div class="m-kv"><span class="m-kv-k">부수</span><span class="m-kv-v m-radical">${esc(data.radical)}</span></div>`;
+      if (data.components?.length) html += `<div class="m-kv"><span class="m-kv-k">구성요소</span><span class="m-kv-v"><span class="m-comp">${data.components.map(c => `<span>${esc(c)}</span>`).join('')}</span></span></div>`;
+      html += `</div>`;
+    }
+    if (data.variants?.length) {
+      html += `<div class="m-sec"><div class="m-sec-label">이체자</div><div class="m-variants">${data.variants.map(v => `<span class="m-variant" data-var="${esc(v)}">${esc(v)}</span>`).join('')}</div></div>`;
+    }
+    if (data.memo) {
+      html += `<div class="m-sec"><div class="m-sec-label">메모</div><div class="m-memo">${esc(data.memo)}</div></div>`;
+    }
+    html += `<div class="m-sec"><div class="m-sec-label">전체 출현 · ${positions.length}회</div>`;
+    if (isPick) html += `<div class="m-pickhint">이 글자로 사용할 탁본을 고르세요</div>`;
+    html += `<div class="m-insts" id="m-insts"></div></div>`;
 
-// 페이지 탭 클릭 시 렌더
-document.querySelector('[data-tab="m-tab-page"]').addEventListener('click', () => {
-  if (S.data) { mbUpdateNav(); mbRender(); }
-});
+    const scroll = $('m-detail-scroll');
+    scroll.innerHTML = html;
+    scroll.scrollTop = 0;
 
+    scroll.querySelectorAll('.m-variant').forEach(el => el.addEventListener('click', () => {
+      dismissTop();
+      mode = 'hanja';
+      document.querySelectorAll('.m-seg-btn').forEach(x => x.classList.toggle('is-on', x.dataset.mode === 'hanja'));
+      $('m-fields').hidden = true; qInput.value = el.dataset.var; $('m-q-clear').hidden = false;
+      submitHanja(el.dataset.var);
+    }));
+
+    const grid = $('m-insts');
+    positions.forEach(([p, c, r]) => {
+      const cur = p === page && c === col && r === row;
+      const el = document.createElement('div');
+      el.className = 'm-inst' + (cur ? ' is-current' : '') + (isPick ? ' pickable' : '');
+      el.innerHTML = `<img src="${imgPath(p, c, r)}" alt="${esc(char)}" onerror="this.style.opacity=.25"><span class="loc">${p}·${c}·${r}</span>`;
+      el.addEventListener('click', () => {
+        if (isPick) {
+          const slot = S.jizaSlots[pickSlot];
+          const idx = slot.instances.findIndex(i => i[0] === p && i[1] === c && i[2] === r);
+          slot.currentIdx = idx < 0 ? 0 : idx;
+          if (ED.open && ED.items[pickSlot]) {
+            const item = ED.items[pickSlot], im = new Image();
+            im.onload = () => { item.img = im; item.src = imgPath(p, c, r); edDraw(); };
+            im.src = imgPath(p, c, r);
+          }
+          dismissTop();
+          renderCompose();
+        } else {
+          renderDetail(char, [p, c, r, 0], null);
+        }
+      });
+      grid.appendChild(el);
+    });
+  }
+
+  // ── 集字 ─────────────────────────────────────────────────────
+  function submitCompose(str) {
+    if (!S.data) return;
+    const chars = [...str].filter(c => c.trim() && c !== '/0');
+    if (!chars.length) return;
+    runJiza(chars.join(''));
+    renderCompose();
+  }
+  on('m-jz-go', 'click', () => submitCompose($('m-jz-q').value.trim()));
+  $('m-jz-q').addEventListener('keydown', e => { if (e.key === 'Enter') submitCompose($('m-jz-q').value.trim()); });
+
+  function renderCompose() {
+    const scroll = $('m-jiza-scroll');
+    const slots = S.jizaSlots || [];
+    if (!slots.length) {
+      $('m-jiza-actions').hidden = true;
+      scroll.innerHTML = `<div class="m-empty"><div class="mark">集</div><p>여러 글자를 검색하면<br>여기서 集字를 구성합니다.</p><small>위 입력창에 글자를 넣어 시작하세요.</small></div>`;
+      return;
+    }
+    $('m-jiza-actions').hidden = false;
+    const grid = document.createElement('div');
+    grid.className = 'm-jz-grid';
+    slots.forEach((slot, si) => {
+      const inst = slot.instances[slot.currentIdx];
+      const total = slot.instances.length;
+      const el = document.createElement('div');
+      el.className = 'm-jz-slot';
+      el.innerHTML = `
+        <div class="m-mat" data-si="${si}">
+          ${inst ? `<img src="${imgPath(inst[0], inst[1], inst[2])}" alt="${esc(slot.char)}"
+            onerror="this.parentNode.innerHTML='<span class=glyph>${esc(slot.char)}</span>'">`
+            : `<span class="glyph">${esc(slot.char)}</span>`}
+        </div>
+        <div class="m-jz-nav">
+          <button data-si="${si}" data-d="-1">‹</button>
+          <span class="m-jz-idx">${total ? (slot.currentIdx + 1) + '/' + total : '0'}</span>
+          <button data-si="${si}" data-d="1">›</button>
+        </div>
+        <div class="m-jz-label">${esc(slot.char)}</div>`;
+      el.querySelector('.m-mat').addEventListener('click', () => {
+        if (!inst) return;
+        openDetail(slot.char, inst, si);
+      });
+      el.querySelectorAll('.m-jz-nav button').forEach(b => b.addEventListener('click', () => {
+        const s = slots[+b.dataset.si];
+        if (!s.instances.length) return;
+        s.currentIdx = (s.currentIdx + (+b.dataset.d) + s.instances.length) % s.instances.length;
+        renderCompose();
+      }));
+      grid.appendChild(el);
+    });
+    scroll.innerHTML = '';
+    scroll.appendChild(grid);
+  }
+
+  on('m-jz-clear', 'click', () => { S.jizaSlots = []; $('m-jz-q').value = ''; renderCompose(); });
+  on('m-jz-save', 'click', () => downloadJiza());
+  on('m-jz-edit', 'click', () => {
+    if (!S.jizaSlots.length) return;
+    const w = parseInt($('m-paper-w')?.value) || 350;
+    const h = parseInt($('m-paper-h')?.value) || 690;
+    ED.wMm = w; ED.hMm = h;
+    openEditor();
+  });
+
+  // ── 페이지 브라우저 ──────────────────────────────────────────
+  let curPage = 1;
+  function pgTotal() {
+    return parseInt(S.data?.pages?.totalPages) ||
+      Object.keys(S.data?.pages || {}).filter(k => !isNaN(k)).length || 1;
+  }
+  function pgGoto(n) {
+    const t = pgTotal();
+    curPage = Math.max(1, Math.min(n, t));
+    $('m-pg-num').value = curPage;
+    pgUpdateNav(); pgRender();
+  }
+  function pgUpdateNav() {
+    const t = pgTotal();
+    $('m-pg-first').disabled = $('m-pg-prev').disabled = curPage <= 1;
+    $('m-pg-next').disabled = $('m-pg-last').disabled = curPage >= t;
+    $('m-pg-total').textContent = `/ ${t}`;
+    $('m-pg-num').value = curPage;
+  }
+  function pgRender() {
+    const paper = $('m-paper');
+    paper.innerHTML = '';
+    if (!S.data) return;
+    const pd = S.data.pages?.[String(curPage)];
+    const cols = S.data.pages?.general?.cols || 5;
+    const rows = S.data.pages?.general?.rows || 8;
+    paper.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    if (!pd) return;
+    for (let r = 1; r <= rows; r++) {
+      for (let c = 1; c <= cols; c++) {
+        const ch = pd.cells?.[`${c},${r}`];
+        const empty = !ch || ch === '/0';
+        const cell = document.createElement('div');
+        cell.className = 'm-pgcell' + (empty ? '' : ' filled');
+        if (!empty) {
+          cell.innerHTML = `<img src="${imgPath(curPage, c, r)}" alt="${esc(ch)}"
+            onerror="this.parentNode.innerHTML='<span class=glyph>${esc(ch)}</span>'">`;
+          cell.addEventListener('click', () => openDetail(ch, [curPage, c, r, 0], null));
+        }
+        paper.appendChild(cell);
+      }
+    }
+  }
+  on('m-pg-first', 'click', () => pgGoto(1));
+  on('m-pg-prev', 'click', () => pgGoto(curPage - 1));
+  on('m-pg-next', 'click', () => pgGoto(curPage + 1));
+  on('m-pg-last', 'click', () => pgGoto(pgTotal()));
+  $('m-pg-num').addEventListener('change', e => pgGoto(parseInt(e.target.value) || 1));
+  $('m-pg-num').addEventListener('keydown', e => { if (e.key === 'Enter') pgGoto(parseInt(e.target.value) || 1); });
+
+  // ── 설정 시트 ────────────────────────────────────────────────
+  function openSettings() {
+    buildSectionChips();
+    $('m-set-sheet').classList.add('open');
+    pushOverlay(closeSettings);
+  }
+  function closeSettings() { $('m-set-sheet').classList.remove('open'); }
+  on('m-set-close', 'click', dismissTop);
+  $('m-set-sheet').addEventListener('click', e => { if (e.target === $('m-set-sheet')) dismissTop(); });
+
+  function buildSectionChips() {
+    const wrap = $('m-set-sections'), grp = $('m-set-sections-group');
+    if (!S.sections || S.sections.length <= 1) { grp.hidden = true; return; }
+    grp.hidden = false; wrap.innerHTML = '';
+    S.sections.forEach(sec => {
+      const chip = document.createElement('button');
+      chip.className = 'm-chip' + (S.currentSection?.id === sec.id ? ' is-on' : '');
+      chip.textContent = sec.title;
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.toggle('active', t.dataset.idx == sec.idx));
+        if (typeof loadSection === 'function') loadSection(sec);
+        dismissTop();
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  // ── 데이터 로드 후 갱신 (desktop 코드가 mOnDataLoad 호출) ──────
+  window.mOnDataLoad = function () {
+    if (!isMobile()) return;
+    // 제목
+    const title = S.currentSection?.title || S.data?.metadata?.title;
+    const sub = S.currentSection?.subtitle || S.data?.metadata?.sub || S.data?.metadata?.subtitle || '';
+    if (title) { $('m-title-main').textContent = title; $('m-title-sub').textContent = sub; }
+    // 검색 초기화
+    mode = 'hanja';
+    document.querySelectorAll('.m-seg-btn').forEach(x => x.classList.toggle('is-on', x.dataset.mode === 'hanja'));
+    $('m-fields').hidden = true; qInput.value = ''; $('m-q-clear').hidden = true; qInput.placeholder = '한자를 입력';
+    renderEmptySearch();
+    // 집자 / 페이지
+    S.jizaSlots = []; renderCompose();
+    curPage = 1; pgUpdateNav();
+    $('m-paper').innerHTML = '';
+    if ($('pane-page').classList.contains('is-active')) pgRender();
+  };
+
+  // loadSection 이 끝나면 모바일도 갱신되도록 래핑 (최초 자동 로드 포함)
+  if (typeof loadSection === 'function') {
+    const _loadSection = loadSection;
+    loadSection = async function (sec) { await _loadSection(sec); window.mOnDataLoad(); };
+  }
+
+  // ── 초기화 ───────────────────────────────────────────────────
+  syncTheme();
+  renderEmptySearch();
+  renderCompose();
+})();
 
 // ══════════════════════════════════════════════════════════════
 // MOBILE EDITOR — TOUCH GESTURES
@@ -4303,21 +4496,32 @@ document.querySelector('[data-tab="m-tab-page"]').addEventListener('click', () =
     const touches = e.touches;
 
     if (touches.length === 1) {
-      // 단일 터치 → 글자 선택/드래그
+      // 단일 터치 → 글자 선택/드래그 (또는 선 그리기)
       T.t0 = touches[0];
       const pos = getTouchCanvas(T.t0);
-      const hit = edHitTest(pos.x, pos.y);
 
+      if (ED.lineTool) {
+        if (ED.lineBisect) { ED.lineDraft = { x1: pos.x, y1: pos.y, x2: pos.x, y2: pos.y }; T.mode = 'linedraw'; }
+        else { edFullLineAt(pos.x, pos.y); T.mode = null; }
+        return;
+      }
+
+      const hit = edHitTest(pos.x, pos.y);
       if (hit >= 0) {
         ED.selected = hit;
         T.mode = 'drag';
         T.dragItemIdx = hit;
         T.dragStartX = pos.x;
         T.dragStartY = pos.y;
-        T.dragItemOrigX = ED.items[hit].x;
-        T.dragItemOrigY = ED.items[hit].y;
-        ED.dragStartX = T.dragItemOrigX;
-        ED.dragStartY = T.dragItemOrigY;
+        const it = ED.items[hit];
+        if (it.type === 'line') {
+          T.lineOrig = { x1: it.x1, y1: it.y1, x2: it.x2, y2: it.y2 };
+        } else {
+          T.dragItemOrigX = it.x;
+          T.dragItemOrigY = it.y;
+          ED.dragStartX = it.x;
+          ED.dragStartY = it.y;
+        }
         edDraw();
         edRenderSlotsList();
         edUpdateSizeInputs();
@@ -4356,18 +4560,26 @@ document.querySelector('[data-tab="m-tab-page"]').addEventListener('click', () =
     e.preventDefault();
     const touches = e.touches;
 
-    if (T.mode === 'drag' && touches.length >= 1) {
+    if (T.mode === 'linedraw' && ED.lineDraft && touches.length >= 1) {
+      const pos = getTouchCanvas(touches[0]);
+      ED.lineDraft.x2 = pos.x; ED.lineDraft.y2 = pos.y; edDraw();
+
+    } else if (T.mode === 'drag' && touches.length >= 1) {
       const pos = getTouchCanvas(touches[0]);
       const item = ED.items[T.dragItemIdx];
-      let nx = T.dragItemOrigX + (pos.x - T.dragStartX);
-      let ny = T.dragItemOrigY + (pos.y - T.dragStartY);
-      // 모바일에서는 스냅 항상 켜짐
-      ED.snapGuides = [];
-      nx = edSnapX(item, nx, T.dragItemIdx);
-      ny = edSnapY(item, ny, T.dragItemIdx);
-      item.x = nx;
-      item.y = ny;
-      edDraw();
+      if (item.type === 'line') {
+        const dx = pos.x - T.dragStartX, dy = pos.y - T.dragStartY, o = T.lineOrig;
+        item.x1 = o.x1 + dx; item.y1 = o.y1 + dy; item.x2 = o.x2 + dx; item.y2 = o.y2 + dy;
+        edDraw();
+      } else {
+        let nx = T.dragItemOrigX + (pos.x - T.dragStartX);
+        let ny = T.dragItemOrigY + (pos.y - T.dragStartY);
+        ED.snapGuides = [];
+        nx = edSnapX(item, nx, T.dragItemIdx);
+        ny = edSnapY(item, ny, T.dragItemIdx);
+        item.x = nx; item.y = ny;
+        edDraw();
+      }
 
     } else if (T.mode === 'pinch' && touches.length >= 2) {
       const dist = pinchDist(touches[0], touches[1]);
@@ -4388,6 +4600,10 @@ document.querySelector('[data-tab="m-tab-page"]').addEventListener('click', () =
 
   cv.addEventListener('touchend', e => {
     if (!ED.open) return;
+    if (T.mode === 'linedraw' && ED.lineDraft) {
+      edCommitBisect(ED.lineDraft);
+      ED.lineDraft = null;
+    }
     ED.snapGuides = [];
     edDraw();
     if (e.touches.length === 0) {
